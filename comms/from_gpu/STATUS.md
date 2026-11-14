@@ -9,7 +9,7 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | Task | Started | State | Updated | Report |
 |---|---|---|---|---|
 | 01 hello | 2026-11-14 12:40 | done | 2026-11-14 12:40 | `2026-11-14_01_hello_report.md` |
-| 02 lattice-fold | 2026-11-14 13:25 | running (GPU queue, `task02_fold3d_main` since 14:01) | 2026-11-14 14:45 | to come |
+| 02 lattice-fold | 2026-11-14 13:25 | done | 2026-11-14 14:50 | `2026-11-14_02_lattice-fold_report.md` |
 | 03 pop-dish-two-resources | 2026-11-14 13:25 | closed (no fold passed; task 05) | 2026-11-14 14:02 | `2026-11-14_03_pop-dish-two-resources_report.md` |
 | 03a maps-at-cell-scale | 2026-11-14 13:25 | done (in report 03) | 2026-11-14 13:35 | `2026-11-14_03_pop-dish-two-resources_report.md` |
 | 04 scheduled-checks | 2026-11-14 13:25 | done | 2026-11-14 13:21 | `2026-11-14_04_scheduled-checks_report.md` |

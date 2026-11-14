@@ -43,3 +43,12 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Machine note: a CPU-queue job launched from Git Bash had `cmd /c` rewritten to `cmd C:/` (path conversion) and sat
     idle; it was stopped (my own job) and requeued from PowerShell. No other session's jobs were touched.
   - Waits on Justin: whether to make the page's scan order-free (proposal in report 08, section 5). Waits on cloud: nothing.
+- 2026-11-14 14:50 (interactive session): **Task 02 done** (report pushed with `fold3d/`). The GPU job survived a brief
+  disconnection of the D: drive and finished at 14:45. Headlines:
+  - No unique native fold: the HP-style energy has many tied lowest-energy folds (8.4 per 10 runs).
+  - Melting is gradual (Tm 0.43 ± 0.14).
+  - The page's brackets show in 3D only through the complement energy (eP).
+  - Batched folding with caching by sequence is feasible; live folding is not.
+  - STATUS.md updated.
+  - Waits on Justin: the folding proposals in report 02 (caching, a richer contact table, a cooperative term, eP ≥ 1).
+  - Waits on cloud: nothing.
