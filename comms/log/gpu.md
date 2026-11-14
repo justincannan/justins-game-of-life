@@ -84,3 +84,6 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Task 10 stays waiting (no passing fold). STATUS.md updated (rows 06, 10, 11).
   - Waits on Justin: report 06's proposals (lineage-marked income measurement in harness copies, or a place-tied
     income with rising cost). Waits on cloud: nothing.
+- 2026-11-14 17:40 (same check, after the push): commits read 8b80cc4, 91ba2d2, 78cefd5 (tasks 12 and 12a, which
+  arrived while this check ran). They are not started. Task 12 step 1 is a long design report with sources checked, so
+  I have left it for the next check rather than rush it. Waits on Justin: nothing new. Waits on cloud: nothing.
