@@ -1478,3 +1478,12 @@ Proposals (Claude's, awaiting Justin's decision):
 ### Proposal: 3D folds (Claude's, awaiting decision)
 - Tier 1, a viewer: draw the selected cell's chain folded in 3D in the inspector, coloured oily/polar, from the existing bracket fold. Display only.
 - Tier 2, a lattice model: fold each sequence as a self-avoiding chain on a 3D grid, scoring oily-oily contacts (Dill's HP model, 1985). Stability = contacts; heat = a Metropolis temperature; the active site = a pocket of exposed residues. Costly (finding the best fold is NP-hard), so fold once per distinct sequence and cache; the GPU session could fold in batches.
+
+## Organelles and the test for open-ended evolution (Justin's plan, 14 November)
+
+Justin's plan, recorded as his decision for when the model reaches that stage:
+- Organelles such as flagella, even simpler than real bacterial ones, will need a physics engine.
+- Step 1: build the organelle within the model, perhaps with proposed evolutionary cousins or daughters.
+- Step 2: devise pre-planned evolutionary paths to the organelle.
+- Step 3: calibrate the model so the organelle(s) can evolve spontaneously.
+- The real test of open-ended evolution: whether the calibrated organelles allow new organelles, not designed in advance, to arise spontaneously.
