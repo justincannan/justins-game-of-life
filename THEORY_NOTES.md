@@ -1580,3 +1580,10 @@ Proposals (Claude's) on making this work without freezing evolution:
     - a folded protein is only marginally more stable than unfolded;
     - water and salt screen charges.
   - Awaits Justin's decision; goes to the GPU session as part of task 12's design if approved.
+
+### Decision (Justin, 14 November, about 17:34): beads
+- Beads are approved as the base level for interactions.
+- **Caveat found on checking (Claude):** Martini itself cannot fold proteins. Its protein model imposes secondary
+  structure as input, and holds tertiary structure with elastic networks or Gō models. So the project can borrow its
+  bead typing and its way of calibrating against measured partitioning between water and oil. The folding itself
+  needs our own secondary rule and a cooperative tertiary term (task 12).
