@@ -1487,3 +1487,20 @@ Justin's plan, recorded as his decision for when the model reaches that stage:
 - Step 2: devise pre-planned evolutionary paths to the organelle.
 - Step 3: calibrate the model so the organelle(s) can evolve spontaneously.
 - The real test of open-ended evolution: whether the calibrated organelles allow new organelles, not designed in advance, to arise spontaneously.
+
+## The population dish after task 03 (Justin's decisions, 14 November)
+
+Justin approved all five items left waiting after the GPU session's report 03/03a and report 04:
+1. **The next fold:** the store fold (S) with both incomes, sugar and chemistry, feeding the store, and chemistry
+   income set per lineage rather than per block (the GPU session's proposal). Task 06.
+2. **A fine-grid test of branching:** a two-resource version of the population dish (`popdish/pop.py`) at
+   1,000 × 1,000 with slow sugar diffusion, to see whether branching appears when the grid is fine (the GPU session's
+   proposal). Task 07.
+3. **Check the horizontal streaks** in the sugar-10 dish from tick 500, as a possible artefact of row-by-row updating.
+   A check only; any change to the update order would change the model and comes back to Justin. Task 08.
+4. **The GPU-side check** set to run without stalling on permission prompts (Justin set its permission mode).
+5. **A status record per task** (the GPU session's proposal), kept by the GPU side in `comms/from_gpu/STATUS.md`.
+   Task 09.
+
+Still a proposal, not decided: the finer-block models (5 × 5, 2 × 2), which the GPU session proposed to run only once a
+fold passes at 10 × 10.

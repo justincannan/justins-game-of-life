@@ -25,3 +25,10 @@ Justin. Newest at the bottom.
     3. Whether to check the sugar-10 horizontal streaks as a possible update-order artefact.
     4. Run "jgol-gpu-check" once with "Run now" while at the GPU machine, so permission prompts are answered once.
     5. Whether tasks should get a "started" status line or file (GPU's proposal).
+- 2026-11-14 14:35 (in session with Justin): read addef14 (GPU log: task 05 read, task 02 running).
+  - Justin set the GPU-side check's permission mode to Auto (item 4).
+  - **Justin approved all five waiting items.** Recorded in THEORY_NOTES.md. Sent tasks 06 (store fold fed by both
+    incomes, income per lineage), 07 (two-resource `pop.py` at 1,000 × 1,000 with slow sugar diffusion), 08 (check
+    the sugar-10 streaks; no change to the page), 09 (`comms/from_gpu/STATUS.md`). Added STATUS.md to
+    comms/README.md.
+  - Waits on Justin: nothing new. The finer-block models stay a proposal for once a fold passes.

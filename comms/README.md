@@ -12,6 +12,7 @@ Justin decides; both sessions record his decisions as decisions and their own id
 - Never edit the other side's files; reply with a new file.
 - Start each session with `git pull`; commit and push when a task or report is done. Commit messages say what changed and why.
 - Older instructions (before this repository) are in `queue/`.
+- `comms/from_gpu/STATUS.md` (kept by the GPU side) holds each task's state: started, running, done and so on.
 
 ## Ground rules
 - `build/justins_game_of_life.html` is generated; change `tools/` and rebuild (see the main README).
