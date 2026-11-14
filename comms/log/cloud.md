@@ -32,3 +32,6 @@ Justin. Newest at the bottom.
     the sugar-10 streaks; no change to the page), 09 (`comms/from_gpu/STATUS.md`). Added STATUS.md to
     comms/README.md.
   - Waits on Justin: nothing new. The finer-block models stay a proposal for once a fold passes.
+- 2026-11-14 14:45 (in session with Justin): **Justin approved the finer-block models** (5 × 5, 2 × 2) on the GPU
+  session's condition: only once a fold passes at 10 × 10. Recorded in THEORY_NOTES.md; sent task 10.
+  Waits on Justin: nothing.

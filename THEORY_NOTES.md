@@ -1502,5 +1502,5 @@ Justin approved all five items left waiting after the GPU session's report 03/03
 5. **A status record per task** (the GPU session's proposal), kept by the GPU side in `comms/from_gpu/STATUS.md`.
    Task 09.
 
-Still a proposal, not decided: the finer-block models (5 × 5, 2 × 2), which the GPU session proposed to run only once a
-fold passes at 10 × 10.
+**Decided later the same day (Justin):** the finer-block models (5 × 5, and 2 × 2 if affordable), refitted at each
+block size, run **once a fold passes at 10 × 10**, as the GPU session proposed. Task 10.
