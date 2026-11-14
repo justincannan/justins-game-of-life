@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Codes as Rules</title>
+<style>
+:root{color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--ring:rgba(255,255,255,.10);
+--grid:#2c2c2a;--accent:#3987e5}
+@media (prefers-color-scheme:light){:root:where(:not([data-theme="dark"])){color-scheme:light;--page:#f9f9f7;--surface:#fcfcfb;
+--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--ring:rgba(11,11,11,.10);--grid:#e1e0d9;--accent:#2a78d6}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.app{display:grid;grid-template-columns:minmax(0,1fr) 340px;height:100vh}
+@media (max-width:900px){.app{grid-template-columns:1fr;height:auto}.stage{height:70vh}}
+.stage{position:relative;background:#050505;overflow:hidden;touch-action:none}
+canvas#view{display:block;width:100%;height:100%;cursor:crosshair}
+.hud{position:absolute;left:10px;top:10px;background:rgba(20,20,19,.82);color:#f0efec;border-radius:8px;padding:6px 10px;
+font-size:12px;font-variant-numeric:tabular-nums;pointer-events:none}
+.zoom{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
+.side{overflow:auto;padding:14px 14px 30px;border-left:1px solid var(--ring);background:var(--page)}
+h1{font-size:18px;margin:0 0 2px}h2{font-size:13px;margin:16px 0 6px;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+p{margin:4px 0;color:var(--ink2);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:8px;padding:10px}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0}
+button,select{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--muted);border-radius:6px;
+padding:4px 10px;cursor:pointer}
+button[aria-pressed=true]{border-color:var(--ink);font-weight:600}
+label.sl{display:grid;grid-template-columns:110px 1fr 46px;gap:8px;align-items:center;font-size:12px;color:var(--ink2);margin:3px 0}
+label.sl output{font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
+input[type=range]{width:100%}
+.spark{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.spark div{font-size:11px;color:var(--muted)}.spark b{color:var(--ink);font-size:13px;font-variant-numeric:tabular-nums}
+.spark canvas{width:100%;height:34px;display:block}
+.list{font-size:12px}.list div{display:grid;grid-template-columns:14px 1fr auto;gap:6px;padding:3px 0;border-bottom:1px solid var(--grid);align-items:center}
+.sw{width:10px;height:10px;border-radius:50%}
+.log{max-height:220px;overflow:auto;font-size:12px}.log div{padding:3px 0;border-bottom:1px solid var(--grid)}
+.log .t{color:var(--muted);font-variant-numeric:tabular-nums;margin-right:6px}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+.insp div{font-size:12px;padding:2px 0}
+</style></head><body>
+<div class="app">
+ <div class="stage" id="stage">
+  <canvas id="view" aria-label="The world: drag to pan, wheel to zoom, click to inspect or paint"></canvas>
+  <div class="hud" id="hud"></div>
+  <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button><button id="zfit">Fit</button></div>
+ </div>
+ <div class="side">
+  <h1>Codes as rules</h1>
+  <p>Every living cell carries a short code, and the code is its rule: when it survives, when it gives birth, and how
+  hard it writes itself into its neighbours. Newborns copy a parent's code, with errors. Drag to pan, wheel or buttons
+  to zoom; zoom in to read codes, out to see named forms.</p>
+
+  <div class="row"><button id="play">Pause</button><button id="stepb">Step</button>
+   <select id="seedmode" aria-label="Start from">
+    <option value="soup">Mixed soup</option><option value="life">Life-like soup</option>
+    <option value="random">Random rules</option><option value="blank">Blank</option></select>
+   <button id="reset">Reset</button></div>
+  <div class="row" role="group" aria-label="Click tool">
+   <button data-tool="inspect" aria-pressed="true">Inspect</button><button data-tool="paint" aria-pressed="false">Paint</button>
+   <button data-tool="erase" aria-pressed="false">Erase</button></div>
+
+  <h2>Rates</h2>
+  <label class="sl">Speed (ticks/frame)<input type="range" id="speed" min="1" max="8" value="1"><output></output></label>
+  <label class="sl">Copy errors (per bit)<input type="range" id="mu" min="0" max="0.02" step="0.0005" value="0.002"><output></output></label>
+  <label class="sl">Contagion<input type="range" id="contagion" min="0" max="0.2" step="0.005" value="0.03"><output></output></label>
+  <label class="sl">Fusion (equality)<input type="range" id="fusion" min="0" max="1" step="0.05" value="0.2"><output></output></label>
+  <label class="sl">Light regrowth<input type="range" id="regrow" min="0.005" max="0.2" step="0.005" value="0.02"><output></output></label>
+  <label class="sl">Light use per cell<input type="range" id="cost" min="0.005" max="0.2" step="0.005" value="0.08"><output></output></label>
+  <label class="sl">Light spread<input type="range" id="spread" min="0" max="0.5" step="0.05" value="0.25"><output></output></label>
+  <label class="sl">Light per birth<input type="range" id="birth" min="0" max="1" step="0.05" value="0.2"><output></output></label>
+  <label class="sl">Chance death<input type="range" id="death" min="0" max="0.02" step="0.001" value="0.002"><output></output></label>
+  <div class="row"><label><input type="checkbox" id="floor" checked> Light (a floor)</label>
+   <label><input type="checkbox" id="foldOn" checked> Fold quiet regions</label>
+   <label><input type="checkbox" id="bodiesOn" checked> Bodies</label></div>
+  <label class="sl">Bodies forming<input type="range" id="nucleate" min="0" max="0.2" step="0.005" value="0.03"><output></output></label>
+  <label class="sl">Body upkeep<input type="range" id="bodyCost" min="0" max="0.02" step="0.001" value="0.004"><output></output></label>
+  <div class="row"><label><input type="checkbox" id="showLight"> Show light</label>
+   <label><input type="checkbox" id="showFolds"> Show folds</label><label><input type="checkbox" id="showForms" checked> Name forms</label></div>
+
+  <h2>Over time</h2>
+  <div class="spark" id="spark"></div>
+
+  <h2>Inspector</h2>
+  <div class="card insp" id="insp"><p>Click a cell (Inspect tool).</p></div>
+
+  <h2>Commonest codes</h2>
+  <div class="card list" id="codes"></div>
+
+  <h2>Bodies (the second layer)</h2>
+  <div class="card list" id="bodies"></div>
+
+  <h2>Named forms (lifted)</h2>
+  <div class="card list" id="forms"></div>
+
+  <h2>Chronicle</h2>
+  <div class="card log" id="log"></div>
+ </div>
+</div>
+<script>
+// ---------------- parameters and state
+const W = 256, H = 256, N = W * H;
+const P = {speed:1, mu:0.002, contagion:0.03, fusion:0.2, regrow:0.02, cost:0.08, birth:0.2, death:0.002, spread:0.25, floor:true, foldOn:true,
+  showLight:false, showFolds:false, showForms:true,
+  bodiesOn:true, nucleate:0.03, bodyCost:0.004, bmu:0.01};
+
+// a body's code (32 bits): bits 0-3 the size at which it divides (8 to 128 cells); bit 4 whether it engulfs;
+// bits 5-7 how large a thing it engulfs, relative to itself; bit 8 whether it fuses with its kind; bits 9-11 how much
+// of its light it pools among its cells; bits 12-19 a tag (its colour)
+const BD = c => 8 + 8 * (c & 15), BE = c => (c >>> 4) & 1, BR = c => .1 + .1 * ((c >>> 5) & 7), BF = c => (c >>> 8) & 1,
+  BS = c => ((c >>> 9) & 7) / 7, BT = c => (c >>> 12) & 255;
+function bodyText(c) {
+  return `divides at ${BD(c)} cells; ${BE(c) ? 'engulfs things up to ' + Math.round(BR(c) * 100) + '% of its size' : 'does not engulf'}; ` +
+    `${BF(c) ? 'fuses with its kind' : 'does not fuse'}; pools ${Math.round(BS(c) * 100)}% of its light`;
+}
+const bodyCss = (c, a = 1) => `hsla(${BT(c) / 256 * 360},80%,72%,${a})`;
+let alive = new Uint8Array(N), nalive = new Uint8Array(N);
+let gen = new Uint32Array(N), ngen = new Uint32Array(N);
+const light = new Float32Array(N), lightTmp = new Float32Array(N);
+let changed = new Uint8Array(N), nchanged = new Uint8Array(N);
+const folded = new Uint8Array(N);
+// bodies: a second layer. A body is a lifted form that has become a unit, with its own code (its "nucleus").
+let body = new Int32Array(N), nbody = new Int32Array(N);
+const bodies = new Map();       // id -> {code, born, parents, how, guests:[], size, gen, x0,y0,x1,y1}
+let nextBody = 1;
+const bstat = {formed: 0, divided: 0, budded: 0, engulfed: 0, fused: 0, dissolved: 0};
+let tick = 0, running = true, tool = 'inspect';
+const codes = new Map();        // genome -> {parent, how, born, count, peak, held}
+const forms = new Map();        // shape hash -> {name, size, born, sightings, simul, still, moving, named, alive}
+const series = [];
+const logEl = document.getElementById('log');
+let rng = Math.random;
+
+// genome: bits 0-8 survive on n neighbours; 9-17 birth on n; 18-21 contagion strength; 22-31 a neutral tag (colour)
+const S = g => g & 511, B = g => (g >>> 9) & 511, K = g => (g >>> 18) & 15, TAG = g => g >>> 22;
+function rule(g) {
+  let b = '', s = '';
+  for (let n = 1; n <= 8; n++) if ((B(g) >> n) & 1) b += n;
+  for (let n = 0; n <= 8; n++) if ((S(g) >> n) & 1) s += n;
+  return 'B' + b + '/S' + s + (K(g) ? ' · c' + K(g) : '');
+}
+const LIFE = (1 << 2 | 1 << 3) | ((1 << 3) << 9);   // B3/S23, the classic rule, as one code among many
+const randTag = () => Math.floor(rng() * 1024) << 22;
+function randomGenome() { return (Math.floor(rng() * 2 ** 22) & ~(1 << 9)) | randTag(); }
+function reg(g, parent, how) {
+  if (!codes.has(g)) codes.set(g, {parent, how, born: tick, count: 0, peak: 0, held: false, ended: false});
+}
+function log(text) {
+  const d = document.createElement('div'); d.innerHTML = `<span class="t">${tick}</span>${text}`;
+  logEl.prepend(d); while (logEl.children.length > 120) logEl.lastChild.remove();
+}
+
+// colours: hue from the tag
+const TAGRGB = new Uint8Array(1024 * 3);
+for (let t = 0; t < 1024; t++) {
+  const h = t / 1024 * 360, s = .62, l = .58, k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+  const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+  TAGRGB[t * 3] = f(0) * 255; TAGRGB[t * 3 + 1] = f(8) * 255; TAGRGB[t * 3 + 2] = f(4) * 255;
+}
+const tagCss = g => { const t = TAG(g) * 3; return `rgb(${TAGRGB[t]},${TAGRGB[t + 1]},${TAGRGB[t + 2]})`; };
+
+// ---------------- seeding
+function reset(mode) {
+  alive.fill(0); gen.fill(0); light.fill(1); changed.fill(1); folded.fill(0); body.fill(0); nbody.fill(0);
+  bodies.clear(); nextBody = 1; for (const k in bstat) bstat[k] = 0;
+  codes.clear(); forms.clear(); series.length = 0; tick = 0; logEl.innerHTML = '';
+  if (mode !== 'blank') {
+    const r0 = 70;
+    const kinds = mode === 'life' ? [LIFE] : null;
+    const pool = [];
+    for (let k = 0; k < 24; k++) {
+      let g;
+      if (mode === 'life' || (mode === 'soup' && k < 8)) g = (LIFE & 0x3FFFFF) | randTag();
+      else g = randomGenome();
+      pool.push(g); reg(g, null, 'chance');
+    }
+    for (let y = -r0; y < r0; y++) for (let x = -r0; x < r0; x++) {
+      if (x * x + y * y > r0 * r0 || rng() > .32) continue;
+      const i = ((y + H / 2) % H) * W + ((x + W / 2) % W);
+      alive[i] = 1;
+      // patches: nearby cells share a code, so codes start as small populations
+      const k = (Math.floor((x + r0) / 12) * 7 + Math.floor((y + r0) / 12) * 3) % pool.length;
+      gen[i] = pool[k];
+    }
+  }
+  log(mode === 'blank' ? 'A blank world. Paint some cells.' : 'A new world: 24 codes in patches. ' +
+    (mode === 'soup' ? 'Eight of them carry the classic rule B3/S23; the rest are random.' : mode === 'life' ? 'All carry B3/S23, with different tags.' : 'All are random rules.'));
+}
+
+// ---------------- one tick
+const cand = new Uint32Array(8), candI = new Int32Array(8);
+let births = 0, deaths = 0, foldedCount = 0, writes = 0;
+function step() {
+  tick++;
+  const fl = P.floor, cost = P.cost, rg = P.regrow, mu = P.mu, fu = P.fusion, fo = P.foldOn;
+  if (fl) {
+    // light spreads between neighbouring cells, so a crowd draws down the light around it and starves inside
+    const df = P.spread;
+    if (df > 0) {
+      for (let y = 0; y < H; y++) { const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
+        for (let x = 0; x < W; x++) { const i = y0 + x;
+          lightTmp[i] = (1 - df) * light[i] + df * .25 * (light[y0 + (x - 1 + W) % W] + light[y0 + (x + 1) % W] + light[ym + x] + light[yp + x]); } }
+      light.set(lightTmp);
+    }
+    for (let i = 0; i < N; i++) { light[i] += rg * (1 - light[i]); if (alive[i]) { light[i] -= cost; if (light[i] < 0) light[i] = -1e-6; } }
+  }
+  nchanged.fill(0); births = deaths = foldedCount = writes = 0;
+  const margin = 2 * cost + rg;
+  for (let y = 0; y < H; y++) {
+    const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
+    for (let x = 0; x < W; x++) {
+      const xm = (x - 1 + W) % W, xp = (x + 1) % W, i = y0 + x;
+      // fold: a cell whose neighbourhood did not change, with light to spare, keeps its state uncomputed
+      if (fo && !(alive[i] && P.death > 0) && !(changed[ym + xm] | changed[ym + x] | changed[ym + xp] | changed[y0 + xm] | changed[i] | changed[y0 + xp] |
+          changed[yp + xm] | changed[yp + x] | changed[yp + xp]) && (!fl || light[i] >= margin)) {
+        nalive[i] = alive[i]; ngen[i] = gen[i]; nbody[i] = body[i]; folded[i] = 1; if (alive[i]) foldedCount++; continue;
+      }
+      folded[i] = 0;
+      const nb = [ym + xm, ym + x, ym + xp, y0 + xm, y0 + xp, yp + xm, yp + x, yp + xp];
+      let n = 0;
+      for (let k = 0; k < 8; k++) n += alive[nb[k]];
+      if (alive[i]) {
+        const ok = ((S(gen[i]) >> n) & 1) && (!fl || light[i] >= 0) && !(P.death > 0 && rng() < P.death);
+        nalive[i] = ok ? 1 : 0; ngen[i] = ok ? gen[i] : 0; nbody[i] = ok ? body[i] : 0;
+        if (!ok) { nchanged[i] = 1; deaths++; }
+      } else if (n > 0 && (!fl || light[i] >= cost)) {
+        let c = 0;
+        // a would-be parent must have the light to pay for a child: giving birth costs (version 2 of the toy)
+        for (let k = 0; k < 8; k++) { const j = nb[k]; if (alive[j] && ((B(gen[j]) >> n) & 1) && (!fl || light[j] >= P.birth)) { cand[c] = gen[j]; candI[c++] = j; } }
+        if (c) {
+          let g, how = 'copy', parent;
+          let mixed = false;
+          for (let k = 1; k < c; k++) if (cand[k] !== cand[0]) { mixed = true; break; }
+          if (mixed && rng() < fu) {
+            // equality: two parents' codes are mixed bit by bit
+            const a = cand[Math.floor(rng() * c)]; let b2 = a, tries = 0;
+            while (b2 === a && tries++ < 8) b2 = cand[Math.floor(rng() * c)];
+            const m = Math.floor(rng() * 2 ** 32) >>> 0;
+            g = ((a & m) | (b2 & ~m)) >>> 0; parent = a; how = 'fusion';
+          } else {
+            // dominance: the code most of the would-be parents carry
+            let best = cand[0], bc = 0;
+            for (let k = 0; k < c; k++) { let m2 = 0; for (let q = 0; q < c; q++) if (cand[q] === cand[k]) m2++; if (m2 > bc || (m2 === bc && rng() < .5)) { bc = m2; best = cand[k]; } }
+            g = best; parent = best;
+          }
+          let pj = -1; for (let k = 0; k < c; k++) if (cand[k] === parent) { pj = candI[k]; break; }
+          if (fl && pj >= 0) light[pj] -= P.birth;
+          nbody[i] = pj >= 0 ? body[pj] : 0;         // a cell born of a body's cell is born into that body
+          if (mu > 0) for (let bit = 0; bit < 32; bit++) if (rng() < mu) { g = (g ^ (1 << bit)) >>> 0; if (how === 'copy') how = 'mutant'; }
+          if (g !== parent || how === 'fusion') reg(g, parent, how);
+          nalive[i] = 1; ngen[i] = g; nchanged[i] = 1; births++;
+        } else { nalive[i] = 0; ngen[i] = 0; nbody[i] = 0; }
+      } else { nalive[i] = 0; ngen[i] = 0; nbody[i] = 0; }
+    }
+  }
+  // contagion: a code writes part of itself into a living neighbour's code
+  if (P.contagion > 0) for (let i = 0; i < N; i++) {
+    if (!nalive[i]) continue; const k = K(ngen[i]); if (!k || rng() >= k / 15 * P.contagion) continue;
+    const x = i % W, y = (i / W) | 0, dx = Math.floor(rng() * 3) - 1, dy = Math.floor(rng() * 3) - 1;
+    if (!dx && !dy) continue;
+    const j = ((y + dy + H) % H) * W + ((x + dx + W) % W);
+    if (!nalive[j] || ngen[j] === ngen[i]) continue;
+    const len = 4 + Math.floor(rng() * 9), at = Math.floor(rng() * (32 - len));
+    const mask = (((1 << len) - 1) << at) >>> 0;
+    const g = ((ngen[j] & ~mask) | (ngen[i] & mask)) >>> 0;
+    if (g === ngen[j]) continue;
+    reg(g, ngen[j], 'contagion'); ngen[j] = g; nchanged[j] = 1; writes++;
+    if (P.floor) light[i] -= P.cost;
+  }
+  [alive, nalive] = [nalive, alive]; [gen, ngen] = [ngen, gen]; [changed, nchanged] = [nchanged, changed];
+  [body, nbody] = [nbody, body];
+  if (P.bodiesOn && bodies.size) poolLight();
+  if (tick % 8 === 0) census();
+}
+
+// ---------------- bodies (the second layer)
+const bsum = new Map();
+function poolLight() {
+  // a body is a unit of metabolism: it pools part of its cells' light, so its inside is fed by its edge
+  bsum.clear();
+  for (let i = 0; i < N; i++) { const b = body[i]; if (!b || !alive[i]) continue; let s = bsum.get(b); if (!s) bsum.set(b, s = [0, 0]); s[0] += light[i]; s[1]++; }
+  for (let i = 0; i < N; i++) {
+    const b = body[i]; if (!b) continue;
+    if (!alive[i]) { body[i] = 0; continue; }
+    const bo = bodies.get(b); if (!bo) { body[i] = 0; continue; }
+    const s = bsum.get(b), sh = BS(bo.code);
+    light[i] = (1 - sh) * light[i] + sh * s[0] / s[1] - (P.floor ? P.bodyCost : 0);
+  }
+}
+function bmut(c) { for (let b = 0; b < 32; b++) if (rng() < P.bmu) c = (c ^ (1 << b)) >>> 0; return c >>> 0; }
+const wrapd = (d, L) => ((d % L) + L + L / 2) % L - L / 2;
+function dominant(cells) { const m = new Map(); let best = 0, bc = 0; for (const i of cells) { const k = (m.get(gen[i]) || 0) + 1; m.set(gen[i], k); if (k > bc) { bc = k; best = gen[i]; } } return [best, bc / cells.length]; }
+function freeComponent(i0, cap, mark) {
+  const out = [i0]; mark[i0] = 1;
+  for (let h = 0; h < out.length; h++) {
+    const i = out[h], x = i % W, y = (i / W) | 0;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+      if (!dx && !dy) continue; const j = ((y + dy + H) % H) * W + ((x + dx + W) % W);
+      if (alive[j] && !body[j] && !mark[j]) { mark[j] = 1; out.push(j); if (out.length > cap) return null; }
+    }
+  }
+  return out;
+}
+const bmark = new Uint8Array(N);
+function newBody(code, cells, parents, how) {
+  const id = nextBody++;
+  bodies.set(id, {code, born: tick, parents, how, guests: [], size: cells.length, gen: 0});
+  for (const i of cells) body[i] = id;
+  return id;
+}
+function bodyCensus() {
+  if (!P.bodiesOn) return;
+  // members, by body
+  const members = new Map();
+  for (let i = 0; i < N; i++) { const b = body[i]; if (!b) continue; if (!alive[i] || !bodies.has(b)) { body[i] = 0; continue; } (members.get(b) || members.set(b, []).get(b)).push(i); }
+  for (const [id, bo] of bodies) {
+    const m = members.get(id);
+    if (!m || m.length < 2) { if (m) for (const i of m) body[i] = 0; bodies.delete(id); members.delete(id); bstat.dissolved++; continue; }
+    bo.size = m.length;
+  }
+  // integrity: a body is what holds together. Parts that drift away (gaps of more than one cell) bud off as
+  // daughter bodies if they are large enough, or are freed
+  for (const [id, m] of [...members]) {
+    const bo = bodies.get(id); if (!bo || m.length < 2) continue;
+    const set = new Set(m), seenB = new Set(), parts = [];
+    for (const s0 of m) {
+      if (seenB.has(s0)) continue;
+      const part = [s0]; seenB.add(s0);
+      for (let h = 0; h < part.length; h++) {
+        const i = part[h], x = i % W, y = (i / W) | 0;
+        for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+          const j = ((y + dy + H) % H) * W + ((x + dx + W) % W);
+          if (set.has(j) && !seenB.has(j)) { seenB.add(j); part.push(j); }
+        }
+      }
+      parts.push(part);
+    }
+    if (parts.length < 2) continue;
+    parts.sort((a, b) => b.length - a.length);
+    members.set(id, parts[0]); bo.size = parts[0].length;
+    for (const part of parts.slice(1)) {
+      if (part.length >= 6) {
+        const cid = newBody(bmut(bo.code), part, [id], 'budding');
+        const child = bodies.get(cid); child.guests = bo.guests.slice(); child.gen = bo.gen + 1;
+        members.set(cid, part); bstat.budded = (bstat.budded || 0) + 1;
+      } else for (const i of part) body[i] = 0;
+    }
+  }
+  // division: a body that reaches its size splits along its longer axis; the half that leaves gets a copied code
+  for (const [id, m] of [...members]) {
+    const bo = bodies.get(id); if (!bo || m.length < BD(bo.code)) continue;
+    const ax = m[0] % W, ay = (m[0] / W) | 0;
+    const rel = m.map(i => [wrapd(i % W - ax, W), wrapd(((i / W) | 0) - ay, H), i]);
+    const mean = k => rel.reduce((s, r) => s + r[k], 0) / rel.length, mx = mean(0), my = mean(1);
+    const vx = rel.reduce((s, r) => s + (r[0] - mx) ** 2, 0), vy = rel.reduce((s, r) => s + (r[1] - my) ** 2, 0);
+    const k = vx >= vy ? 0 : 1; rel.sort((a, b) => a[k] - b[k]);
+    const half = rel.slice(rel.length >> 1).map(r => r[2]);
+    const cid = newBody(bmut(bo.code), half, [id], 'division');
+    const child = bodies.get(cid); child.guests = bo.guests.slice(); child.gen = bo.gen + 1;
+    members.set(id, rel.slice(0, rel.length >> 1).map(r => r[2])); members.set(cid, half);
+    bo.size = members.get(id).length; child.size = half.length;
+    bstat.divided++;
+    if (bstat.divided <= 3 || bstat.divided % 100 === 0) log(`Body #${id} divides (division ${bstat.divided}): its daughter #${cid} copies its code, with errors.`);
+  }
+  // contacts
+  const touch = new Map(), seeds = new Map();
+  for (const [id, m] of members) {
+    if (!bodies.has(id)) continue;
+    const t = new Set(), sd = [];
+    for (const i of m) {
+      const x = i % W, y = (i / W) | 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const j = ((y + dy + H) % H) * W + ((x + dx + W) % W); if (!alive[j]) continue;
+        const c = body[j]; if (c && c !== id) t.add(c); else if (!c && sd.length < 12) sd.push(j);
+      }
+    }
+    touch.set(id, t); seeds.set(id, sd);
+  }
+  const changedThis = new Set();
+  // engulfing (dominance): a body takes in a smaller body or a free form it touches; what it takes keeps its cells' codes
+  const order = [...bodies.entries()].sort((a, b) => b[1].size - a[1].size);
+  for (const [id, bo] of order) {
+    if (!bodies.has(id) || changedThis.has(id) || !BE(bo.code)) continue;
+    const limit = BR(bo.code) * bo.size;
+    let done = false;
+    for (const c of touch.get(id) || []) {
+      const co = bodies.get(c); if (!co || changedThis.has(c) || co.size > limit) continue;
+      for (const i of members.get(c) || []) body[i] = id;
+      members.set(id, (members.get(id) || []).concat(members.get(c) || [])); members.delete(c);
+      bo.guests.push({kind: 'body', code: co.code, from: c, at: tick, cell: dominant(members.get(id))[0]});
+      bodies.delete(c); bo.size = members.get(id).length; changedThis.add(id); bstat.engulfed++; done = true;
+      if (bstat.engulfed <= 4 || bstat.engulfed % 50 === 0) log(`Body #${id} engulfs body #${c} (engulfment ${bstat.engulfed}); #${c}'s cells live on inside it with their own codes.`);
+      break;
+    }
+    if (done) continue;
+    bmark.fill(0);
+    for (const s0 of seeds.get(id) || []) {
+      if (body[s0] || bmark[s0]) continue;
+      const comp = freeComponent(s0, Math.max(2, Math.floor(limit)), bmark);
+      if (!comp || comp.length < 2) continue;
+      const [dc] = dominant(comp);
+      for (const i of comp) body[i] = id;
+      members.set(id, (members.get(id) || []).concat(comp));
+      bo.guests.push({kind: 'free', code: null, at: tick, cell: dc}); bo.size = members.get(id).length;
+      changedThis.add(id); bstat.engulfed++;
+      if (bstat.engulfed <= 4 || bstat.engulfed % 50 === 0) log(`Body #${id} engulfs a free form of ${comp.length} cells (engulfment ${bstat.engulfed}).`);
+      break;
+    }
+    if (bo.guests.length > 8) bo.guests.splice(0, bo.guests.length - 8);
+  }
+  // fusion (equality): two bodies of a kind that touch, and both fuse, merge into one with a mixed code
+  for (const [id, t] of touch) {
+    const a = bodies.get(id); if (!a || changedThis.has(id) || !BF(a.code)) continue;
+    for (const c of t) {
+      const b2 = bodies.get(c); if (!b2 || changedThis.has(c) || !BF(b2.code)) continue;
+      const dt = Math.abs(BT(a.code) - BT(b2.code)); if (Math.min(dt, 256 - dt) > 24) continue;
+      const mask = Math.floor(rng() * 2 ** 32) >>> 0, code = ((a.code & mask) | (b2.code & ~mask)) >>> 0;
+      const cells = (members.get(id) || []).concat(members.get(c) || []);
+      const nid = newBody(bmut(code), cells, [id, c], 'fusion');
+      const no = bodies.get(nid); no.guests = a.guests.concat(b2.guests).slice(-8); no.gen = Math.max(a.gen, b2.gen) + 1;
+      bodies.delete(id); bodies.delete(c); members.delete(id); members.delete(c); members.set(nid, cells);
+      changedThis.add(nid); bstat.fused++;
+      if (bstat.fused <= 4 || bstat.fused % 50 === 0) log(`Bodies #${id} and #${c} fuse into #${nid} (fusion ${bstat.fused}): two parents, a mixed code.`);
+      break;
+    }
+  }
+  // nucleation: now and then a free form whose cells mostly share a code becomes a body
+  bmark.fill(0);
+  for (let k = 0; k < 3000; k++) {
+    const i0 = Math.floor(rng() * N); if (!alive[i0] || body[i0] || bmark[i0]) continue;
+    const comp = freeComponent(i0, 200, bmark); if (!comp || comp.length < 6) continue;
+    // kinship by the inherited tag: the cells mostly descend from one line, even if their rules have drifted
+    const tg = new Map(); let ts = 0; for (const i of comp) { const t = TAG(gen[i]); const v = (tg.get(t) || 0) + 1; tg.set(t, v); if (v > ts) ts = v; }
+    const [dc] = dominant(comp); if (ts / comp.length < .6 || rng() >= P.nucleate) continue;
+    const code = (Math.imul(dc ^ 0x9e3779b9, 2654435761) ^ (dc >>> 13)) >>> 0;   // read off its cells' code
+    const id = newBody(code, comp, [], 'nucleation');
+    members.set(id, comp);
+    bstat.formed++;
+    if (bstat.formed <= 4 || bstat.formed % 50 === 0) log(`A free form of ${comp.length} cells becomes body #${id} (body ${bstat.formed} to form): ${bodyText(code)}.`);
+  }
+  // extents, for drawing
+  for (const [id, bo] of bodies) {
+    const m = members.get(id); if (!m || !m.length) { bodies.delete(id); continue; }
+    const ax = m[0] % W, ay = (m[0] / W) | 0; let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (const i of m) { const x = ax + wrapd(i % W - ax, W), y = ay + wrapd(((i / W) | 0) - ay, H); if (x < x0) x0 = x; if (y < y0) y0 = y; if (x > x1) x1 = x; if (y > y1) y1 = y; }
+    Object.assign(bo, {x0, y0, x1, y1, size: m.length});
+  }
+}
+
+// ---------------- census: codes, forms (lift), chronicle
+const SYL = ['ka','lo','mi','ren','sa','tu','vel','or','is','an','dra','phe','ny','qua','zo','li','mar','eth','ul','bri'];
+function nameFor(h) { let s = '', x = h >>> 0; for (let k = 0; k < 3; k++) { s += SYL[x % SYL.length]; x = Math.floor(x / SYL.length) ^ (x >>> 7); } return s[0].toUpperCase() + s.slice(1); }
+let comps = [], prevOrigins = new Map();
+const seen = new Uint8Array(N);
+function census() {
+  for (const c of codes.values()) c.count = 0;
+  let pop = 0;
+  for (let i = 0; i < N; i++) if (alive[i]) { pop++; const c = codes.get(gen[i]); if (c) c.count++; else reg(gen[i], null, 'chance'); }
+  let distinct = 0;
+  for (const [g, c] of codes) {
+    if (c.count > 0) distinct++;
+    if (c.count > c.peak) c.peak = c.count;
+    if (!c.held && c.count >= 150) { c.held = true; log(`A code takes hold: <code>${rule(g)}</code>, ${c.count} cells (${originText(c)}).`); }
+    if (c.held && !c.ended && c.count === 0) { c.ended = true; log(`The code <code>${rule(g)}</code> dies out (at most ${c.peak} cells).`); }
+    if (c.count === 0 && !c.held && tick - c.born > 40) codes.delete(g);
+  }
+  // lift: connected patterns (8-neighbour), keyed by shape up to translation
+  seen.fill(0); comps = [];
+  const now = new Map(), origins = new Map();
+  const qx = [], qy = [];
+  for (let i0 = 0; i0 < N; i0++) {
+    if (!alive[i0] || seen[i0]) continue;
+    const cells = []; qx.length = qy.length = 0;
+    qx.push(i0 % W); qy.push((i0 / W) | 0); seen[i0] = 1;
+    let minx = 1e9, miny = 1e9, maxx = -1e9, maxy = -1e9, big = false;
+    for (let h = 0; h < qx.length; h++) {
+      const x = qx[h], y = qy[h]; cells.push(x, y);
+      if (x < minx) minx = x; if (y < miny) miny = y; if (x > maxx) maxx = x; if (y > maxy) maxy = y;
+      if (cells.length > 800) { big = true; }
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        const X = x + dx, Y = y + dy, j = ((Y + H) % H) * W + ((X + W) % W);
+        if (alive[j] && !seen[j]) { seen[j] = 1; qx.push(X); qy.push(Y); }
+      }
+    }
+    const size = cells.length / 2;
+    if (size < 3 || big) continue;
+    const pts = []; for (let k = 0; k < cells.length; k += 2) pts.push((cells[k] - minx) * 1024 + (cells[k + 1] - miny));
+    pts.sort((a, b) => a - b);
+    let h = 2166136261; for (const p of pts) { h ^= p; h = Math.imul(h, 16777619) >>> 0; }
+    comps.push({h, size, x: minx, y: miny, w: maxx - minx + 1, hh: maxy - miny + 1});
+    now.set(h, (now.get(h) || 0) + 1);
+    const o = ((minx % W + W) % W) * 4096 + ((miny % H + H) % H); (origins.get(h) || origins.set(h, new Set()).get(h)).add(o);
+  }
+  for (const [h, k] of now) {
+    let f = forms.get(h);
+    if (!f) { if (forms.size > 4000) continue; f = {name: nameFor(h), size: 0, born: tick, sightings: 0, simul: 0, still: 0, moving: 0, named: false, alive: 0}; forms.set(h, f); }
+    f.sightings++; f.simul = Math.max(f.simul, k);
+    const prev = prevOrigins.get(h);
+    if (prev) for (const o of origins.get(h)) { if (prev.has(o)) f.still++; else f.moving++; }
+    if (!f.named && (f.simul >= 3 || f.sightings >= 12)) {
+      f.named = true;
+      const c0 = comps.find(c => c.h === h); f.size = c0 ? c0.size : 0;
+      log(`A form is lifted and named: <b>${f.name}</b>, ${f.size} cells, ${k} at once (${f.moving > f.still ? 'it travels' : 'it stays'}).`);
+    }
+  }
+  for (const f of forms.values()) f.alive = 0;
+  for (const [h, k] of now) forms.get(h) && (forms.get(h).alive = k);
+  prevOrigins = origins;
+  bodyCensus();
+  const namedAlive = [...forms.values()].filter(f => f.named && f.alive).length;
+  let inBodies = 0; for (const bo of bodies.values()) inBodies += bo.size;
+  series.push({t: tick, pop, distinct, forms: namedAlive, folded: pop ? Math.round(100 * foldedCount / pop) : 0,
+    bodies: bodies.size, inBodies: pop ? Math.round(100 * inBodies / pop) : 0});
+  if (series.length > 400) series.shift();
+  if (series.length > 2) { const a = series[series.length - 2].pop; if (a > 400 && pop < a * .5) log(`A crash: the population falls from ${a} to ${pop}.`); }
+  if (pop === 0 && series.length > 1 && series[series.length - 2].pop > 0) log('Everything has died.');
+  panels(pop, distinct);
+}
+function originText(c) {
+  return c.how === 'chance' ? 'seeded' : c.how === 'mutant' ? 'a mutant of ' + rule(c.parent) :
+    c.how === 'fusion' ? 'a fusion with ' + rule(c.parent) : c.how === 'contagion' ? 'a contagion of ' + rule(c.parent) : 'a copy';
+}
+
+// ---------------- panels
+const SP = [['pop', 'Cells'], ['distinct', 'Codes alive'], ['forms', 'Named forms alive'], ['bodies', 'Bodies alive'],
+  ['inBodies', 'Cells in bodies (%)'], ['folded', 'Folded (%)']];
+const spark = document.getElementById('spark');
+spark.innerHTML = SP.map(([k, t]) => `<div>${t} <b id="v_${k}"></b><canvas id="c_${k}" width="300" height="68"></canvas></div>`).join('');
+function panels(pop, distinct) {
+  for (const [k] of SP) {
+    const cv = document.getElementById('c_' + k), cx = cv.getContext('2d'), v = series.map(s => s[k]);
+    document.getElementById('v_' + k).textContent = v.length ? v[v.length - 1] : '';
+    cx.clearRect(0, 0, cv.width, cv.height);
+    const mx = Math.max(1, ...v);
+    cx.strokeStyle = getComputedStyle(document.body).getPropertyValue('--accent'); cx.lineWidth = 3; cx.beginPath();
+    v.forEach((y, i) => { const X = i / Math.max(1, v.length - 1) * cv.width, Y = cv.height - 4 - y / mx * (cv.height - 8); i ? cx.lineTo(X, Y) : cx.moveTo(X, Y); });
+    cx.stroke();
+  }
+  const top = [...codes.entries()].filter(([, c]) => c.count > 0).sort((a, b) => b[1].count - a[1].count).slice(0, 8);
+  document.getElementById('codes').innerHTML = top.length ? top.map(([g, c]) =>
+    `<div><span class="sw" style="background:${tagCss(g)}"></span><span><code>${rule(g)}</code><br><span style="color:var(--muted)">${originText(c)}, tick ${c.born}</span></span><b>${c.count}</b></div>`).join('') : '<p>No living codes.</p>';
+  const bl = [...bodies.entries()].sort((a, b) => b[1].size - a[1].size).slice(0, 8);
+  document.getElementById('bodies').innerHTML = (bl.length ? bl.map(([id, bo]) =>
+    `<div><span class="sw" style="background:${bodyCss(bo.code)}"></span><span><b>#${id}</b> · ${bo.how}${bo.parents.length ? ' of #' + bo.parents.join(' and #') : ''} · generation ${bo.gen}${bo.guests.length ? ' · ' + bo.guests.length + ' engulfed inside' : ''}<br><span style="color:var(--muted)">${bodyText(bo.code)}</span></span><b>${bo.size}</b></div>`).join('') : '<p>No bodies yet.</p>') +
+    `<p>Formed ${bstat.formed} · divided ${bstat.divided} · budded ${bstat.budded} · engulfed ${bstat.engulfed} · fused ${bstat.fused} · dissolved ${bstat.dissolved}</p>`;
+  const fs = [...forms.values()].filter(f => f.named && f.alive).sort((a, b) => b.alive - a.alive).slice(0, 10);
+  document.getElementById('forms').innerHTML = fs.length ? fs.map(f =>
+    `<div><span></span><span><b>${f.name}</b> · ${f.size} cells · ${f.moving > f.still ? 'travels' : 'stays'}</span><b>${f.alive}</b></div>`).join('') : '<p>None yet.</p>';
+}
+
+// ---------------- view: a torus seen from above, tiled so it has no edge
+const view = document.getElementById('view'), ctx = view.getContext('2d');
+const off = document.createElement('canvas'); off.width = W; off.height = H;
+const octx = off.getContext('2d'), img = octx.createImageData(W, H);
+let cam = {x: W / 2, y: H / 2, s: 3};
+function fit() { const r = view.getBoundingClientRect(); cam = {x: W / 2, y: H / 2, s: Math.max(1, Math.min(r.width, r.height) / W)}; }
+function resize() { const r = view.getBoundingClientRect(), d = devicePixelRatio || 1; view.width = r.width * d; view.height = r.height * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+function render() {
+  const d = img.data;
+  for (let i = 0; i < N; i++) {
+    const p = i * 4;
+    if (alive[i]) {
+      const t = TAG(gen[i]) * 3; let f = (P.showFolds && folded[i]) ? .45 : 1;
+      d[p] = TAGRGB[t] * f; d[p + 1] = TAGRGB[t + 1] * f; d[p + 2] = TAGRGB[t + 2] * f;
+    } else if (P.showLight) { const L = Math.max(0, light[i]); d[p] = 8; d[p + 1] = 14 + 30 * L; d[p + 2] = 20 + 70 * L; }
+    else if (P.showFolds && folded[i]) { d[p] = 14; d[p + 1] = 14; d[p + 2] = 16; }
+    else { d[p] = 5; d[p + 1] = 5; d[p + 2] = 5; }
+    d[p + 3] = 255;
+  }
+  octx.putImageData(img, 0, 0);
+  const r = view.getBoundingClientRect(), s = cam.s;
+  ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, r.width, r.height);
+  ctx.imageSmoothingEnabled = false;
+  const ox = r.width / 2 - cam.x * s, oy = r.height / 2 - cam.y * s;
+  const tx0 = Math.floor(-ox / (W * s)), tx1 = Math.floor((r.width - ox) / (W * s)), ty0 = Math.floor(-oy / (H * s)), ty1 = Math.floor((r.height - oy) / (H * s));
+  for (let ty = ty0; ty <= ty1; ty++) for (let tx = tx0; tx <= tx1; tx++) ctx.drawImage(off, ox + tx * W * s, oy + ty * H * s, W * s, H * s);
+  // zoomed in: the subsystems open: grid and each cell's code
+  if (s >= 14) {
+    ctx.strokeStyle = 'rgba(255,255,255,.06)'; ctx.lineWidth = 1; ctx.beginPath();
+    const x0 = Math.floor((-ox) / s), x1 = Math.ceil((r.width - ox) / s), y0 = Math.floor((-oy) / s), y1 = Math.ceil((r.height - oy) / s);
+    for (let x = x0; x <= x1; x++) { ctx.moveTo(ox + x * s, 0); ctx.lineTo(ox + x * s, r.height); }
+    for (let y = y0; y <= y1; y++) { ctx.moveTo(0, oy + y * s); ctx.lineTo(r.width, oy + y * s); }
+    ctx.stroke();
+    if (s >= 34) {
+      ctx.fillStyle = '#0b0b0b'; ctx.font = `${Math.min(13, s / 4)}px ui-monospace,Consolas,monospace`; ctx.textAlign = 'center';
+      for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+        const i = ((y % H + H) % H) * W + ((x % W + W) % W); if (!alive[i]) continue;
+        const [b, sv] = rule(gen[i]).split(' ')[0].split('/');
+        ctx.fillText(b, ox + (x + .5) * s, oy + (y + .42) * s); ctx.fillText(sv, ox + (x + .5) * s, oy + (y + .78) * s);
+      }
+    }
+  }
+  // bodies: their membranes when zoomed in, their extents when zoomed out
+  if (P.bodiesOn && bodies.size) {
+    if (s >= 3) {
+      const x0 = Math.floor((-ox) / s), x1 = Math.ceil((r.width - ox) / s), y0 = Math.floor((-oy) / s), y1 = Math.ceil((r.height - oy) / s);
+      ctx.lineWidth = Math.max(1, s / 8);
+      for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+        const i = idx(x, y), b = body[i]; if (!b || !alive[i]) continue;
+        const bo = bodies.get(b); if (!bo) continue;
+        ctx.strokeStyle = bodyCss(bo.code, .95); ctx.beginPath();
+        const X = ox + x * s, Y = oy + y * s;
+        if (body[idx(x, y - 1)] !== b) { ctx.moveTo(X, Y); ctx.lineTo(X + s, Y); }
+        if (body[idx(x, y + 1)] !== b) { ctx.moveTo(X, Y + s); ctx.lineTo(X + s, Y + s); }
+        if (body[idx(x - 1, y)] !== b) { ctx.moveTo(X, Y); ctx.lineTo(X, Y + s); }
+        if (body[idx(x + 1, y)] !== b) { ctx.moveTo(X + s, Y); ctx.lineTo(X + s, Y + s); }
+        ctx.stroke();
+      }
+    }
+    if (s < 6) {
+      ctx.font = '11px system-ui'; ctx.textAlign = 'left';
+      for (const [id, bo] of bodies) {
+        if (bo.x0 === undefined) continue;
+        const X = ox + bo.x0 * s - 3, Y = oy + bo.y0 * s - 3, w = (bo.x1 - bo.x0 + 1) * s + 6, h = (bo.y1 - bo.y0 + 1) * s + 6;
+        ctx.strokeStyle = bodyCss(bo.code, .9); ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(X, Y, w, h, 4) : ctx.rect(X, Y, w, h); ctx.stroke();
+        if (s >= 2 && bo.size >= 12) { ctx.fillStyle = bodyCss(bo.code); ctx.fillText('#' + id, X, Y + h + 11); }
+      }
+    }
+  }
+  // zoomed out: forms are folded into named marks
+  if (P.showForms && s <= 5) {
+    ctx.font = '11px system-ui'; ctx.textAlign = 'left'; let n = 0;
+    const named = comps.filter(c => { const f = forms.get(c.h); return f && f.named; }).sort((a, b) => b.size - a.size);
+    for (const c of named) {
+      if (n++ > 70) break;
+      const f = forms.get(c.h), X = ox + c.x * s, Y = oy + c.y * s;
+      ctx.strokeStyle = 'rgba(240,239,236,.7)'; ctx.lineWidth = 1;
+      ctx.strokeRect(X - 3, Y - 3, c.w * s + 6, c.hh * s + 6);
+      if (s >= 2.5) { ctx.fillStyle = 'rgba(240,239,236,.9)'; ctx.fillText(f.name, X, Y - 6); }
+    }
+  }
+  document.getElementById('hud').textContent = `tick ${tick} · ${series.length ? series[series.length - 1].pop : 0} cells · births ${births} · deaths ${deaths} · writes ${writes} · zoom ${s.toFixed(1)}`;
+}
+
+// ---------------- interaction
+let drag = null;
+const toCell = (ex, ey) => { const r = view.getBoundingClientRect(); return [Math.floor((ex - r.left - r.width / 2) / cam.s + cam.x), Math.floor((ey - r.top - r.height / 2) / cam.s + cam.y)]; };
+const idx = (x, y) => ((y % H + H) % H) * W + ((x % W + W) % W);
+let brush = LIFE | (512 << 22);
+view.addEventListener('pointerdown', e => { view.setPointerCapture(e.pointerId); drag = {x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y, moved: false}; });
+view.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (Math.abs(dx) + Math.abs(dy) > 4) drag.moved = true;
+  if (drag.moved && tool === 'inspect') { cam.x = drag.cx - dx / cam.s; cam.y = drag.cy - dy / cam.s; }
+  else if (drag.moved) apply(e);
+});
+view.addEventListener('pointerup', e => { if (drag && !drag.moved) apply(e); drag = null; });
+function apply(e) {
+  const [x, y] = toCell(e.clientX, e.clientY), i = idx(x, y);
+  if (tool === 'paint') { alive[i] = 1; gen[i] = brush; body[i] = 0; reg(brush, null, 'chance'); changed[i] = 1; }
+  else if (tool === 'erase') { for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { const j = idx(x + dx, y + dy); alive[j] = 0; gen[j] = 0; body[j] = 0; changed[j] = 1; } }
+  else inspect(x, y);
+}
+view.addEventListener('wheel', e => {
+  e.preventDefault();
+  const [bx, by] = toCell(e.clientX, e.clientY), f = Math.exp(-e.deltaY * .0015);
+  const ns = Math.max(.5, Math.min(60, cam.s * f));
+  const r = view.getBoundingClientRect(), px = e.clientX - r.left - r.width / 2, py = e.clientY - r.top - r.height / 2;
+  cam.s = ns; cam.x = bx + .5 - px / ns; cam.y = by + .5 - py / ns;
+}, {passive: false});
+document.getElementById('zin').onclick = () => cam.s = Math.min(60, cam.s * 1.6);
+document.getElementById('zout').onclick = () => cam.s = Math.max(.5, cam.s / 1.6);
+document.getElementById('zfit').onclick = fit;
+function inspect(x, y) {
+  const i = idx(x, y), el = document.getElementById('insp');
+  if (!alive[i]) { el.innerHTML = `<div>Cell (${(x % W + W) % W}, ${(y % H + H) % H}) is empty. Light ${light[i].toFixed(2)}.</div>`; return; }
+  const g = gen[i], c = codes.get(g), chain = [];
+  let p = c && c.parent, k = 0;
+  while (p != null && k++ < 5) { const cp = codes.get(p); chain.push(`<code>${rule(p)}</code>` + (cp ? ` (${cp.how === 'chance' ? 'seeded' : cp.how})` : '')); p = cp && cp.parent; }
+  const comp = comps.find(cc => { const X = (x % W + W) % W, Y = (y % H + H) % H; return X >= cc.x && X < cc.x + cc.w && Y >= cc.y && Y < cc.y + cc.hh; });
+  const f = comp && forms.get(comp.h);
+  brush = g;
+  el.innerHTML = `<div><span class="sw" style="display:inline-block;background:${tagCss(g)}"></span> <b>Code <code>${rule(g)}</code></b></div>
+   <div>It is born where a dead cell has ${[...Array(9).keys()].filter(n => (B(g) >> n) & 1).join(', ') || 'no'} neighbours, and survives with ${[...Array(9).keys()].filter(n => (S(g) >> n) & 1).join(', ') || 'no'}.</div>
+   <div>Contagion: ${K(g) ? 'it writes itself into neighbours, strength ' + K(g) + ' of 15' : 'none'}. Tag ${TAG(g)}.</div>
+   <div>${c ? `${c.count} cells carry it; it arose at tick ${c.born} as ${originText(c)}.` : ''}</div>
+   ${chain.length ? `<div>Its ancestry: ${chain.join(' ← ')}</div>` : ''}
+   <div>${f && f.named ? `It is part of a <b>${f.name}</b>, a lifted form of ${f.size} cells.` : 'It is not part of a named form.'}</div>
+   ${(() => { const bo = bodies.get(body[i]); if (!bo) return '<div>It belongs to no body.</div>';
+     const gs = bo.guests.map(gu => gu.kind === 'body' ? `body #${gu.from} (engulfed at tick ${gu.at})` : `a free form of <code>${rule(gu.cell)}</code> (tick ${gu.at})`);
+     return `<div style="margin-top:6px"><span class="sw" style="display:inline-block;background:${bodyCss(bo.code)}"></span> <b>It belongs to body #${body[i]}</b>, ${bo.size} cells, generation ${bo.gen}, by ${bo.how}${bo.parents.length ? ' of #' + bo.parents.join(' and #') : ''}.</div>
+       <div>The body's code: ${bodyText(bo.code)}.</div>
+       ${gs.length ? `<div>Inside it, still with their own codes: ${gs.join('; ')}.</div>` : ''}`; })()}
+   <div>Light here ${light[i].toFixed(2)}. ${folded[i] ? 'Its region is folded: quiet, not computed.' : ''}</div>
+   <div style="color:var(--muted)">Paint now draws this code.</div>`;
+}
+document.querySelectorAll('[data-tool]').forEach(b => b.onclick = () => {
+  tool = b.dataset.tool; document.querySelectorAll('[data-tool]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  view.style.cursor = tool === 'inspect' ? 'grab' : 'crosshair';
+});
+document.getElementById('play').onclick = e => { running = !running; e.target.textContent = running ? 'Pause' : 'Play'; };
+document.getElementById('stepb').onclick = () => { step(); };
+document.getElementById('reset').onclick = () => { reset(document.getElementById('seedmode').value); };
+for (const id of ['speed', 'mu', 'contagion', 'fusion', 'regrow', 'cost', 'spread', 'birth', 'death', 'nucleate', 'bodyCost']) {
+  const el = document.getElementById(id), out = el.nextElementSibling;
+  const upd = () => { P[id] = +el.value; out.textContent = el.value; }; el.oninput = upd; upd();
+}
+for (const id of ['floor', 'foldOn', 'showLight', 'showFolds', 'showForms', 'bodiesOn']) {
+  const el = document.getElementById(id); el.onchange = () => { P[id] = el.checked; if (id === 'foldOn' || id === 'floor') changed.fill(1); };
+}
+addEventListener('resize', resize);
+resize(); fit(); reset('soup');
+function frame() { if (running) for (let k = 0; k < P.speed; k++) step(); render(); requestAnimationFrame(frame); }
+frame();
+</script></body></html>
