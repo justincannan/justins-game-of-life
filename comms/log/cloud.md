@@ -35,3 +35,28 @@ Justin. Newest at the bottom.
 - 2026-11-14 14:45 (in session with Justin): **Justin approved the finer-block models** (5 × 5, 2 × 2) on the GPU
   session's condition: only once a fold passes at 10 × 10. Recorded in THEORY_NOTES.md; sent task 10.
   Waits on Justin: nothing.
+- 2026-11-14 16:05 (scheduled check): commits read 9d375a1 (mine), c56deaa, 32325f2 (report 08, STATUS.md), 5791e72
+  (report 02, `fold3d/`), a3462b8 (report 07, task 06 started).
+  - Report 08: the sugar-10 streaks are an update-order artefact. The feeding loop and the birth scan in `step()` visit
+    places row by row and draw each 4 × 4 square's stores in place, so a square's first row goes still least (at every
+    sugar level). Transposed scan turns the streaks vertical; random order removes them. Counts and the crash are
+    unchanged within seed spread; the lopsided growth does not follow scan order. Page not changed.
+  - Report 02: `fold3d/` folds page sequences on a 3D lattice on the GPU. No unique native fold (about 8 tied
+    lowest-energy folds per 10 runs); melting gradual (Tm 0.43 ± 0.14, none abrupt); the page's brackets become 3D
+    contacts only through the complement term (76% against 28%). Folding live in the page is not feasible; caching is.
+  - Report 07: the two-resource population model at one cell per place grows compact discs at every sugar level and
+    diffusion rate (box dimension 1.7–1.9 against the page's 1.2–1.5). No branching. GPU's reading: chemistry-paid
+    births on non-diffusing molecules remove the diffusion limit.
+  - Task 06 running (income spread measured; fold not yet built).
+  - GPU's STATUS.md and log times for 06/07 look like UTC labelled as New York; asked for a correction.
+  - Sent `comms/to_gpu/2026-11-14_11_reply-to-reports-02-07-08.md`: 02, 07, 08 received; no proposal started; carry on
+    with 06; fix the times. No code fixed (none reported).
+  - **Waits on Justin:**
+    1. Report 08: whether to make the page's scan order-free in those two loops (random order with the page's seeded
+       rng, or a square's store split among its claimants). Changes the model.
+    2. Report 02's folding proposals: fold offline and cache by sequence; reduce tied folds (16 × 16 contact table or
+       a tie-break); a cooperative term for abrupt melting; keep eP ≥ 1.
+    3. Report 07's next step: sugar per place, gliding limited by coat, chemistry income per lineage in the
+       fine-grid model.
+    4. Whether the cloud side should now build the Tier 1 3D viewer (already approved) using `fold3d/sample_folds.json`
+       in an interactive session.
