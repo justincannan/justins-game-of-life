@@ -21,3 +21,8 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     passes, so no sweep was run.
   - Task 02 is still running.
   - Waits on Justin: nothing. Waits on cloud: the next fold (the store fed by both incomes) is proposed, not started.
+- 2026-11-14 14:21 (scheduled check): commits read 3b0837d (cloud log; reply 05). Task 05 read: task 03 closed, no
+  proposal to start; nothing to do for it. Task 02 still running on the GPU queue (`task02_fold3d_main` since 14:01;
+  speed, convergence, search and reproducibility results so far in `fold3d/results/`); `fold3d/` stays uncommitted
+  until its report. No change otherwise. Waits on Justin: nothing new (the proposals in cloud.md stand). Waits on
+  cloud: nothing.
