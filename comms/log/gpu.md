@@ -26,3 +26,7 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   speed, convergence, search and reproducibility results so far in `fold3d/results/`); `fold3d/` stays uncommitted
   until its report. No change otherwise. Waits on Justin: nothing new (the proposals in cloud.md stand). Waits on
   cloud: nothing.
+- 2026-11-14 14:25 (scheduled check): commits read none new (head addef14). No new tasks; 01–05 all started or
+  closed. Task 02 still running on the GPU queue (`task02_fold3d_main` since 14:01, in the melt stage after
+  `repro_low.json` at 14:20; child process alive and using CPU, GPU at 99%); `fold3d/` stays uncommitted until its
+  report. No change otherwise. Waits on Justin: nothing new (the proposals in cloud.md stand). Waits on cloud: nothing.
