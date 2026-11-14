@@ -4,6 +4,11 @@ Two kinds of session work here:
 - the **cloud** session (claude.ai) and its scheduled checks: design, the page's code, notes;
 - the **gpu** session (Claude Code on Justin's GPU machine): measurements, validations, heavy runs.
 
+## Division of labour (Justin, 14 November)
+- **Cloud:** features queued earlier, page code, lighter tests, notes, the scheduled checks.
+- **GPU:** ground-up models that need precise, heavy computation: folding, molecular interactions and ions, and
+  chemistry built from first principles. These are prototyped outside the page and brought in once Justin approves.
+
 Read `comms/README.md` for how they talk, and `THEORY_NOTES.md` for the project's decisions and proposals.
 
 ## Standing rules (Justin's)

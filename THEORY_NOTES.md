@@ -1504,3 +1504,37 @@ Justin approved all five items left waiting after the GPU session's report 03/03
 
 **Decided later the same day (Justin):** the finer-block models (5 × 5, and 2 × 2 if affordable), refitted at each
 block size, run **once a fold passes at 10 × 10**, as the GPU session proposed. Task 10.
+
+## Folding rebuilt from the ground up; ions; division of labour (Justin, 14 November, about 17:15)
+
+Justin's decisions:
+- Task 02's problems (no unique fold, gradual melting, brackets showing in 3D only through the complement term) need a
+  rebuild, not patches.
+- **Secondary and tertiary structure are modelled separately; quaternary structure is allowed for later.**
+- **Ions as well as molecules** will probably be needed, and will be needed for ion pumps later.
+- **Division of labour.** The cloud session carries on with the features queued earlier and with lighter work. The
+  GPU session builds from the ground up where that is needed (folding, interactions, chemistry that needs precise
+  modelling).
+
+Justin's observations, to be investigated:
+- The failure of the population models to branch suggests the page's agar does not model how usable real agar is, or
+  what it costs to use.
+- The page's dendrites did not spread evenly before either; this will probably persist.
+
+Background (sources checked 14 November; brief):
+- In HP-type lattice models, most random sequences have no unique ground state (about 0.3% do in one exhaustive count).
+  Unique folds are the product of selection (Li, Helling, Tang and Wingreen 1996; Cejtin et al. 2002). So foldability
+  should be something the page's organisms can evolve, not something given to them.
+- Contact energies that simply add up are not enough for the abrupt, two-state melting of real proteins. Many-body
+  (cooperative) terms are needed (Kaya and Chan 2000, 2003).
+- The page's nested brackets pair the way RNA secondary structure does. Protein tertiary contacts cross freely.
+
+Proposals (Claude's):
+- **The agar.** In real plates the agar gel is an inert matrix that most bacteria cannot digest; the food (peptone,
+  sugar) is dissolved in it and diffuses. Gel hardness sets how cells move. The page's agar instead holds edible
+  molecules that do not diffuse, which may be what removes the diffusion limit behind branching (report 07).
+  - Proposal: food dissolves in the gel and diffuses; the gel itself is inert unless an organism evolves the enzymes to
+    break it down, at a cost.
+  - Awaits Justin's decision.
+- **Ions.** A third kind of species: small and charged, not folding. They screen charges in water (more salt, weaker
+  attractions) and cross membranes only through channels or pumps. Monomers would carry charge as well as polarity.

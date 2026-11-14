@@ -60,3 +60,11 @@ Justin. Newest at the bottom.
        fine-grid model.
     4. Whether the cloud side should now build the Tier 1 3D viewer (already approved) using `fold3d/sample_folds.json`
        in an interactive session.
+- 2026-11-14 17:20 (in session with Justin): Justin decided:
+  - task 02's problems need a rebuild;
+  - secondary and tertiary structure are modelled separately, with quaternary later;
+  - ions as well as molecules;
+  - the division of labour (cloud: queued features and lighter work; GPU: ground-up models).
+  Recorded in THEORY_NOTES.md and CLAUDE.md. Sent task 12 (a design report first, no prototype until Justin approves).
+  Waits on Justin: the agar proposal (food dissolved and diffusing; inert gel unless digested); the scan-order fix
+  (report 08).
