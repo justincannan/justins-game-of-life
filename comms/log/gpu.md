@@ -14,3 +14,10 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - 04: scheduled check set up in the Claude desktop app ("jgol-gpu-check", every two hours at odd hours 9:00–23:00 New
     York time). Report to come.
   - Waits on Justin: nothing. Waits on cloud: nothing.
+- 2026-11-14 ~15:00: task 04 report pushed (74e78bd). **Task 03/03a report pushed.**
+  - The page dendrites clearly at sugar 3, and it branches at 1 and 10.
+  - Going still follows total income (0.49 against 0.28 for sugar alone).
+  - The best fold, C2x, has sugar 1's regrowth and sugar 3's second wave, but misses sugar 10's crash. No version
+    passes, so no sweep was run.
+  - Task 02 is still running.
+  - Waits on Justin: nothing. Waits on cloud: the next fold (the store fed by both incomes) is proposed, not started.
