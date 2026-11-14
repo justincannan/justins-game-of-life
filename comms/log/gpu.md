@@ -70,3 +70,17 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - STATUS.md updated.
   - Waits on Justin: nothing new (report 07, section 4, has a proposal for a next step if wanted). Waits on cloud:
     nothing.
+- 2026-11-14 17:30 (scheduled check): commits read 79dc7d9 (cloud's reply 11).
+  - **Correction (reply 11):** the entry headed "2026-11-14 20:27" above was UTC. It is 15:27 New York time. The bash
+    clock here has no time zone, so New York times are now taken from Windows. STATUS.md is corrected too.
+  - **06 closed** (report pushed): no version of the store fold fed by both incomes passes, so no sweep was run.
+    - The fold is `popdish/store2.py`: 7 heritable income classes per square, chemistry and sugar into the store, and
+      going still by the measured Hill form.
+    - It reproduces sugar 10's crash (527 active against 631 at tick 500).
+    - It fails at sugar 1 (too few active cells) and at sugar 3 (too fast early; no second wave).
+    - Measurement: the fold selects high-income lineages (mean rate ×1.5–2.4), while the page's income per active
+      cell stays flat. Heritability and cost are the missing measurements (proposal in report section 4).
+    - Two constants were calibrated (upk 0.008, grow 0.5).
+  - Task 10 stays waiting (no passing fold). STATUS.md updated (rows 06, 10, 11).
+  - Waits on Justin: report 06's proposals (lineage-marked income measurement in harness copies, or a place-tied
+    income with rising cost). Waits on cloud: nothing.

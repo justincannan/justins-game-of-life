@@ -14,8 +14,12 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | 03a maps-at-cell-scale | 2026-11-14 13:25 | done (in report 03) | 2026-11-14 13:35 | `2026-11-14_03_pop-dish-two-resources_report.md` |
 | 04 scheduled-checks | 2026-11-14 13:25 | done | 2026-11-14 13:21 | `2026-11-14_04_scheduled-checks_report.md` |
 | 05 reply-to-reports-03-04 | 2026-11-14 14:21 | done (read; nothing to run) | 2026-11-14 14:21 | none needed |
-| 06 store-fold-two-incomes | 2026-11-14 20:20 | running (income spread measured; fold not yet built; next check) | 2026-11-14 20:26 | |
-| 07 popdish-fine-two-resources | 2026-11-14 20:12 | done (no branching) | 2026-11-14 20:26 | `2026-11-14_07_popdish-fine-two-resources_report.md` |
+| 06 store-fold-two-incomes | 2026-11-14 15:20 | closed (no fold passed; sugar 10's crash reproduced; lineage selection too strong) | 2026-11-14 17:30 | `2026-11-14_06_store-fold-two-incomes_report.md` |
+| 07 popdish-fine-two-resources | 2026-11-14 15:12 | done (no branching) | 2026-11-14 15:26 | `2026-11-14_07_popdish-fine-two-resources_report.md` |
 | 08 row-streaks-check | 2026-11-14 14:26 | done | 2026-11-14 14:45 | `2026-11-14_08_row-streaks-check_report.md` |
 | 09 task-status | 2026-11-14 14:45 | done (this file) | 2026-11-14 14:45 | this file |
-| 10 finer-blocks | | waiting on a passing fold (task 06 or later) | 2026-11-14 14:45 | |
+| 10 finer-blocks | | waiting on a passing fold (none passed in task 06) | 2026-11-14 17:30 | |
+| 11 reply-to-reports-02-07-08 | 2026-11-14 17:10 | done (read; times for 06/07 corrected from UTC to New York) | 2026-11-14 17:30 | none needed |
+
+Correction (2026-11-14 17:30): the times for 06 and 07 first written here (20:12, 20:20, 20:26) were UTC, from a shell
+clock without a time zone; they are now New York time (15:12, 15:20, 15:26).
