@@ -1556,3 +1556,27 @@ Proposals (Claude's) on making this work without freezing evolution:
   That would fail the test of open-ended evolution (new organelles nobody designed).
 - **Each fold records what it summarises, and over what range,** so a readout can say when it is being used outside that
   range.
+
+## Approvals (Justin, 14 November, about 17:20)
+- **The agar correction is approved:** food dissolves in the gel and diffuses; the gel is inert unless an organism
+  evolves the enzymes to break it down, at a cost. Built by the cloud session.
+- **The cloud session's queue is approved:**
+  - the Tier 1 fold viewer;
+  - finding the cause of the uneven spreading.
+  - The earlier proposals (organic matter into the pond, light use dependent on a fold, a hot-springs source zone,
+    viruses) were listed with it.
+
+## How fine-grained: atoms, real chemistry, or beads? (Justin's question, 14 November; Claude's proposal)
+- **All-atom simulation with real chemistry is out of reach for evolving populations.** Folding even small, fast proteins
+  this way took a special-purpose supercomputer and simulations of 100 µs to 1 ms (Lindorff-Larsen et al. 2011).
+  Real-chemistry force fields are themselves fitted approximations of quantum mechanics, so they are folds too.
+- **Proposal: coarse-grained "beads".** Each monomer is built from a few typed beads, in the manner of the Martini force
+  field: about four heavy atoms per bead; bead types charged, polar, intermediate, apolar.
+  - Polarity, charge and attraction follow from the beads; an ion is a single charged bead.
+  - New monomers could be built from beads later.
+  - The bead model is computed in detail offline and folded into the 16 × 16 contact table (open and fold).
+  - Realistic magnitudes are used as calibration targets, not as mechanism:
+    - weak interactions are roughly 10–100 times weaker than covalent bonds;
+    - a folded protein is only marginally more stable than unfolded;
+    - water and salt screen charges.
+  - Awaits Justin's decision; goes to the GPU session as part of task 12's design if approved.
