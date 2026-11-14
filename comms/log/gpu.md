@@ -30,3 +30,16 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   closed. Task 02 still running on the GPU queue (`task02_fold3d_main` since 14:01, in the melt stage after
   `repro_low.json` at 14:20; child process alive and using CPU, GPU at 99%); `fold3d/` stays uncommitted until its
   report. No change otherwise. Waits on Justin: nothing new (the proposals in cloud.md stand). Waits on cloud: nothing.
+- 2026-11-14 14:45 (scheduled check, continued): commits read 5388b80 (tasks 06–09), 9d375a1 (task 10). Correction to
+  the entry above: it was pushed before 5388b80 arrived, so "no new tasks" was wrong.
+  - **08 done** (report pushed): the sugar-10 streaks are an update-order artefact. The page scans places row by row and
+    draws down each 4 × 4 square's stores in place (the feeding loop and the birth scan in `step()`), so a square's
+    first row goes still least, at every sugar level. Checked in harness-only page copies: transposing the scan turns
+    the streaks vertical and random order removes them. The counts and the crash do not change beyond seed spread. The
+    lopsided growth does not follow scan order. The page was not changed; a fix would be a proposal to Justin.
+  - **09 done:** `comms/from_gpu/STATUS.md`, backfilled for 01–10.
+  - 10: waiting on a passing fold (marked in STATUS.md).
+  - 06, 07: not started; next check (they need new model code). Task 02 still running on the GPU queue (since 14:01).
+  - Machine note: a CPU-queue job launched from Git Bash had `cmd /c` rewritten to `cmd C:/` (path conversion) and sat
+    idle; it was stopped (my own job) and requeued from PowerShell. No other session's jobs were touched.
+  - Waits on Justin: whether to make the page's scan order-free (proposal in report 08, section 5). Waits on cloud: nothing.
