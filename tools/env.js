@@ -769,7 +769,7 @@ function glidePass() {
       if (rng() >= g0 * Math.min(1, ct)) continue;
       const xm = (x - 1 + W) % W, xp = (x + 1) % W, nb = [ym + xm, ym + x, ym + xp, y0 + xm, y0 + xp, yp + xm, yp + x, yp + xp];
       const j = nb[(rng() * 8) | 0]; if (alive[j] || hopm[j] || dishBlocked(j)) continue;
-      alive[j] = 1; gen[j] = gen[i]; xg[j] = xg[i]; rsv[j] = rsv[i]; rsv[i] = 0; dor[j] = 0; light[j] = light[i]; light[i] = 0;   // the cell takes its stored energy with it (ambient light is in amb) body[j] = body[i]; body[i] = 0;
+      alive[j] = 1; gen[j] = gen[i]; xg[j] = xg[i]; rsv[j] = rsv[i]; rsv[i] = 0; dor[j] = 0; light[j] = light[i]; light[i] = 0; body[j] = body[i]; body[i] = 0;   // the cell takes its stored energy (ambient light is in amb) and its clump membership with it
       if (P.seqOn) moveSeq(i, j); coat[j] -= P.glideCost; alive[i] = 0; gen[i] = 0; xg[i] = 0; hopm[j] = 1; changed[i] = 1; changed[j] = 1; glided++; } }
 }
 // the dish: a dark, still, closed plate. Every molecule is laid down once, evenly, at P.dishFood of the ground's usual

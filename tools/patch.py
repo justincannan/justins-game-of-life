@@ -1106,5 +1106,5 @@ s = s.replace("P.env === 'even'", "(P.env === 'even' || P.env === 'dish')").repl
 _before = s
 s = clumpify(s)
 
-open(dst, 'w', encoding='utf-8').write(s)
+open(dst, 'w', encoding='utf-8', newline='\n').write(s)
 print('patched', len(s), 'chars')
