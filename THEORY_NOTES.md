@@ -1538,3 +1538,21 @@ Proposals (Claude's):
   - Awaits Justin's decision.
 - **Ions.** A third kind of species: small and charged, not folding. They screen charges in water (more salt, weaker
   attractions) and cross membranes only through channels or pumps. Monomers would carry charge as well as polarity.
+
+## How far down the particle ladder: open and fold across scales (Justin, 14 November, about 17:16)
+
+Justin's decision:
+- If a precise molecular (or smaller) feature has to be modelled for evolutionary purposes, model it. Then fold it into
+  simple parameters that are easy to supply.
+- Example: the flagellum need not be modelled in full all the time, as long as we know it moves the cell, say, 60 body
+  lengths a second on average.
+
+Proposals (Claude's) on making this work without freezing evolution:
+- **A fold is a cached function from genotype (and conditions) to parameters,** not a constant. The detail is opened
+  again when:
+  - a mutation lands in the folded part (a sequence not yet in the cache);
+  - conditions leave the range the fold was calibrated on (a new temperature, salt, pH).
+- **Folds stay re-openable.** If a folded feature can only take values from its table, nothing new can arise inside it.
+  That would fail the test of open-ended evolution (new organelles nobody designed).
+- **Each fold records what it summarises, and over what range,** so a readout can say when it is being used outside that
+  range.

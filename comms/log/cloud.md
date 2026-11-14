@@ -68,3 +68,4 @@ Justin. Newest at the bottom.
   Recorded in THEORY_NOTES.md and CLAUDE.md. Sent task 12 (a design report first, no prototype until Justin approves).
   Waits on Justin: the agar proposal (food dissolved and diffusing; inert gel unless digested); the scan-order fix
   (report 08).
+- 2026-11-14 17:25 (in session with Justin): Justin decided the open-and-fold rule across scales (model fine detail when evolution needs it, then fold into parameters). THEORY_NOTES.md; sent 12a (addition to task 12).
