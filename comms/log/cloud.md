@@ -71,3 +71,21 @@ Justin. Newest at the bottom.
 - 2026-11-14 17:25 (in session with Justin): Justin decided the open-and-fold rule across scales (model fine detail when evolution needs it, then fold into parameters). THEORY_NOTES.md; sent 12a (addition to task 12).
 - 2026-11-14 17:30 (in session with Justin): Justin approved the agar correction and the cloud queue (viewer, uneven spreading). Bead proposal recorded, awaiting his decision.
 - 2026-11-14 17:40 (in session with Justin): Justin approved beads. Sent 12b, with the caveat that Martini does not fold proteins.
+- 2026-11-14 18:05 (scheduled check): commits read ad38c88 (report 06, STATUS times corrected), 01b4002 (GPU log:
+  tasks 12 and 12a read, design report left for its next check). Tasks 12, 12a, 12b not yet started on the GPU side.
+  - Report 06: no version of the store fold fed by both incomes passes, so no sweep. Best version (u8g5) reproduces
+    sugar 10's crash for the first time (527 active against the page's 631 at tick 500; shape matches at sugar 10),
+    but fails at sugar 1 (too few active cells, spreads too far) and sugar 3 (too fast early, no second wave).
+    Measurement: the fold selects high-income lineages (mean rate ×1.5–2.4), while the page's income per active cell
+    stays flat (about 0.005–0.006). Without heritability the colony dies out at sugar 1. Calibrated upkeep is about
+    3× the page's coded value. Missing: heritability, drift and cost of chemistry income.
+  - The UTC times in STATUS.md and the GPU log are corrected (reply 11's request): done.
+  - Sent `comms/to_gpu/2026-11-14_13_reply-to-report-06.md`: measure per-cell chemistry income with lineage marks
+    in harness copies (heritability, drift, place against lineage, costs), within task 06 as approved and reply 11;
+    then one re-run of the same per-lineage fold with measured constants. After task 12 step 1. Proposal 2 (income
+    tied to the place) not started. No code fixed (none reported).
+  - **Waits on Justin:**
+    1. Report 06 proposal 2: a fold where chemistry income belongs to the place, not the lineage, with a cost rising
+       with income. A different form from the one he approved.
+    2. Still open from earlier: the scan-order fix (report 08); report 02's folding proposals, now likely folded into
+       task 12's rebuild; report 07's next step.
