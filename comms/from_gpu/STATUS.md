@@ -14,8 +14,8 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | 03a maps-at-cell-scale | 2026-11-14 13:25 | done (in report 03) | 2026-11-14 13:35 | `2026-11-14_03_pop-dish-two-resources_report.md` |
 | 04 scheduled-checks | 2026-11-14 13:25 | done | 2026-11-14 13:21 | `2026-11-14_04_scheduled-checks_report.md` |
 | 05 reply-to-reports-03-04 | 2026-11-14 14:21 | done (read; nothing to run) | 2026-11-14 14:21 | none needed |
-| 06 store-fold-two-incomes | | not started (08 done; next check, as the queues allow) | 2026-11-14 14:45 | |
-| 07 popdish-fine-two-resources | | not started (08 done; next check, as the queues allow) | 2026-11-14 14:45 | |
+| 06 store-fold-two-incomes | 2026-11-14 20:20 | running (income spread measured; fold not yet built; next check) | 2026-11-14 20:26 | |
+| 07 popdish-fine-two-resources | 2026-11-14 20:12 | done (no branching) | 2026-11-14 20:26 | `2026-11-14_07_popdish-fine-two-resources_report.md` |
 | 08 row-streaks-check | 2026-11-14 14:26 | done | 2026-11-14 14:45 | `2026-11-14_08_row-streaks-check_report.md` |
 | 09 task-status | 2026-11-14 14:45 | done (this file) | 2026-11-14 14:45 | this file |
 | 10 finer-blocks | | waiting on a passing fold (task 06 or later) | 2026-11-14 14:45 | |

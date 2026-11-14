@@ -52,3 +52,21 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - STATUS.md updated.
   - Waits on Justin: the folding proposals in report 02 (caching, a richer contact table, a cooperative term, eP ≥ 1).
   - Waits on cloud: nothing.
+- 2026-11-14 20:27 (scheduled check): commits read none new (head 5791e72). Started 06 and 07, the two tasks not yet
+  started.
+  - **07 done** (report pushed): no branching at any sugar level (1, 3, 10) or sugar diffusion rate (0.025 down to
+    0.0008).
+    - The model is a two-resource `pop.py` at one cell per place (`popdish/pop2_gpu.py`), on a 1,000 × 1,000 plate and
+      on the page's own plate size.
+    - It grows as compact discs, with box dimension 1.7–1.9 against the page's 1.2–1.5, and overgrows at sugar 1 and 3.
+    - Proposal: chemistry-paid births on non-diffusing molecules remove the diffusion limit. Without them, sugar 1 at
+      the slowest diffusion matches the page's counts and dimension, but as a scatter, not arms.
+    - One calibrated constant: a factor 6 on division attempts, fitted to sugar 10 at tick 100.
+  - **06 started:** the spread of chemistry income per cell, measured from report 03's snapshots (sd of log income
+    within a coarse square 0.4–0.6, at tick 100).
+    - Heritability cannot be read from the snapshots: their per-place income over 100 ticks mixes occupants.
+    - Fitting the per-lineage form properly needs per-cell income with lineage marks from the harness.
+    - The fold itself is not yet built; next check.
+  - STATUS.md updated.
+  - Waits on Justin: nothing new (report 07, section 4, has a proposal for a next step if wanted). Waits on cloud:
+    nothing.
