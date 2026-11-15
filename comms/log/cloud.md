@@ -144,3 +144,4 @@ Justin. Newest at the bottom.
     report 17 coarse-model question and per-cell-store test; the molten-core caveat on odd complement pairs).
 - 2026-11-15 10:50 (in session with Justin): Justin agreed to rethink the population scale (fold per-cell rules; check against Matsushita's morphology diagram; drop fitting the page's dendrites) and to split the code-change rate (Drake's rule). Sent 22. Folding (step 3, section 9) under discussion.
 - 2026-11-15 11:35 (in session with Justin): Justin chose two beads per monomer (D) and recorded slow fold evolution as a test. Sent 23 (two beads, H-bonds, packing, core dielectric, the design test).
+- 2026-11-15 11:40 (in session with Justin): Justin approved emulators between levels; sent 24 (queued after 23 and 22). Reviewing the full queue with Justin.

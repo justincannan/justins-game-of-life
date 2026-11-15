@@ -1700,3 +1700,13 @@ task 20 (proposals).
   - weaker screening of charges inside the core;
   - the oily-partner rule (task 21);
   - the design test, which serves as the check on the table and as the tool for making developed starting proteins.
+
+### Decision (Justin, 15 November, about 11:29): learned folds between levels (emulators)
+- Use learned surrogates (emulators) to fold between levels.
+- Each emulator maps the level below's summarised inputs to the level above's parameters, and reports its own
+  uncertainty. Where it is uncertain (a new sequence, conditions outside its training), the detailed level is opened,
+  run, and added to the training data (active learning). That is the reopening rule of the open-and-fold decision.
+- First case: proteins (sequence → stability at T, rate, specificity), after the two-bead folder works. Second: the
+  population scale (local conditions + cells' folded traits → per-patch rates), after task 22's per-cell model.
+- An emulator is a fold: it is validated against detailed runs it has not seen, and its outputs are measures, not
+  causes.
