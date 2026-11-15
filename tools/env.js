@@ -1058,3 +1058,21 @@ function fvShow(i) {
   if (!FV.raf) FV.raf = requestAnimationFrame(fvDraw);
 }
 { const _inspFV = inspect; inspect = function (x, y) { _inspFV(x, y); try { fvShow(idx(x, y)); } catch (e) { console.warn('fold viewer', e); } }; }
+
+// ---------------- the visiting order (Justin, 14 November): a fresh random order of the places each tick, from the seeded rng.
+// For speed the shuffle keeps neighbours together: 8 x 8 tiles are visited in random order, and inside each tile the 64
+// places follow one of 32 random orders drawn afresh each tick. No row, column or tile position is favoured.
+let VORD = null, VORDt = -1, VPOOL = null;
+function visitOrder() {
+  if (!VORD || VORD.length !== N) { VORD = new Int32Array(N); VPOOL = new Uint8Array(32 * 64); VORDt = -1; }
+  if (VORDt === tick) return; VORDt = tick;
+  if (P.randOrder === false) { for (let i = 0; i < N; i++) VORD[i] = i; return; }
+  for (let q = 0; q < 32; q++) { const o = q * 64; for (let h = 0; h < 64; h++) VPOOL[o + h] = h;
+    for (let h = 63; h > 0; h--) { const r = (rng() * (h + 1)) | 0, t = VPOOL[o + h]; VPOOL[o + h] = VPOOL[o + r]; VPOOL[o + r] = t; } }
+  const tw = Math.ceil(W / 8), th = Math.ceil(H / 8), nt = tw * th, T = new Int32Array(nt);
+  for (let t = 0; t < nt; t++) T[t] = t;
+  for (let h = nt - 1; h > 0; h--) { const r = (rng() * (h + 1)) | 0, t = T[h]; T[h] = T[r]; T[r] = t; }
+  let k = 0;
+  for (let t = 0; t < nt; t++) { const tx = (T[t] % tw) * 8, ty = ((T[t] / tw) | 0) * 8, o = ((rng() * 32) | 0) * 64;
+    for (let h = 0; h < 64; h++) { const v = VPOOL[o + h], x = tx + (v & 7), y = ty + (v >> 3); if (x < W && y < H) VORD[k++] = y * W + x; } }
+}

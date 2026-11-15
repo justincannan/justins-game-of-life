@@ -1622,3 +1622,16 @@ Dish at sugar 3, 1,000 ticks, colony centre measured from the plate's centre in 
   growth, where whichever arm reaches fresh agar first keeps the lead, and real colonies are irregular in the same way.
 - **Proposal (awaits Justin):** visit places in a random order each tick in those loops, using the page's seeded rng.
   Or split a square's store among its claimants, which is order-free. This changes the model.
+
+### Decision (Justin, 14 November, about 21:23): random visiting order. Built.
+- **What changed:** the feeding loop and the birth scan now visit places in a fresh random order each tick, drawn from
+  the page's seeded rng (`visitOrder()` in tools/env.js; `P.randOrder`, default true; false restores row order).
+- **Keeping it fast:** 8 × 8 tiles are visited in random order, and inside each tile the places follow one of 32 random
+  orders drawn each tick. This keeps neighbours together in memory.
+- **Measured:**
+  - dish lean gone: at sugar 3, 1,000 ticks, 14 seeds, the colony's centre lies above the plate's centre in 5 of 14 runs
+    (mean y +0.003 radii, against 41 of 44 before);
+  - speed in the even world: 47 ms a tick against 41 (an order over single places cost 62);
+  - dish speed about the same.
+- **Earlier dish measurements were made on row-order pages.** Report 08 found counts and the sugar-10 crash unchanged
+  under random order; the GPU session re-baselines (task 17).

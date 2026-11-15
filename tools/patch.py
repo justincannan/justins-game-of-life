@@ -1027,6 +1027,22 @@ rep('id="cost" min="0.005" max="0.2" step="0.005" value="0.08"', 'id="cost" min=
 rep('id="rxRate" min="0" max="0.3" step="0.01" value="0.05"', 'id="rxRate" min="0" max="0.6" step="0.01" value="0.2"')
 rep('id="rxE" min="0" max="0.1" step="0.005" value="0.02"', 'id="rxE" min="0" max="0.24" step="0.005" value="0.08"')
 
+# the visiting order (Justin, 14 November): the feeding loop and the birth scan visit places in a random order each tick,
+# drawn with the page's seeded rng, so no row or column gets first claim on a square's shared stores (report 08's streaks;
+# the dish colony's lean towards the top). P.randOrder = false restores row-by-row order.
+rep("    for (let i = 0; i < N; i++) { const z = zmap[i]; amb[i] += ZRG[z]",
+    "    visitOrder(); for (let vk = 0; vk < N; vk++) { const i = VORD[vk]; const z = zmap[i]; amb[i] += ZRG[z]")
+rep('''for (let y = 0; y < H; y++) {
+    const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
+    for (let x = 0; x < W; x++) {
+      const xm = (x - 1 + W) % W, xp = (x + 1) % W, i = y0 + x, zi = zmap[i];''',
+    '''if (!VORD || VORD.length !== N) visitOrder();
+  for (let vk = 0; vk < N; vk++) { const i = VORD[vk], y = (i / W) | 0, x = i - y * W;
+    const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
+    {
+      const xm = (x - 1 + W) % W, xp = (x + 1) % W, zi = zmap[i];''')
+rep("dishLysis:.002,", "dishLysis:.002, randOrder:true,")
+
 # the chemistry code goes in before the wiring
 GPU = (open(sys.argv[7], encoding='utf-8').read() + '\n') if len(sys.argv) > 7 else ''   # gpu3d.js, optional: before env.js, which reads G3
 VIEW = ('\n' + open(sys.argv[8], encoding='utf-8').read()) if len(sys.argv) > 8 else ''   # view3d.js, optional: after the UI wiring
