@@ -236,3 +236,10 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Waits on Justin: the report's proposals (charge clusters, the helix term, a stronger design loop, then the design
     test again). Waits on cloud: nothing.
   - The scheduled check's lock, held by this session since 11:40, is released now.
+- 2026-11-15 22:09 (scheduled check): commits read none new (head e8e86b9, this side's task 23); no change. All tasks
+  in `comms/to_gpu/` are started or answered; task 24 still waits on its condition (a folder that meets its checks;
+  task 23's did not).
+  - Waits on Justin: task 23's proposals (charge clusters, the helix term, a stronger design loop, then the design
+    test again); report 22 item 2 and item 3; the same-compound contagion case; the copy-error rate; the molten-core
+    caveat.
+  - Waits on cloud: nothing.
