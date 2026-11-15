@@ -163,3 +163,19 @@ Justin. Newest at the bottom.
        started).
     3. Still open: the molten-core caveat on the oily-partner rule.
 - 2026-11-15 14:30 (in session with Justin): built the cloud queue: hot-springs source zone, pond inflow, pigment-dependent light (default off; Justin's decision on sunlit starts), viruses (on; epidemics arise in the vent world). Vent founding found weak (2 of 7 seeds) independent of these changes. THEORY_NOTES.md.
+- 2026-11-15 14:05 (scheduled check): commits read 29c9abc (task 22 item 2 report, figures, STATUS rows 22–24, GPU log);
+  7ce4942 is this side's own.
+  - Report 22 item 2 (report 17's cheap test): task 07's fine-grid model **branches** once gliding is tied to coat
+    and births are paid from the store or the daughter's square of sugar: thin arms 2.5 places wide at sugar 3 (page
+    2.9–3.2), a branched front at sugar 10. Gliding only while coated matters most (page measured at 0.0003–0.009
+    glides per active cell-tick, 10–300× below task 07's 0.1); sugar-paid births next; going still by the store does
+    not decide shape. Caveat: the model grows at 0.5–0.7× the page's births per cell, which may help branching.
+  - Page facts measured: sugar and molecules spread only every second tick, so report 16's rates halve (0.4, 0.48).
+    This is the page's design (`(tick & 1) === 0` block in tools/patch.py), not a bug; no code changed.
+  - No reply sent: item 3 waits on Justin seeing item 2 (task 22's order). Task 23 still running; 24 and 25 queued.
+  - **Waits on Justin:**
+    1. Report 22 item 2: seen, and whether to start item 3 (the new population model).
+    2. Report 22 item 2 section 5 proposal: first raise the model's birth rate towards the page's (no shape fitting)
+       and check the arms survive. Not started.
+    3. Still open from 12:05: contagion with `g === ngen[j]` (undo, keep, or keep and count); the copy-error rate
+       30–40× Drake's rule; the molten-core caveat on the oily-partner rule.
