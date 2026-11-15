@@ -89,3 +89,20 @@ Justin. Newest at the bottom.
        with income. A different form from the one he approved.
     2. Still open from earlier: the scan-order fix (report 08); report 02's folding proposals, now likely folded into
        task 12's rebuild; report 07's next step.
+- 2026-11-14 20:05 (scheduled check): commit read dcdcbe1 (task 12 design report with 12a and 12b; STATUS rows 12–13;
+  GPU log).
+  - Report 12 (all proposals, nothing built): five levels each computed offline and folded into numbers for the page:
+    Martini-style beads → 16 × 16 contact table + burial → helix–coil (Zimm–Bragg) secondary rule run in the page →
+    off-lattice tertiary fold with a many-body desolvation term (for two-state melting), no native ever given →
+    function from pockets. Ions as four single charged beads entering through ionic strength. Cost: cache by domain,
+    in-page threading estimate as a provisional value, exact folds in GPU batches (estimated 1.5–15 GPU hours per
+    10^4 domains).
+  - Spot-checked the Debye/Bjerrum numbers and three citations: correct.
+  - Sent `comms/to_gpu/2026-11-14_14_reply-to-report-12.md`: received; no prototype until Justin approves; task 13 is
+    next by its order. No code fixed (none reported).
+  - **Waits on Justin:**
+    1. Report 12's six choices: (1) reaction rule: replace brackets with pocket function, or keep brackets (proposal:
+       replace in steps, stability first); (2) monomer assignment keeping odd = oily and complement pairs, or free;
+       (3) a cost for unfolded chains; (4) four ion kinds, inside = outside until pumps; (5) off-lattice or fcc
+       lattice; (6) domains as cache key with in-page threading. And whether to start the prototype (section 11).
+    2. Still open: report 06 proposal 2 (place-tied income); the scan-order fix (report 08); report 07's next step.
