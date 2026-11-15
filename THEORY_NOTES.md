@@ -1683,3 +1683,20 @@ task 20 (proposals).
 - In the long run, worlds would probably start with proteins that are already sufficiently developed.
 - Consequence (Claude): a way to make foldable starting proteins is needed either way. Designing sequences for a
   target fold with the model's own energy is both the test of the table and the tool for starting proteins.
+
+### Decision (Justin, 15 November, about 11:26): two beads per monomer (option D)
+- The tertiary level uses two beads per monomer, a backbone bead and a side-chain bead. This revises report 12's
+  approved one-bead tertiary level; Justin chose D directly, not staged through cheaper options.
+- Why D (Claude's summary of the discussion):
+  - it is the most realistic option and the best supported by literature;
+  - it allows knobs-into-holes packing and charges set off from the backbone;
+  - it allows amphipathic and membrane-facing helices, needed later for membranes, pumps and channels, and gives
+    quaternary interfaces their specificity.
+- Costs: about 2–3 times the GPU time per fold and a larger cache; nothing extra for the page, which uses the folded
+  summary.
+- Goes with it:
+  - backbone hydrogen bonds;
+  - a close-packing term;
+  - weaker screening of charges inside the core;
+  - the oily-partner rule (task 21);
+  - the design test, which serves as the check on the table and as the tool for making developed starting proteins.
