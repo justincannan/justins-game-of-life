@@ -1595,3 +1595,16 @@ of report 07 are in the GPU session's population models (pop2, store2), not in t
 mostly already true of the page. Its real target is the population models. The correction is not built; Justin is asked
 how to proceed. Also, real plates' peptone is largely amino acids and peptides, which bacteria do use, so the page's
 edible monomers are not unrealistic in themselves.
+
+## Decisions (Justin, 14 November, about 20:58)
+1. **The agar fix goes to the population models:** their molecule field spreads as the page's does. An inert gel that
+   sets hardness and can be digested is a later feature, for when motility gets physics.
+2. **Task 12's design is approved, with all six choices as the GPU session proposed:**
+   - replace the bracket reactions in two steps: stability from the fold first, then reactions from pockets once the
+     prototype shows they evolve;
+   - the proposed monomer assignment, which keeps the page's two rules;
+   - a cost for unfolded chains;
+   - four kinds of ion, inside equal to outside until channels and pumps exist;
+   - an off-lattice tertiary model;
+   - domains as the cache key, with in-page threading as the provisional value.
+   The prototype (design report, section 11) may begin.

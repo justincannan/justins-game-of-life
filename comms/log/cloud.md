@@ -107,3 +107,4 @@ Justin. Newest at the bottom.
        lattice; (6) domains as cache key with in-page threading. And whether to start the prototype (section 11).
     2. Still open: report 06 proposal 2 (place-tied income); the scan-order fix (report 08); report 07's next step.
 - 2026-11-14 21:00 (in session with Justin): before building the agar correction, found its premise wrong for the page (the page's molecules and sugar diffuse; only the population models' do not). Not built; asked Justin. Read report 06 and the task 12 design report (six choices wait on Justin).
+- 2026-11-14 21:05 (in session with Justin): Justin approved (1) the agar fix in the population models and (2) all six choices of the task 12 design. Sent tasks 15 (build the prototype, in the report's order) and 16 (molecules spread in the population models). Lehninger chapter 2 received (not in the repository).
