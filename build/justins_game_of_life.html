@@ -3006,6 +3006,57 @@ function fragStep() {                                  // every 8 ticks: breakin
 }
 function fragCount() { if (!frAmt) return 0; let k = 0; for (let s = 0; s < frAmt.length; s++) if (frAmt[s] >= .5) k++; return k; }
 
+// ---------------- the fold viewer (Tier 1, display only): the inspected cell's chain drawn in 3D from its bracket fold.
+// Oily monomers (odd codes, task 12's assignment) are amber, polar ones blue; paired monomers are joined by thin grey
+// lines. The shape is a relaxed layout of the brackets, not a computed physical fold. Drag to turn it.
+const FV = {seq: null, n: 0, pairs: [], xyz: null, yaw: 0, pitch: .35, raf: 0, drag: null};
+function fvLayout(a, n) {
+  const st = [], pairs = [];
+  for (let h = 0; h < n; h++) { const m = a[h]; if (st.length && a[st[st.length - 1]] === (m ^ 8)) pairs.push([st.pop(), h]); else st.push(h); }
+  const p = new Float32Array(n * 3);
+  for (let h = 0; h < n; h++) { const t = h * 1.75; p[3 * h] = Math.cos(t) * 1.6; p[3 * h + 1] = h * .25 - n * .125; p[3 * h + 2] = Math.sin(t) * 1.6; }   // start as a loose coil
+  const f = new Float32Array(n * 3), spr = (i, j, L, k) => {
+    const dx = p[3 * j] - p[3 * i], dy = p[3 * j + 1] - p[3 * i + 1], dz = p[3 * j + 2] - p[3 * i + 2], d = Math.hypot(dx, dy, dz) || 1e-6, s = k * (d - L) / d;
+    f[3 * i] += s * dx; f[3 * i + 1] += s * dy; f[3 * i + 2] += s * dz; f[3 * j] -= s * dx; f[3 * j + 1] -= s * dy; f[3 * j + 2] -= s * dz; };
+  for (let it = 0; it < 220; it++) { f.fill(0);
+    for (let h = 1; h < n; h++) spr(h - 1, h, 1, .5);                            // the chain's bonds
+    for (const [i, j] of pairs) spr(i, j, 1.1, .3);                               // paired monomers sit side by side
+    for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) {                  // nothing overlaps
+      const dx = p[3 * j] - p[3 * i], dy = p[3 * j + 1] - p[3 * i + 1], dz = p[3 * j + 2] - p[3 * i + 2], d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 < 2.25) { const d = Math.sqrt(d2) || 1e-6, s = -.2 * (1.5 - d) / d; f[3 * i] += s * dx; f[3 * i + 1] += s * dy; f[3 * i + 2] += s * dz; f[3 * j] -= s * dx; f[3 * j + 1] -= s * dy; f[3 * j + 2] -= s * dz; } }
+    for (let q = 0; q < 3 * n; q++) p[q] += Math.max(-.3, Math.min(.3, f[q])); }
+  let cx = 0, cy = 0, cz = 0; for (let h = 0; h < n; h++) { cx += p[3 * h]; cy += p[3 * h + 1]; cz += p[3 * h + 2]; }
+  cx /= n; cy /= n; cz /= n; let r = 1; for (let h = 0; h < n; h++) { p[3 * h] -= cx; p[3 * h + 1] -= cy; p[3 * h + 2] -= cz; r = Math.max(r, Math.hypot(p[3 * h], p[3 * h + 1], p[3 * h + 2])); }
+  for (let q = 0; q < 3 * n; q++) p[q] /= r;
+  return {pairs, xyz: p};
+}
+function fvDraw() {
+  const cvs = document.querySelectorAll('canvas.foldview'); if (!cvs.length || !FV.xyz) { FV.raf = 0; return; }
+  if (!FV.drag) FV.yaw += .01;
+  const n = FV.n, p = FV.xyz, cy = Math.cos(FV.yaw), sy = Math.sin(FV.yaw), cp = Math.cos(FV.pitch), sp = Math.sin(FV.pitch), s = new Float32Array(n * 3);
+  for (let h = 0; h < n; h++) { const x = p[3 * h], y = p[3 * h + 1], z = p[3 * h + 2], x1 = cy * x + sy * z, z1 = -sy * x + cy * z, y1 = cp * y - sp * z1, z2 = sp * y + cp * z1; s[3 * h] = x1; s[3 * h + 1] = y1; s[3 * h + 2] = z2; }
+  for (const cv of cvs) { const g = cv.getContext('2d'), w = cv.width, hh = cv.height, k = Math.min(w, hh) * .42, X = q => w / 2 + s[3 * q] * k, Y = q => hh / 2 - s[3 * q + 1] * k;
+    g.clearRect(0, 0, w, hh); g.lineWidth = 1; g.strokeStyle = 'rgba(160,160,160,.45)'; g.setLineDash([2, 2]);
+    for (const [i, j] of FV.pairs) { g.beginPath(); g.moveTo(X(i), Y(i)); g.lineTo(X(j), Y(j)); g.stroke(); }
+    g.setLineDash([]); g.lineWidth = 2; g.strokeStyle = 'rgba(200,200,200,.7)'; g.beginPath(); for (let h = 0; h < n; h++) h ? g.lineTo(X(h), Y(h)) : g.moveTo(X(h), Y(h)); g.stroke();
+    const ord = [...Array(n).keys()].sort((a, b) => s[3 * a + 2] - s[3 * b + 2]);
+    for (const h of ord) { const d = .65 + .35 * s[3 * h + 2]; g.fillStyle = (FV.seq[h] & 1) ? `rgba(230,160,40,${d})` : `rgba(70,140,230,${d})`;
+      g.beginPath(); g.arc(X(h), Y(h), Math.max(2, k * .07 * (1 + .3 * s[3 * h + 2])), 0, 7); g.fill(); } }
+  FV.raf = requestAnimationFrame(fvDraw);
+}
+function fvShow(i) {
+  if (typeof seq === 'undefined' || !seq || !slen || !alive[i] || !slen[i]) return;
+  const n = slen[i], a = seq.slice(i * SL, i * SL + n), L = fvLayout(a, n); FV.seq = a; FV.n = n; FV.pairs = L.pairs; FV.xyz = L.xyz;
+  const html = `<div style="margin-top:6px"><b>Its fold</b> <span style="color:var(--muted)">(${n} monomers, ${L.pairs.length} pairs; amber oily, blue polar; a layout of the brackets, not a physical fold; drag to turn)</span></div><canvas class="foldview" width="240" height="190" style="width:240px;height:190px;touch-action:none;cursor:grab"></canvas>`;
+  for (const el of [document.getElementById('insp'), typeof inspFloatBody !== 'undefined' ? inspFloatBody : null]) if (el) el.insertAdjacentHTML('beforeend', html);
+  document.querySelectorAll('canvas.foldview').forEach(cv => {
+    cv.onpointerdown = e => { FV.drag = {x: e.clientX, y: e.clientY, yaw: FV.yaw, pitch: FV.pitch}; cv.setPointerCapture(e.pointerId); e.stopPropagation(); };
+    cv.onpointermove = e => { if (!FV.drag) return; FV.yaw = FV.drag.yaw + (e.clientX - FV.drag.x) * .01; FV.pitch = Math.max(-1.5, Math.min(1.5, FV.drag.pitch + (e.clientY - FV.drag.y) * .01)); };
+    cv.onpointerup = () => { FV.drag = null; }; });
+  if (!FV.raf) FV.raf = requestAnimationFrame(fvDraw);
+}
+{ const _inspFV = inspect; inspect = function (x, y) { _inspFV(x, y); try { fvShow(idx(x, y)); } catch (e) { console.warn('fold viewer', e); } }; }
+
 // ---------------- chemistry controls
 {
   const sel = $('chshow');
