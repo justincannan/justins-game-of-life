@@ -22,5 +22,22 @@ of report 12, section 11 (design approved by Justin, 14 November). Everything in
 - `summary_step3.py`: `results/step3_summary.json` and the figures `comms/from_gpu/15s3_*.png` (PIL).
 - `saltbridge_step3.py`: task 20's benchmarks in the model's own energy; `results/step3_saltbridge.json`.
 
+Task 23 (two beads per monomer, Justin's decision of 15 November; the one-bead files above are unchanged and still
+work):
+- `twobead.py`: the two-bead model (backbone + side-chain bead): step 2's local bias, backbone H-bonds (helix i -> i+4
+  and strand pairing), a packing (van der Waals) term by bead size, a burial-dependent dielectric for side-chain
+  charges, burial with the cooperative term (modes `coop` / `additive`); `REMD2` reuses tertiary.py's integrator.
+- `run_tb.py`: GPU stages (`probe` = the two hand designs, `go` = Go instrument check from a natives file, `fold`
+  = sequences from a JSON file, `page`, `random`, `additive`); `.npz` batches to
+  `D:/labyrinth/automata/jgol_2026-11-13/results/2026-11-15/task23/`.
+- `analyse_tb.py PREFIX [--target-file results/tb_targets.json] [--native-file ...]`: step 3's readouts for two beads.
+- `saltbridge_tb.py`: stage 1's term checks (salt-bridge benchmarks, eps_core scan, packing) -> `results/tb_stage1_terms.json`.
+- `targets_tb.py`: the five design targets -> `results/tb_targets.json`; `--go OUT` writes Go natives.
+- `design_tb.py`: sequence design by Monte Carlo on the energy gap, with folding rounds -> `results/tb_designs.json`.
+- `relax_targets_tb.py`: each design's target relaxed with its sequence, against its blind fold -> `results/tb_target_relax.json`.
+- `stage4_tb.py walk|neutral`: mutational distance of page sequences to foldable ones; single mutants of a design.
+- `summary_tb.py`: `results/tb_summary.json` and the figures `comms/from_gpu/23_*.png`.
+
 Reports: `comms/from_gpu/2026-11-14_15_design-approved-prototype_report.md` (steps 1-2),
-`comms/from_gpu/2026-11-14_15_step3_tertiary-fold_report.md` (step 3).
+`comms/from_gpu/2026-11-14_15_step3_tertiary-fold_report.md` (step 3),
+`comms/from_gpu/2026-11-15_23_two-beads_report.md` (task 23, two beads).

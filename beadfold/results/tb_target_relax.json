@@ -1,0 +1,121 @@
+[
+ {
+  "name": "design_sheet3__d0",
+  "E_target_relaxed_kT": -52.32363138604295,
+  "E_fold_best_kT": -64.30559836497709,
+  "drift_nm": 0.07087870152513363,
+  "target_lower": false
+ },
+ {
+  "name": "design_sheet3__d1",
+  "E_target_relaxed_kT": -52.4773547345295,
+  "E_fold_best_kT": -80.78788687352487,
+  "drift_nm": 0.05350077165363182,
+  "target_lower": false
+ },
+ {
+  "name": "design_sheet3__d2",
+  "E_target_relaxed_kT": -64.6490335397705,
+  "E_fold_best_kT": -62.68662460463396,
+  "drift_nm": 0.08634805053689079,
+  "target_lower": true
+ },
+ {
+  "name": "design_sheet3__hand",
+  "E_target_relaxed_kT": -33.02067022589604,
+  "E_fold_best_kT": -55.91543807713808,
+  "drift_nm": 0.057666331821774976,
+  "target_lower": false
+ },
+ {
+  "name": "design_helixhairpin__d0",
+  "E_target_relaxed_kT": -68.1893748111984,
+  "E_fold_best_kT": -78.2934014767439,
+  "drift_nm": 0.1330892798666203,
+  "target_lower": false
+ },
+ {
+  "name": "design_helixhairpin__d1",
+  "E_target_relaxed_kT": -61.38510555583371,
+  "E_fold_best_kT": -81.46479203012012,
+  "drift_nm": 0.06277245312496274,
+  "target_lower": false
+ },
+ {
+  "name": "design_helixhairpin__d2",
+  "E_target_relaxed_kT": -65.08151312781433,
+  "E_fold_best_kT": -97.95258617015494,
+  "drift_nm": 0.11182650302245732,
+  "target_lower": false
+ },
+ {
+  "name": "design_helixhairpin__hand",
+  "E_target_relaxed_kT": -52.09202782148802,
+  "E_fold_best_kT": -111.95755461742468,
+  "drift_nm": 0.09367556549454181,
+  "target_lower": false
+ },
+ {
+  "name": "bba__d0",
+  "E_target_relaxed_kT": -55.89440656485757,
+  "E_fold_best_kT": -60.26486859979682,
+  "drift_nm": 0.11188655471691773,
+  "target_lower": false
+ },
+ {
+  "name": "bba__d1",
+  "E_target_relaxed_kT": -44.47212067210707,
+  "E_fold_best_kT": -72.42175560844264,
+  "drift_nm": 0.11739130302448687,
+  "target_lower": false
+ },
+ {
+  "name": "bba__d2",
+  "E_target_relaxed_kT": -78.61102135723138,
+  "E_fold_best_kT": -93.07854237520085,
+  "drift_nm": 0.09582808517879295,
+  "target_lower": false
+ },
+ {
+  "name": "sheet4__d0",
+  "E_target_relaxed_kT": -94.10143364917852,
+  "E_fold_best_kT": -105.39049855336337,
+  "drift_nm": 0.08832315542724989,
+  "target_lower": false
+ },
+ {
+  "name": "sheet4__d1",
+  "E_target_relaxed_kT": -64.17531065452039,
+  "E_fold_best_kT": -75.93193213668987,
+  "drift_nm": 0.07236066190423456,
+  "target_lower": false
+ },
+ {
+  "name": "sheet4__d2",
+  "E_target_relaxed_kT": -82.3167946201083,
+  "E_fold_best_kT": -112.7996226012629,
+  "drift_nm": 0.04808416741857496,
+  "target_lower": false
+ },
+ {
+  "name": "bundle3__d0",
+  "E_target_relaxed_kT": -99.16610075831898,
+  "E_fold_best_kT": -101.36900179417785,
+  "drift_nm": 0.11169557501317984,
+  "target_lower": false
+ },
+ {
+  "name": "bundle3__d1",
+  "E_target_relaxed_kT": -88.92158872932912,
+  "E_fold_best_kT": -113.43648958221073,
+  "drift_nm": 0.07142658655438183,
+  "target_lower": false
+ },
+ {
+  "name": "bundle3__d2",
+  "E_target_relaxed_kT": -92.14783372442125,
+  "E_fold_best_kT": -120.80244947925182,
+  "drift_nm": 0.07424956113607908,
+  "target_lower": false
+ }
+]

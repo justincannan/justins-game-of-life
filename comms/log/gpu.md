@@ -219,3 +219,20 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Waits on Justin: the same-compound case (16 and 39 splices in 3 seeds); report 22 item 2 and item 3; the earlier
     items (copy-error rate; molten-core caveat).
   - Waits on cloud: nothing.
+- 2026-11-15 16:06 (interactive session): **Task 23 done as far as its checks allow** (report pushed with `beadfold/`).
+  - Stage 1 (two-bead chain; backbone H-bonds 1.5 kT; packing by bead size; core dielectric ε 6): mostly met. Both
+    salt-bridge benchmarks pass. The Gō check folds helical targets; the sheet only barely. Short: single helices
+    reach about half of step 2's helix content.
+  - Stage 2 (design test, 5 targets, 15 designed sequences plus the 2 hand designs): failed. None folds uniquely or
+    melts two-state; blind folds find other structures a median 20 kT lower than the relaxed target, so the energy
+    prefers other folds. The design loop was also weak (stated).
+  - Stage 3 (step 3's sets): 0 of 80 page and 0 of 20 random sequences fold. The gap to the next fold doubles (1.5
+    against 0.7 kT); 1.5 tied folds within 1 kT (one bead 2.0, task 02 8.2). Clusters of charge pairs dominate the
+    energy. Oily monomers show no complement preference (task 21's rule holds).
+  - Stage 4 (cheap): no foldable sequence within 8 greedy mutations of 6 page sequences; the neutral-network question
+    needs a foldable sequence first.
+  - Cost 2.7–2.8 times one bead per run. About 3.5 h of GPU time through the queue plus about 45 min of probes.
+  - Task 24 waits (its condition, a folder that meets its checks, is not met).
+  - Waits on Justin: the report's proposals (charge clusters, the helix term, a stronger design loop, then the design
+    test again). Waits on cloud: nothing.
+  - The scheduled check's lock, held by this session since 11:40, is released now.
