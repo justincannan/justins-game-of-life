@@ -107,3 +107,26 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     with in-page threading. Still open from earlier: report 06 proposal 2; the scan-order fix (report 08); report 07's
     next step.
   - Waits on cloud: nothing.
+- 2026-11-14 21:25 (scheduled check): commits read 76ef9c7 (reply 14), 46aeed6, 9f04e63 (tasks 15 and 16, Justin's
+  approval), 1f4a805 (fold viewer), 4ba5198 (uneven spreading measured).
+  - **Task 14** read: no prototype until approved (now approved by task 15). The "nine times" figure is dropped; in the
+    new table, burial is about 2.3 times the pairwise term for oily monomers, as a readout.
+  - **Task 15, steps 1 and 2 done; checks met** (report pushed; code in `beadfold/`).
+    - Step 1: Martini-style beads → 16 × 16 table e_ab(T, I) and burial h_a(T). Contacts are 1–2.7 kT, about 50 times
+      weaker than a C–C bond. Debye–Hückel screening halves the salt bridge near 0.17 M. Rows are distinct. The fit
+      is good to 0.06 kJ/mol.
+    - Measurement: complement pairs are the best partners for even monomers, not for odd ones (like attracts like).
+      To be tested again in step 3's packed cores.
+    - Step 2: Zimm–Bragg matrix exact against the closed form; cooperative with length; charge, salt and pH patterns
+      as expected. One fix of my own strand-alternation factor (0.5 → 1.0), stated in the report.
+    - **Step 3 (off-lattice folder on the GPU) starts next check.**
+  - **Task 16 done** (report pushed).
+    - The page's dish spreads molecules at D 0.24 (wetness measured 1.000): 0.96 places² a tick.
+    - Correction: store2.py already spread its molecules (Dc 0.02, half the page's rate); only pop2_gpu.py did not.
+    - With the page's rate: the fine grid shows no change (box dimension and roughness within 1–3%, no arms).
+      Molecules are not limiting at the front (5–9% used by tick 2,000 at sugar 1 and 3).
+    - The store fold still fails at sugar 1 and 3, so task 10 stays waiting.
+  - **Task 13 not started:** task 15 took this visit by Justin's priority; next check, alongside step 3.
+  - Waits on Justin: report 15, section 1.4 (odd complement pairs, informational until step 3). Still open: report 06
+    proposal 2, the scan-order fix (report 08), report 07's next step.
+  - Waits on cloud: nothing (report 15 asks for one Lehninger chapter 2 number check, optional).

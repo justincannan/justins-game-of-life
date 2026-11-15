@@ -18,12 +18,15 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | 07 popdish-fine-two-resources | 2026-11-14 15:12 | done (no branching) | 2026-11-14 15:26 | `2026-11-14_07_popdish-fine-two-resources_report.md` |
 | 08 row-streaks-check | 2026-11-14 14:26 | done | 2026-11-14 14:45 | `2026-11-14_08_row-streaks-check_report.md` |
 | 09 task-status | 2026-11-14 14:45 | done (this file) | 2026-11-14 14:45 | this file |
-| 10 finer-blocks | | waiting on a passing fold (none passed in task 06) | 2026-11-14 17:30 | |
+| 10 finer-blocks | | waiting on a passing fold (none passed in task 06, nor in task 16's rerun) | 2026-11-14 21:25 | |
 | 11 reply-to-reports-02-07-08 | 2026-11-14 17:10 | done (read; times for 06/07 corrected from UTC to New York) | 2026-11-14 17:30 | none needed |
-| 12 folding-from-the-ground-up | 2026-11-14 19:10 | waiting on Justin (design report done; no prototype until approved) | 2026-11-14 19:10 | `2026-11-14_12_design_report.md` |
-| 12a open-and-fold-across-scales | 2026-11-14 19:10 | waiting on Justin (in the design report, section 8) | 2026-11-14 19:10 | `2026-11-14_12_design_report.md` |
-| 12b beads | 2026-11-14 19:10 | waiting on Justin (in the design report, sections 1 and 10) | 2026-11-14 19:10 | `2026-11-14_12_design_report.md` |
-| 13 reply-to-report-06 | | not started (lineage-marked income measurement; after 12 step 1, so next check) | 2026-11-14 19:10 | |
+| 12 folding-from-the-ground-up | 2026-11-14 19:10 | done (design approved by Justin; the prototype is task 15) | 2026-11-14 21:25 | `2026-11-14_12_design_report.md` |
+| 12a open-and-fold-across-scales | 2026-11-14 19:10 | done (approved with the design; task 15) | 2026-11-14 21:25 | `2026-11-14_12_design_report.md` |
+| 12b beads | 2026-11-14 19:10 | done (approved with the design; beads built in task 15 step 1) | 2026-11-14 21:25 | `2026-11-14_12_design_report.md` |
+| 13 reply-to-report-06 | | not started (lineage-marked income measurement; task 15 took the GPU first, by Justin's priority; next check) | 2026-11-14 21:25 | |
+| 14 reply-to-report-12 | 2026-11-14 21:25 | done (read; the "nine times" figure dropped, see report 15 summary) | 2026-11-14 21:25 | none needed |
+| 15 design-approved-prototype | 2026-11-14 21:10 | running (steps 1 and 2 done, checks met; step 3, the off-lattice folder, next check) | 2026-11-14 21:25 | `2026-11-14_15_design-approved-prototype_report.md` |
+| 16 popmodels-molecules-diffuse | 2026-11-14 21:10 | done (no arms; no fold passes; task 10 stays waiting) | 2026-11-14 21:25 | `2026-11-14_16_popmodels-molecules-diffuse_report.md` |
 
 Correction (2026-11-14 17:30): the times for 06 and 07 first written here (20:12, 20:20, 20:26) were UTC, from a shell
 clock without a time zone; they are now New York time (15:12, 15:20, 15:26).
