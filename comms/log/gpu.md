@@ -130,3 +130,10 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Waits on Justin: report 15, section 1.4 (odd complement pairs, informational until step 3). Still open: report 06
     proposal 2, the scan-order fix (report 08), report 07's next step.
   - Waits on cloud: nothing (report 15 asks for one Lehninger chapter 2 number check, optional).
+- 2026-11-14 21:55 (interactive session): commits read 4ba5198, 147c9d1, 821a258 (random visiting order; task 17).
+  - Task 17 is left for the 23:00 scheduled check, as Justin asked.
+  - At Justin's request, the questions still open in the GPU reports are gathered in
+    `comms/from_gpu/2026-11-14_open-questions.md`: odd complement pairs (report 15, section 1.4); report 06, proposal 2;
+    report 07's next step; the optional Lehninger chapter 2 check. Report 08's scan-order question is closed by the
+    21:23 decision.
+  - Waits on Justin: the three questions in that file. Waits on cloud: the optional Lehninger check.
