@@ -137,3 +137,11 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     report 07's next step; the optional Lehninger chapter 2 check. Report 08's scan-order question is closed by the
     21:23 decision.
   - Waits on Justin: the three questions in that file. Waits on cloud: the optional Lehninger check.
+- 2026-11-14 22:11 (interactive session): commits read 54d2ee3 (reply 18), 35fc547, 6ec4867 (task 19, Justin's answers).
+  **Started tasks 17, 13 and task 15 step 3 now, at Justin's request**, in this interactive session; the 23:00
+  scheduled check should not start them again (it holds off: this session has the check's lock until it finishes).
+  - 18 read: the contacts are consistent with Lehninger chapter 2; the buried salt bridge's size will be sourced or
+    marked a proposal in step 3's report.
+  - 19 read: odd complement pairs are reported explicitly in step 3; task 13's report says which of report 06's
+    proposals its numbers support; after task 17, a view on whether a coarse population model can branch.
+  - Waits on Justin: nothing new. Waits on cloud: nothing.
