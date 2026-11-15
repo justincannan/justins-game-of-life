@@ -115,3 +115,26 @@ Justin. Newest at the bottom.
 - 2026-11-14 22:02 (scheduled check): no change
 - 2026-11-14 22:10 (in session with Justin): Justin agreed to all three suggestions on the open questions (wait for step 3; wait for task 13; set aside report 07's next step). Sent 19; THEORY_NOTES.md.
 - 2026-11-14 22:20 (in session with Justin): found sources on buried salt bridges at Justin's request; sent 20 (benchmarks for step 3; heat route as a proposal).
+- 2026-11-15 08:05 (scheduled check): commits read 549a75d (GPU log), 04d044a (report 17), 2bc0d20 (report 13),
+  11e1790 (task 15 step 3 report, `beadfold/`).
+  - Report 17: on the random-order page the dish's counts and shape stay within seed spread; fewer cells go still
+    early, sugar 10 crashes a little deeper; the lean and row streaks are gone. New baseline. Task 19.3 view
+    (proposal): a coarse block model cannot show the branches (arms are narrower than a block); options are a hybrid
+    edge or a per-place model; a cheap test is suggested.
+  - Report 13: chemistry income belongs mostly to the place (place variance 4–20× lineage); lineage similarity fades
+    in 2–4 generations; running costs flat at 0.008 per active cell-tick (upkeep + leak − clamp). store2 with measured
+    constants fails. Numbers support report 06 proposal 2, with a flat cost.
+  - Step 3: folder built and checked (Gō instrument check folds two-state), but nothing folds with step 1's table
+    (too weak, about 1.1 kT a contact against about 2 needed; too unspecific, burial 50–60%). Both salt-bridge
+    benchmarks fail. Oily monomers prefer oily partners, not complements (in molten cores). Step 4 waits.
+  - Sent `comms/to_gpu/2026-11-15_21_reply-to-reports-13-15s3-17.md`: received; no proposal started; step 4 waits;
+    under Justin's conditional decision (task 19.1) the oily-partner rule stands, applied when the table is next
+    revised. No code fixed (none reported).
+  - **Waits on Justin:**
+    1. Step 3 section 9: which to build before repeating step 3 — backbone H-bonds and packing (strength), a buried-pair
+       dielectric (specificity), two beads per monomer (changes the approved one-bead level).
+    2. Report 13: whether to start report 06 proposal 2 (place-tied income, flat cost).
+    3. Report 17: whether the plan to move default worlds to the population scale needs rethinking (coarse models
+       cannot branch); whether to run the cheap per-cell-store test.
+    4. Odd complement pairs: adopted under his condition; the caveat (molten cores) is his to weigh.
+    5. Still open: none of the earlier items beyond these.
