@@ -1676,3 +1676,10 @@ task 20 (proposals).
      Eden-like, dense branching, rings, disc).
    - The page's dish stays as a small-scale model of the same process. First comes report 17's cheap per-cell-store
      test.
+
+### Decision (Justin, 15 November, about 10:56): slow evolution of folds
+- Justin wants to see slow evolution of tertiary folds from unfolded sequences, as a test of how far the model supports
+  evolution.
+- In the long run, worlds would probably start with proteins that are already sufficiently developed.
+- Consequence (Claude): a way to make foldable starting proteins is needed either way. Designing sequences for a
+  target fold with the model's own energy is both the test of the table and the tool for starting proteins.
