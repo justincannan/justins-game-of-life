@@ -1043,7 +1043,17 @@ rep('''for (let y = 0; y < H; y++) {
     const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
     {
       const xm = (x - 1 + W) % W, xp = (x + 1) % W, zi = zmap[i];''')
-rep("dishLysis:.002,", "dishLysis:.002, randOrder:true,")
+rep("dishLysis:.002,", "dishLysis:.002, randOrder:true, springZone:true, springFlow:.3, springSrc:4, springRain:.0001, pondInflow:4, pigment:false, pigSat:.05, pigBase:0, virOn:true, virUp:.05, virCopy:.5, virE:.01, virBurst:12,")
+
+# light use depends on a fold (Justin's queue, 15 November): with P.pigment, a cell absorbs light only as far as it holds a
+# pigment, one of the four costliest molecules (kinds 12-15, the top of the ladder) kept in its coat, which it makes with its own domains.
+rep("{ const ab = P.absorb * Math.max(", "{ const ab = P.absorb * (P.pigment ? pigOf(i) : 1) * Math.max(")
+
+# viruses (Justin's queue, 15 November; virStep in env.js): a cell marked to burst dies; a newborn inherits half its parent's copies
+rep("&& !(dor[i] && rng() < P.sporeDeath * (P.env === 'dish' ? P.dishDormDeath : 1));", "&& !(dor[i] && rng() < P.sporeDeath * (P.env === 'dish' ? P.dishDormDeath : 1)) && !(VIR.kill && VIR.kill[i]);")
+rep("nalive[i] = 1; ngen[i] = g; nxg[i] = cx; nrsv[i] = 0; ndor[i] = 0; nchanged[i] = 1; births++;", "nalive[i] = 1; ngen[i] = g; nxg[i] = cx; nrsv[i] = 0; ndor[i] = 0; nchanged[i] = 1; births++; virBorn(i, pj);")
+
+rep("if ((tick & 7) === 0) fragStep();", "if ((tick & 7) === 0) { fragStep(); virStep(); }")
 
 # the chemistry code goes in before the wiring
 GPU = (open(sys.argv[7], encoding='utf-8').read() + '\n') if len(sys.argv) > 7 else ''   # gpu3d.js, optional: before env.js, which reads G3

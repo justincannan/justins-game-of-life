@@ -162,3 +162,4 @@ Justin. Newest at the bottom.
     2. The copy-error rate is 30–40× Drake's rule (report 22 section 3). Whether to lower it is his (no proposal
        started).
     3. Still open: the molten-core caveat on the oily-partner rule.
+- 2026-11-15 14:30 (in session with Justin): built the cloud queue: hot-springs source zone, pond inflow, pigment-dependent light (default off; Justin's decision on sunlit starts), viruses (on; epidemics arise in the vent world). Vent founding found weak (2 of 7 seeds) independent of these changes. THEORY_NOTES.md.

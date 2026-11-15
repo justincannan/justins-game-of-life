@@ -1710,3 +1710,49 @@ task 20 (proposals).
   population scale (local conditions + cells' folded traits → per-patch rates), after task 22's per-cell model.
 - An emulator is a fold: it is validated against detailed runs it has not seen, and its outputs are measures, not
   causes.
+
+## The cloud queue, built (15 November, about 12:00–14:30; Justin approved the queue at 11:55)
+All four are in `tools/env.js`, with defaults in `tools/patch.py`. Measurements were made on a 476 × 248 world (the
+harness's), 1 to 3 seeds each, so they are indications, not validations.
+
+1. **Hot-springs source zone** (`springZone`, default on; `springFlow` 0.3, `springSrc` 4, `springRain` 0.0001).
+   - What changed:
+     - one main spring at the centre and two small ones beside it, instead of springs scattered over the ground;
+     - water wells up at the springs and runs downhill along a slope set per world;
+     - the land gets almost no rain, so births fail on dry ground: they need water, `wcell`.
+   - Measured, 2 seeds, 2,000 ticks: occupied places 9–13%, against 59% with the old layout. A dense mat at the source
+     and a sparse halo along the runoff.
+   - The ground was not water-limited before: cells lived on dry ground, because the old rain kept it just wet enough
+     for births.
+2. **Organic matter into the pond** (`pondInflow`, 4 per 1,000 squares a tick at full rain; default on).
+   - Three stream mouths per world bring dissolved sugar, scaled by the season's rain. It is an import from outside,
+     booked in `enMade` and `PIN.got`.
+   - About 5–10% of the pond's photosynthesis.
+   - Measured, 3 seeds × 2,000 ticks, one-organism start: no clear change in survival or numbers. The pond already
+     survives on the current page (heterotrophs take over by tick 1,000 either way).
+   - It matters more if light use depends on a pigment (item 3).
+3. **Light use depending on a fold** (`pigment`, default **off**; `pigSat` 0.05, `pigBase` 0).
+   - A cell absorbs light only as far as its coat holds a pigment: one of the four costliest molecules (kinds 12–15),
+     which it makes with its own domains, uphill. Phototrophy has a price and has to evolve.
+   - Measured, 1 seed each, 1,500 ticks:
+     - from a soup, pigments evolve fast and nearly every survivor carries one (pond 12,000 cells, even world 94,000,
+       springs 11,000);
+     - from the one-organism start the pond dies by tick 250, because the founding organism has no pigment.
+   - Left off by default; **Justin's decision** on how to start sunlit worlds.
+4. **Viruses** (`virOn`, default on; `virUp` 0.05, `virCopy` 0.5, `virE` 0.01, `virBurst` 12).
+   - Built from three parts, with nothing named a virus:
+     - a chain in the ground enters a cell if its first monomer is the molecule one of the cell's domains takes (a
+       receptor made of the cell's own enzymes);
+     - inside, it is copied at the cell's expense only if it carries a copying fold;
+     - at 12 copies the cell bursts and the copies return to the ground. Daughters inherit half.
+   - Measured:
+     - in the vent world, epidemics arose on their own in 3 of the seeds that founded life. For example, by tick 1,500:
+       3,228 cells infected with copying chains, 2,373 bursts, 53,686 copies, with the host population still growing
+       (26,000).
+     - In the pond and the even world, entries happen (tens to hundreds of cells), but copying chains have not arisen
+       within 2,000 ticks.
+     - Founding is unchanged with and without viruses, in fresh pages on the same seeds.
+
+**Observation, not caused by these changes:** the vent world's one-organism start founded life in only 2 of 7 seeds,
+with or without viruses and with either visiting order. That is in fresh pages on this harness; an earlier note
+recorded 6 of 6. Proposal: the GPU session or the cloud session checks vent founding over 10+ seeds.

@@ -73,7 +73,7 @@ function hopPass() {
       }
       if (best < 0) continue;
       alive[best] = 1; gen[best] = g; xg[best] = xg[i]; rsv[best] = rsv[i]; rsv[i] = 0; dor[best] = dor[i]; dor[i] = 0; if (P.seqOn) moveSeq(i, best); alive[i] = 0; gen[i] = 0; body[best] = body[i]; body[i] = 0; hopm[best] = 1;
-      light[best] = light[i] - (fl ? hc : 0); light[i] = 0;   // the cell takes its store with it, paying for the hop
+      light[best] = light[i] - (fl ? hc : 0); light[i] = 0; virMove(i, best);   // the cell takes its store with it, paying for the hop
       changed[i] = 1; changed[best] = 1; hops++;
     }
   }
