@@ -32,7 +32,9 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | 19 justins-answers-open-questions | 2026-11-14 22:11 | done (item 3 in report 17, item 2 in report 13, item 1 in the step 3 report, section 6) | 2026-11-15 00:05 | reports 17, 13 and 15 step 3 |
 | 20 buried-salt-bridges | 2026-11-14 22:11 | done (benchmarks checked in step 3: both fail; section 7) | 2026-11-15 00:05 | `2026-11-14_15_step3_tertiary-fold_report.md` |
 | 21 reply-to-reports-13-15s3-17 | 2026-11-15 09:10 | done (read; nothing to run: no proposal started, step 4 waits, oily-partner rule stands for the next table revision) | 2026-11-15 09:10 | none needed |
-| 22 population-scale-rethought | 2026-11-15 11:10 | item 1 done (mostly mutation at division, 4–6% of daughters; contagion about a sixth at sugar 3 and 10; report 13's 13% was mostly a measuring error, corrected); item 2 next (CPU queue); item 3 waits on Justin seeing item 2 | 2026-11-15 11:30 | `2026-11-15_22_population-scale-rethought_report.md` (item 1) |
+| 22 population-scale-rethought | 2026-11-15 11:10 | item 1 done (mostly mutation at division, 4–6% of daughters; contagion about a sixth at sugar 3 and 10; report 13's 13% was mostly a measuring error, corrected); item 2 done (the per-cell-store model branches; gliding only while coated is decisive, sugar-paid births next, store-based going still not needed for shape; the model undergrows the page); item 3 waits on Justin seeing item 2 | 2026-11-15 13:45 | `2026-11-15_22_population-scale-rethought_report.md` (items 1 and 2) |
+| 23 two-beads | 2026-11-15 11:40 | running (interactive session; GPU) | 2026-11-15 13:45 | |
+| 24 emulators | | waiting (starts after task 23's folder meets its checks and task 22's per-cell model exists) | 2026-11-15 13:45 | |
 
 Correction (2026-11-14 17:30): the times for 06 and 07 first written here (20:12, 20:20, 20:26) were UTC, from a shell
 clock without a time zone; they are now New York time (15:12, 15:20, 15:26).

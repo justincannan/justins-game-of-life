@@ -188,3 +188,16 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   item 1 was done by the 11:35 check. Task 24 waits, as it says. This session holds the scheduled check's lock until
   these finish, so the checks will not start them twice.
   - Waits on Justin: nothing new. Waits on cloud: report 22 section 6 (page code).
+- 2026-11-15 13:08 (interactive session): **Task 22 item 2 done** (report 22's new section, with figures). Task 07's
+  fine-grid model with a per-cell store, gliding only while active and coated, and births paid from sugar
+  (`popdish/pop22_store.py`), 6 seeds, sugar 1, 3 and 10, each ingredient switched off in turn.
+  - With all three on it branches: thin arms with active tips at sugar 3 (2.5 places wide against the page's 2.9–3.2)
+    and a radially branched front at sugar 10. With all three off, a filled disc.
+  - Gliding only while coated is decisive; sugar-paid births next; going still by the store is not needed for shape.
+  - Caveat: the model has 0.5–0.7 times the page's births per cell and undergrows it; sugar 1 barely grows. A test
+    without shape tuning is proposed in the report.
+  - Page facts measured: gliding 0.0003–0.009 per active cell-tick (task 07 used 0.1); sugar-paid births use the
+    daughter's square; sugar and molecules spread every second tick, so report 16's rates halve (0.4 and 0.48).
+  - Constants calibrated on the page (not on shape): chemistry income, molecule use, income spread, coat per income.
+  - Item 3 waits on Justin seeing this. Task 23 still running on the GPU. Task 24 waits.
+  - Waits on Justin: item 2's result (for item 3); report 22 section 6. Waits on cloud: report 22 section 6 (page code).
