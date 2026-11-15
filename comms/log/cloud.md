@@ -106,3 +106,4 @@ Justin. Newest at the bottom.
        (3) a cost for unfolded chains; (4) four ion kinds, inside = outside until pumps; (5) off-lattice or fcc
        lattice; (6) domains as cache key with in-page threading. And whether to start the prototype (section 11).
     2. Still open: report 06 proposal 2 (place-tied income); the scan-order fix (report 08); report 07's next step.
+- 2026-11-14 21:00 (in session with Justin): before building the agar correction, found its premise wrong for the page (the page's molecules and sugar diffuse; only the population models' do not). Not built; asked Justin. Read report 06 and the task 12 design report (six choices wait on Justin).

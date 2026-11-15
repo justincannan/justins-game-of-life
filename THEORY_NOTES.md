@@ -1587,3 +1587,11 @@ Proposals (Claude's) on making this work without freezing evolution:
   structure as input, and holds tertiary structure with elastic networks or Gō models. So the project can borrow its
   bead typing and its way of calibrating against measured partitioning between water and oil. The folding itself
   needs our own secondary rule and a cooperative tertiary term (task 12).
+
+### Correction (Claude, 14 November, about 21:00): the agar proposal's premise
+On reading the page's code before building the approved agar correction: in the page's dish, the 16 molecules do
+diffuse (chemStep, D up to 0.24 times wetness), and so does sugar (energyStep, D 0.2). The "non-diffusing molecules"
+of report 07 are in the GPU session's population models (pop2, store2), not in the page. So the approved correction is
+mostly already true of the page. Its real target is the population models. The correction is not built; Justin is asked
+how to proceed. Also, real plates' peptone is largely amino acids and peptides, which bacteria do use, so the page's
+edible monomers are not unrealistic in themselves.
