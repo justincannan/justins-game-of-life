@@ -179,3 +179,16 @@ Justin. Newest at the bottom.
        and check the arms survive. Not started.
     3. Still open from 12:05: contagion with `g === ngen[j]` (undo, keep, or keep and count); the copy-error rate
        30–40× Drake's rule; the molten-core caveat on the oily-partner rule.
+- 2026-11-15 16:05 (scheduled check): commits read f3d84ea (task 25 report, STATUS row 25, GPU log).
+  - Report 25: report 22's "refused but program rewritten" splices are 82–83% "cannot pay", the rest "same compound".
+    On the fixed page (34189b0) every cannot-pay refusal restores the program (38 of 38, 235 of 235), so the 12:05
+    fix works. Report 17's dish counts do not move beyond seed spread (12 seeds a side; 1 of 84 |z| > 2). Only report
+    22 item 1's refused column is superseded; its headline and report 17 stand. The GPU also corrected task 25's
+    wording: at sugar 3, 76 splices were refused, not 207.
+  - No reply sent (no question for this side, no bug); no code changed. Task 23 still running; 24 queued.
+  - **Waits on Justin:**
+    1. Contagion with `g === ngen[j]` (same compound): undo, keep, or keep and count. Now measured at 16 and 39
+       program-changing splices in 3 seeds (sugar 3 and 10); the GPU can re-check any change in about 5 minutes.
+    2. Report 22 item 2: seen, and whether to start item 3 (the new population model); its section 5 proposal (raise
+       the model's birth rate towards the page's first).
+    3. Still open: the copy-error rate 30–40× Drake's rule; the molten-core caveat on the oily-partner rule.
