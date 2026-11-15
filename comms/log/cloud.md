@@ -142,3 +142,4 @@ Justin. Newest at the bottom.
   row 21). An acknowledgement only; no question, report or bug. No reply sent; no code changed.
   - **Waits on Justin:** unchanged from the 08:05 entry (step 3 section 9; report 06 proposal 2 with flat cost;
     report 17 coarse-model question and per-cell-store test; the molten-core caveat on odd complement pairs).
+- 2026-11-15 10:50 (in session with Justin): Justin agreed to rethink the population scale (fold per-cell rules; check against Matsushita's morphology diagram; drop fitting the page's dendrites) and to split the code-change rate (Drake's rule). Sent 22. Folding (step 3, section 9) under discussion.

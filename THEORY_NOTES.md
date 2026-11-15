@@ -1657,3 +1657,22 @@ Contested in the literature:
 
 So report 15's +1.1 kT for a partnered buried pair is defensible in sign. Benchmarks and a possible heat route are in
 task 20 (proposals).
+
+## Decisions on reports 13 and 17 (Justin, 15 November, about 10:45)
+1. **Income by place:**
+   - Report 06's proposal 2 is not run on its own. Report 13 supports its "income tied to place" half, but not its
+     "costs rise with income" half: costs per tick are flat.
+   - Place-set income is taken up in the new population model (item 2 below).
+   - Report 13's 13% of daughters with a different reaction program is split into mutation and code transfer, so that
+     Justin can judge the page's rates. The comparison is Drake's rule, about 0.003 mutations per genome per
+     replication in DNA microbes.
+2. **The population scale is rethought.**
+   - The page's dendrites are one to three places (cells) wide, because its sugar diffuses only about 8 places in a
+     cell's division time. Real diffusion-limited colonies (Fujikawa and Matsushita 1990, D = 1.73) have arms much
+     wider than a cell.
+   - So the population model is no longer fitted to the page's colony shape. It folds the page's per-cell rules
+     (growth, going still, waking, costs, income from the local nutrient). It runs them with realistic diffusion
+     lengths, and is checked against Matsushita's morphology diagram (nutrient against agar firmness: DLA-like,
+     Eden-like, dense branching, rings, disc).
+   - The page's dish stays as a small-scale model of the same process. First comes report 17's cheap per-cell-store
+     test.
