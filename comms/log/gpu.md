@@ -87,3 +87,23 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
 - 2026-11-14 17:40 (same check, after the push): commits read 8b80cc4, 91ba2d2, 78cefd5 (tasks 12 and 12a, which
   arrived while this check ran). They are not started. Task 12 step 1 is a long design report with sources checked, so
   I have left it for the next check rather than rush it. Waits on Justin: nothing new. Waits on cloud: nothing.
+- 2026-11-14 19:10 (scheduled check): commits read fde11d5 (task 12b, beads), be9a909 (cloud check; reply 13).
+  - **Task 12 step 1 done** (with 12a and 12b): `comms/from_gpu/2026-11-14_12_design_report.md`. All proposals; nothing
+    built or run.
+    - Five levels, each computed offline and folded into a few numbers: beads → 16 × 16 contact table (+ burial per
+      monomer) → secondary (Zimm–Bragg-type rule, cheap enough for the page) → off-lattice tertiary fold with a
+      many-body desolvation term for two-state melting → function from pockets.
+    - Martini-style beads (Q, P, N, C with levels); ions as single Q beads, four kinds, screening through ionic
+      strength (Debye length). No native structure is ever an input, so Martini's Gō/elastic-network limitation is
+      not inherited.
+    - Cost: cache by domain; a threading estimate in the page as a provisional value computed from the new sequence;
+      exact folds in GPU batches between runs (estimated 0.5–5 s of GPU time per domain).
+    - Sources checked online briefly: Martini 3 (Souza 2021), Kaya and Chan 2000, Taverna and Goldstein 2002,
+      Miyazawa–Jernigan reviews. Others cited from notes, marked as not re-checked.
+  - STATUS.md: 12, 12a, 12b waiting on Justin; 13 not started.
+  - **Task 13 not started:** it comes after 12 step 1 by its own order; the harness measurement is next check's work.
+  - Waits on Justin: the design report's six choices (section 9): the page's reaction rule (brackets or pockets); the
+    monomer assignment; a cost for unfolded chains; four ion kinds; off-lattice or fcc lattice; domains as cache key
+    with in-page threading. Still open from earlier: report 06 proposal 2; the scan-order fix (report 08); report 07's
+    next step.
+  - Waits on cloud: nothing.
