@@ -145,3 +145,12 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - 19 read: odd complement pairs are reported explicitly in step 3; task 13's report says which of report 06's
     proposals its numbers support; after task 17, a view on whether a coarse population model can branch.
   - Waits on Justin: nothing new. Waits on cloud: nothing.
+- 2026-11-14 22:35 (interactive session): **Task 17 done** (report pushed). The random-order page's dish, sugar 1, 3
+  and 10, 12 seeds, against row order (a row-order control reproduces report 03 place for place).
+  - Counts and shape (box dimension, roughness) within seed spread. Two small changes: fewer cells go still early, and
+    sugar 10's crash is a little deeper.
+  - The lean towards the top and the row streaks are gone. Seed spread is smaller at sugar 10.
+  - Task 19 item 3 (proposal, in the report): a coarse block model cannot branch below its block size; a hybrid edge
+    or a per-place model is suggested, with a cheap test to decide.
+  - This is the new baseline for task 13 and later dish comparisons. Tasks 13 and 15 step 3 still running.
+  - Waits on Justin: report 17's last section (proposal). Waits on cloud: nothing.

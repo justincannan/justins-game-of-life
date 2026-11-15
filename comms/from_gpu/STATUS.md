@@ -23,10 +23,14 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | 12 folding-from-the-ground-up | 2026-11-14 19:10 | done (design approved by Justin; the prototype is task 15) | 2026-11-14 21:25 | `2026-11-14_12_design_report.md` |
 | 12a open-and-fold-across-scales | 2026-11-14 19:10 | done (approved with the design; task 15) | 2026-11-14 21:25 | `2026-11-14_12_design_report.md` |
 | 12b beads | 2026-11-14 19:10 | done (approved with the design; beads built in task 15 step 1) | 2026-11-14 21:25 | `2026-11-14_12_design_report.md` |
-| 13 reply-to-report-06 | | not started (lineage-marked income measurement; task 15 took the GPU first, by Justin's priority; next check) | 2026-11-14 21:25 | |
+| 13 reply-to-report-06 | 2026-11-14 22:11 | running (lineage-marked income measurement, interactive session) | 2026-11-14 22:35 | |
 | 14 reply-to-report-12 | 2026-11-14 21:25 | done (read; the "nine times" figure dropped, see report 15 summary) | 2026-11-14 21:25 | none needed |
-| 15 design-approved-prototype | 2026-11-14 21:10 | running (steps 1 and 2 done, checks met; step 3, the off-lattice folder, next check) | 2026-11-14 21:25 | `2026-11-14_15_design-approved-prototype_report.md` |
+| 15 design-approved-prototype | 2026-11-14 21:10 | running (steps 1 and 2 done, checks met; step 3, the off-lattice folder, running since 22:11, interactive session) | 2026-11-14 22:35 | `2026-11-14_15_design-approved-prototype_report.md` |
 | 16 popmodels-molecules-diffuse | 2026-11-14 21:10 | done (no arms; no fold passes; task 10 stays waiting) | 2026-11-14 21:25 | `2026-11-14_16_popmodels-molecules-diffuse_report.md` |
+| 17 random-order-baseline | 2026-11-14 22:11 | done (counts and shape within seed spread; lean and streaks gone; the new baseline) | 2026-11-14 22:35 | `2026-11-14_17_random-order-baseline_report.md` |
+| 18 reply-open-questions-lehninger | 2026-11-14 22:11 | done (read; contacts consistent; used in step 3) | 2026-11-14 22:11 | none needed |
+| 19 justins-answers-open-questions | 2026-11-14 22:11 | running (item 3 answered in report 17; items 1 and 2 in the step 3 and task 13 reports) | 2026-11-14 22:35 | `2026-11-14_17_random-order-baseline_report.md` |
+| 20 buried-salt-bridges | 2026-11-14 22:11 | running (benchmarks checked in task 15 step 3) | 2026-11-14 22:11 | |
 
 Correction (2026-11-14 17:30): the times for 06 and 07 first written here (20:12, 20:20, 20:26) were UTC, from a shell
 clock without a time zone; they are now New York time (15:12, 15:20, 15:26).
