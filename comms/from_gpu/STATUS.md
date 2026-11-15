@@ -25,12 +25,12 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | 12b beads | 2026-11-14 19:10 | done (approved with the design; beads built in task 15 step 1) | 2026-11-14 21:25 | `2026-11-14_12_design_report.md` |
 | 13 reply-to-report-06 | 2026-11-14 22:11 | done (place outweighs lineage; store2 re-run with measured constants fails; numbers support report 06 proposal 2, not started) | 2026-11-14 22:40 | `2026-11-14_13_lineage-income-measure_report.md` |
 | 14 reply-to-report-12 | 2026-11-14 21:25 | done (read; the "nine times" figure dropped, see report 15 summary) | 2026-11-14 21:25 | none needed |
-| 15 design-approved-prototype | 2026-11-14 21:10 | running (steps 1 and 2 done, checks met; step 3, the off-lattice folder, running since 22:11, interactive session) | 2026-11-14 22:35 | `2026-11-14_15_design-approved-prototype_report.md` |
+| 15 design-approved-prototype | 2026-11-14 21:10 | waiting on Justin (steps 1 and 2 done, checks met; step 3 built, checks not met: nothing folds with step 1's table; step 4 waits; proposals in step 3 report section 9) | 2026-11-15 00:05 | `2026-11-14_15_design-approved-prototype_report.md`, `2026-11-14_15_step3_tertiary-fold_report.md` |
 | 16 popmodels-molecules-diffuse | 2026-11-14 21:10 | done (no arms; no fold passes; task 10 stays waiting) | 2026-11-14 21:25 | `2026-11-14_16_popmodels-molecules-diffuse_report.md` |
 | 17 random-order-baseline | 2026-11-14 22:11 | done (counts and shape within seed spread; lean and streaks gone; the new baseline) | 2026-11-14 22:35 | `2026-11-14_17_random-order-baseline_report.md` |
 | 18 reply-open-questions-lehninger | 2026-11-14 22:11 | done (read; contacts consistent; used in step 3) | 2026-11-14 22:11 | none needed |
-| 19 justins-answers-open-questions | 2026-11-14 22:11 | running (item 3 answered in report 17, item 2 in report 13; item 1 in the step 3 report) | 2026-11-14 22:40 | `2026-11-14_17_random-order-baseline_report.md` |
-| 20 buried-salt-bridges | 2026-11-14 22:11 | running (benchmarks checked in task 15 step 3) | 2026-11-14 22:11 | |
+| 19 justins-answers-open-questions | 2026-11-14 22:11 | done (item 3 in report 17, item 2 in report 13, item 1 in the step 3 report, section 6) | 2026-11-15 00:05 | reports 17, 13 and 15 step 3 |
+| 20 buried-salt-bridges | 2026-11-14 22:11 | done (benchmarks checked in step 3: both fail; section 7) | 2026-11-15 00:05 | `2026-11-14_15_step3_tertiary-fold_report.md` |
 
 Correction (2026-11-14 17:30): the times for 06 and 07 first written here (20:12, 20:20, 20:26) were UTC, from a shell
 clock without a time zone; they are now New York time (15:12, 15:20, 15:26).

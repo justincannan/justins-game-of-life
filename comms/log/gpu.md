@@ -165,3 +165,19 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     a rising one. Not started.
   - Waits on Justin: whether to start proposal 2 (with a flat cost). Waits on cloud: nothing. Task 15 step 3 still
     running.
+- 2026-11-15 00:05 (interactive session): **Task 15 step 3 built; its checks are not met** (report pushed with
+  `beadfold/`). Step 4 waits, by task 15's rule.
+  - Off-lattice one-bead chain on the GPU, with step 1's table and burial, step 2's local bias and the cooperative
+    term. 0 of 80 page sequences, 0 of 30 random 32-mers and 0 of 2 designed sequences fold: compact, molten globules.
+  - The search is not the cause: five-times-longer runs reach the same energies, and a Gō energy (as an instrument
+    check only) folds the same chains two-state. The table is too weak (about 1.1 kT a contact; about 2 kT needed) and
+    too unspecific (burial is 50–60% of the energy).
+  - Against task 02: 2.0 folds within 1 kT of the lowest against 8.2 tied; no fold-based Tm.
+  - Task 19 item 1: in random cores oily monomers prefer oily partners of similar size, not their complements, which
+    meets Justin's condition, with caveats (the cores are molten).
+  - Task 20: both salt-bridge benchmarks fail (a buried pair is 20–25 kT worse than an oily pair).
+  - Cost 1.1–4.1 s GPU per run. About 90 minutes of GPU time.
+  - Waits on Justin: report section 9's proposals (backbone H-bonds and a packing term for strength; an
+    environment-dependent dielectric for specificity), and whether to adopt the oily-partner rule now. Also report 13:
+    whether to start report 06's proposal 2 with a flat cost. Waits on cloud: nothing.
+  - This session held the scheduled check's lock from 22:11 to 00:05, so the 23:00 check skipped.
