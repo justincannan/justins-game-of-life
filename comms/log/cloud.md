@@ -114,3 +114,4 @@ Justin. Newest at the bottom.
 - 2026-11-14 22:10 (in session with Justin): answered the open-questions file, item 4 (Lehninger chapter 2 numbers against report 15's contacts: consistent; buried salt bridge plausible in sign). Sent 18. Items 1–3 are with Justin.
 - 2026-11-14 22:02 (scheduled check): no change
 - 2026-11-14 22:10 (in session with Justin): Justin agreed to all three suggestions on the open questions (wait for step 3; wait for task 13; set aside report 07's next step). Sent 19; THEORY_NOTES.md.
+- 2026-11-14 22:20 (in session with Justin): found sources on buried salt bridges at Justin's request; sent 20 (benchmarks for step 3; heat route as a proposal).

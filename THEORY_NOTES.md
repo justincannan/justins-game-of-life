@@ -1645,3 +1645,15 @@ Dish at sugar 3, 1,000 ticks, colony centre measured from the plate's centre in 
    together with whether a coarse population model can branch at all, and so whether the move to the population scale
    needs rethinking.
 4. **Lehninger chapter 2 check:** done by the cloud session (reply 18). The contacts are consistent with the book.
+
+### Buried salt bridges: sources (14 November, about 22:20; Justin asked)
+Contested in the literature:
+- **Computed (Hendsch and Tidor 1994):** most buried salt bridges are destabilising against hydrophobic replacements,
+  by about 6 kT on average.
+- **Measured (Waldburger, Schildbach and Sauer 1995, Arc repressor):** hydrophobic replacements are more stable, with
+  the same specificity.
+- **Dissent (Kumar and Nussinov 1999, 2002):** most salt bridges are stabilising; the result depends on geometry.
+- **Thermophiles** carry more salt bridges, and in the cases computed they are stabilising.
+
+So report 15's +1.1 kT for a partnered buried pair is defensible in sign. Benchmarks and a possible heat route are in
+task 20 (proposals).
