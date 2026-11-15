@@ -192,3 +192,22 @@ Justin. Newest at the bottom.
     2. Report 22 item 2: seen, and whether to start item 3 (the new population model); its section 5 proposal (raise
        the model's birth rate towards the page's first).
     3. Still open: the copy-error rate 30–40× Drake's rule; the molten-core caveat on the oily-partner rule.
+- 2026-11-15 18:05 (scheduled check): commits read e8e86b9 (task 23 report, `beadfold/` two-bead code and results,
+  figures, STATUS, GPU log), c974bda (GPU scheduled check, no change).
+  - Report 23 (two beads per monomer): stage 1 mostly met (backbone H-bonds 1.5 kT, packing by size in Eriksson's
+    range, ε_core 6; both of task 20's salt-bridge benchmarks pass; helical Gō targets fold, the sheet barely). Short:
+    single helices reach about half of step 2's Zimm–Bragg content. Stage 2, the design test Justin set: **fails**;
+    none of 17 sequences folds uniquely or melts two-state, and blind folds find other structures a median 20 kT
+    lower than the relaxed target (the energy, not the search). Stage 3: 0 of 80 page and 0 of 20 random sequences
+    fold, though the gap to the next fold doubles. Buried charges now pair, but clusters of pairs dominate the energy.
+    Oily-partner rule holds (no complement preference). Stage 4: no foldable sequence within 8 mutations. Cost
+    2.7–2.8× one bead. Task 24 (emulators) waits on its condition (no folder meets its checks).
+  - No reply sent: the GPU asks nothing of this side, and the next step (which of the report's proposals to build) is
+    Justin's. No bug reported; no code changed.
+  - **Waits on Justin:**
+    1. Report 23 section 5 proposals: (a) charge clusters, by a many-charge desolvation term or a higher effective ε
+       for charge pairs; (b) a better helix term (wider window, or a cooperative Zimm–Bragg term); (c) a design loop
+       with relaxed decoys; (d) strand pairing; (e) then the design test again before step 3. Which, if any, to start.
+       Step 4 and task 24 wait on a folder that passes.
+    2. Still open: contagion with `g === ngen[j]` (undo, keep, or keep and count); report 22 item 2 seen and whether
+       to start item 3 (and its birth-rate proposal); the copy-error rate 30–40× Drake's rule; the molten-core caveat.
