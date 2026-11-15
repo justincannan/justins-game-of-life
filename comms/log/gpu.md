@@ -201,3 +201,21 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Constants calibrated on the page (not on shape): chemistry income, molecule use, income spread, coat per income.
   - Item 3 waits on Justin seeing this. Task 23 still running on the GPU. Task 24 waits.
   - Waits on Justin: item 2's result (for item 3); report 22 section 6. Waits on cloud: report 22 section 6 (page code).
+- 2026-11-15 15:35 (scheduled check): commits read 46414c1, 7ce4942 (cloud queue: hot springs, pond inflow, pigment
+  light, viruses), 34189b0 (refused-contagion fix; task 25). The lock dated 11:36 was more than 3 hours old, so this
+  check went ahead. Task 23 is still running in the interactive session (GPU job `jgol23-random`); its report and
+  `beadfold/` files are uncommitted and were left alone.
+  - **Task 25 done** (report pushed), on the page at 34189b0 (the fix alone; 7ce4942's new features would confound).
+    Report 22's "refused but program rewritten" splits into:
+    - cannot pay: 234 of 284 at sugar 10 and 63 of 76 at sugar 3;
+    - same compound: the rest.
+    - Task 25's "207 of 283" misread report 22: 207 were kept, 76 refused.
+  - On the fixed page all cannot-pay refusals restore the program: 38 of 38 and 235 of 235.
+  - The hooks change nothing (0 ticks differ), and the page before the fix reproduces task 22 exactly.
+  - Report 17's counts on the fixed page, 12 seeds against task 17's 12: 1 of 84 |z| > 2, so no movement beyond seed
+    spread.
+  - Superseded: only report 22 item 1's refused column. Item 2's page facts were measured before the fix and not
+    re-measured (expected to stand).
+  - Waits on Justin: the same-compound case (16 and 39 splices in 3 seeds); report 22 item 2 and item 3; the earlier
+    items (copy-error rate; molten-core caveat).
+  - Waits on cloud: nothing.

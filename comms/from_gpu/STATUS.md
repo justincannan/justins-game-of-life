@@ -35,6 +35,7 @@ States: not started, running, waiting on Justin, done, closed (stopped by the ta
 | 22 population-scale-rethought | 2026-11-15 11:10 | item 1 done (mostly mutation at division, 4–6% of daughters; contagion about a sixth at sugar 3 and 10; report 13's 13% was mostly a measuring error, corrected); item 2 done (the per-cell-store model branches; gliding only while coated is decisive, sugar-paid births next, store-based going still not needed for shape; the model undergrows the page); item 3 waits on Justin seeing item 2 | 2026-11-15 13:45 | `2026-11-15_22_population-scale-rethought_report.md` (items 1 and 2) |
 | 23 two-beads | 2026-11-15 11:40 | running (interactive session; GPU) | 2026-11-15 13:45 | |
 | 24 emulators | | waiting (starts after task 23's folder meets its checks and task 22's per-cell model exists) | 2026-11-15 13:45 | |
+| 25 refused-contagion-fix | 2026-11-15 15:10 | done (refused-but-rewritten splices: 82–83% cannot pay, the rest same compound; on the fixed page every cannot-pay refusal restores the program; dish counts unchanged within seed spread, 12 seeds; only report 22 item 1's refused column superseded); the same-compound case waits on Justin | 2026-11-15 15:35 | `2026-11-15_25_refused-contagion-fix_report.md` |
 
 Correction (2026-11-14 17:30): the times for 06 and 07 first written here (20:12, 20:20, 20:26) were UTC, from a shell
 clock without a time zone; they are now New York time (15:12, 15:20, 15:26).
