@@ -950,6 +950,8 @@ rep('<option value="dish">Dish: dark, still, food laid once</option>', '<option 
 rep("(1 + fr * (8 - n) / 7)", "(P.lifeRule ? 1 + fr * (8 - n) / 7 : 1)")
 rep("if (chemOn) releaseChem(cmap[i] << 4, gen[i], P.cellClumps ? body[i] : 0);", "if (chemOn && !(P.env === 'dish' && husk)) releaseChem(cmap[i] << 4, gen[i], P.cellClumps ? body[i] : 0);")
 rep("    reg(g, ngen[j], 'contagion'); ngen[j] = g;", "    if (chemOn && !swapChem(cmap[j] << 4, ngen[j], g)) continue;\n    reg(g, ngen[j], 'contagion'); ngen[j] = g;")
+# fix (15 November, report 22 section 6): a contagion the cell cannot pay for is undone, sequence and program too, as uptake does
+rep("    if (chemOn && !swapChem(cmap[j] << 4, ngen[j], g)) continue;", "    if (chemOn && !swapChem(cmap[j] << 4, ngen[j], g)) { if (P.seqOn) seqTransferUndo(j); continue; }")
 
 # the chemistry audit, part 2 (13 November): energy. The reserve gives back what was put in, not rconv times as much
 rep("if (light[i] < 0) { const use = Math.min(-light[i], r); r -= use; light[i] += use; }", "if (light[i] < 0) { const use = Math.min(-light[i], r / P.rconv); r -= use * P.rconv; light[i] += use; }")

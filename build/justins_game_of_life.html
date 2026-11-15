@@ -506,7 +506,7 @@ function step() {
     const mask = ((((1 << (2 * len)) - 1) << (2 * at))) >>> 0;
     const g = P.seqOn ? seqTransfer(i, j) : ((ngen[j] & ~mask) | (ngen[i] & mask)) >>> 0;
     if (g === ngen[j]) continue;
-    if (chemOn && !swapChem(cmap[j] << 4, ngen[j], g)) continue;
+    if (chemOn && !swapChem(cmap[j] << 4, ngen[j], g)) { if (P.seqOn) seqTransferUndo(j); continue; }
     reg(g, ngen[j], 'contagion'); ngen[j] = g; nchanged[j] = 1; writes++;
     if (P.floor) light[i] -= ZCOST[zmap[i]];
   }
@@ -2412,7 +2412,7 @@ function seqBirth(i, pj, pb, rate) {                      // copy (or cross) the
 }
 let hgtTried = 0, hgtFailed = 0, domDupN = 0;
 function seqTransfer(i, j) {                              // contagion: a stretch of one cell's sequence is spliced into its neighbour's
-  if (slen.length !== N) seqAlloc();
+  if (slen.length !== N) seqAlloc(); tuJ = -1;
   if (!slen[i]) seqFromGen(i, gen[i]); if (!slen[j]) seqFromGen(j, ngen[j]);
   const Li = slen[i], Lj = slen[j]; if (Li < 2 || Lj < 2) return ngen[j] >>> 0;
   let len = Math.min(2 + ((rng() * 5) | 0), Li, Lj), a = (rng() * (Li - len + 1)) | 0;
@@ -2427,8 +2427,14 @@ function seqTransfer(i, j) {                              // contagion: a stretc
     if (!at.length) { hgtFailed++; return ngen[j] >>> 0; }
     b = at[(rng() * at.length) | 0];
   }
-  for (let q = 0; q < len; q++) seq[j * SL + b + q] = seq[i * SL + a + q];
+  tuJ = j; tuB = b; tuLen = len; tuCat = cat[j]; tuRx = rx[j]; tuRxS = rxStr[j]; tuCH = cH[j];   // kept so a refused splice can be undone
+  for (let q = 0; q < len; q++) { tuOld[q] = seq[j * SL + b + q]; seq[j * SL + b + q] = seq[i * SL + a + q]; }
   const g = infold(seq, j * SL, Lj); cat[j] = lastCat; rx[j] = lastRx; rxStr[j] = lastRxS; cH[j] = lastCH; return g;
+}
+let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0; const tuOld = new Uint8Array(256);
+function seqTransferUndo(j) {                             // the page refused the splice (the cell cannot pay): its sequence and program go back
+  if (tuJ !== j) return; for (let q = 0; q < tuLen; q++) seq[j * SL + tuB + q] = tuOld[q];
+  cat[j] = tuCat; rx[j] = tuRx; rxStr[j] = tuRxS; cH[j] = tuCH; tuJ = -1;
 }
 function moveSeq(a, b) { if (slen.length !== N) seqAlloc(); seq.copyWithin(b * SL, a * SL, a * SL + SL); slen[b] = slen[a]; slen[a] = 0; cat[b] = cat[a]; cat[a] = 0; rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a]; coat[b] = coat[a]; coat[a] = 0; cH[b] = cH[a]; cH[a] = 0; rxAct[b] = rxAct[a]; rxAct[a] = 0; if (regd[a]) { regd[b] = 1; regd[a] = 0; regList.push(b); } }
 function seqHtml(i) {

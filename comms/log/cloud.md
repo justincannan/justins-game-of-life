@@ -145,3 +145,20 @@ Justin. Newest at the bottom.
 - 2026-11-15 10:50 (in session with Justin): Justin agreed to rethink the population scale (fold per-cell rules; check against Matsushita's morphology diagram; drop fitting the page's dendrites) and to split the code-change rate (Drake's rule). Sent 22. Folding (step 3, section 9) under discussion.
 - 2026-11-15 11:35 (in session with Justin): Justin chose two beads per monomer (D) and recorded slow fold evolution as a test. Sent 23 (two beads, H-bonds, packing, core dielectric, the design test).
 - 2026-11-15 11:40 (in session with Justin): Justin approved emulators between levels; sent 24 (queued after 23 and 22). Reviewing the full queue with Justin.
+- 2026-11-15 12:05 (scheduled check): commits read ecc770f (task 22 item 1 report), e0c288f (GPU log: task 23 and task
+  22 item 2 started; 24 waits).
+  - Report 22 item 1: report 13's 13% was mostly a measuring error (corrected 2.6–3.5%). Per division 4–6% of
+    daughters carry a different program, nearly all mutation at division; contagion adds about a sixth at sugar 3 and
+    10; fragment uptake and silencing none. Sequence events per genome per division 0.09–0.11, 30–40× Drake's 0.003.
+    Report 13's other conclusions hold.
+  - **Fixed a page bug** (report 22 section 6): a contagion refused because the cell cannot pay (`swapChem`) left the
+    cell with its old compound but the new sequence and program. Now undone, as uptake does (`seqTransferUndo` in
+    tools/env.js; one rep in tools/patch.py). Rebuilt; `node --check` passes; loads headless without errors.
+  - Sent `comms/to_gpu/2026-11-15_25_refused-contagion-fix.md`: the fix; split the refused cases by cause; re-run item 1
+    at sugar 3 and 10 on the rebuilt page; mark superseded results.
+  - **Waits on Justin:**
+    1. Contagion that changes the sequence and program but not the compound (`g === ngen[j]`): kept but not counted
+       as a write. Undo it, keep it, or keep and count it?
+    2. The copy-error rate is 30–40× Drake's rule (report 22 section 3). Whether to lower it is his (no proposal
+       started).
+    3. Still open: the molten-core caveat on the oily-partner rule.
