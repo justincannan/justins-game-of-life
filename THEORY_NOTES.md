@@ -1608,3 +1608,17 @@ edible monomers are not unrealistic in themselves.
    - an off-lattice tertiary model;
    - domains as the cache key, with in-page threading as the provisional value.
    The prototype (design report, section 11) may begin.
+
+## The uneven spreading: the colony leans towards the top (cloud session, 14 November, about 21:45; measured)
+Dish at sugar 3, 1,000 ticks, colony centre measured from the plate's centre in plate radii (`test/dish_asym.py`):
+- **Current page:** the centre lies above the plate's centre (y < 0) in 41 of 44 runs, mean about −0.06. This held
+  across: other seeds; a world height that is a multiple of the ground squares; gliding off (6 of 8); hopping off
+  (8 of 8). Left–right shows no consistent lean.
+- **Harness-only copy with the two row-ordered loops of report 08 reversed** (the feeding loop and the birth scan):
+  the lean goes: y < 0 in 9 of 18, mean about +0.01.
+- **So the scan order is a cause of the lean.** Report 08 found no lean that follows scan order. It used 3 seeds at
+  tick 250 and sugar 10, which was too few to see an effect of this size; this measurement supersedes that part.
+- **What is left after the lean:** arms of different lengths in different directions. That is expected of branching
+  growth, where whichever arm reaches fresh agar first keeps the lead, and real colonies are irregular in the same way.
+- **Proposal (awaits Justin):** visit places in a random order each tick in those loops, using the page's seeded rng.
+  Or split a square's store among its claimants, which is order-free. This changes the model.
