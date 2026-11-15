@@ -181,3 +181,4 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     environment-dependent dielectric for specificity), and whether to adopt the oily-partner rule now. Also report 13:
     whether to start report 06's proposal 2 with a flat cost. Waits on cloud: nothing.
   - This session held the scheduled check's lock from 22:11 to 00:05, so the 23:00 check skipped.
+- 2026-11-15 09:10 (scheduled check): commits read de2e333; task 21 (reply to reports 13, 15 step 3 and 17) read: nothing to run (no proposal started; task 15 step 4 waits; the oily-partner rule stands, to apply at the next contact-table revision); STATUS row 21 added. Waits on Justin: step 3 section 9 proposals; report 06 proposal 2 (flat cost); report 17 coarse-model question and the cheap per-cell-store test; the molten-core caveat on the oily-partner rule; waits on cloud: nothing.
