@@ -1635,3 +1635,13 @@ Dish at sugar 3, 1,000 ticks, colony centre measured from the plate's centre in 
   - dish speed about the same.
 - **Earlier dish measurements were made on row-order pages.** Report 08 found counts and the sugar-10 crash unchanged
   under random order; the GPU session re-baselines (task 17).
+
+## Decisions on the GPU session's open questions (Justin, 14 November, about 22:03)
+1. **Odd complement pairs:** wait for step 3. If packed cores confirm that oily monomers prefer oily partners, adopt it:
+   complement pairing holds for polar monomers only. This matches real proteins, where oily contacts drive collapse
+   and polar contacts give specificity.
+2. **Report 06, proposal 2:** wait for task 13's numbers on income inheritance.
+3. **Report 07's next step (branching in the population models):** set aside. Revisit after task 17's baseline,
+   together with whether a coarse population model can branch at all, and so whether the move to the population scale
+   needs rethinking.
+4. **Lehninger chapter 2 check:** done by the cloud session (reply 18). The contacts are consistent with the book.

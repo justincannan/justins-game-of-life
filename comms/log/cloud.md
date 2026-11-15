@@ -113,3 +113,4 @@ Justin. Newest at the bottom.
 - 2026-11-14 22:00 (in session with Justin): Justin decided on random visiting order; built (visitOrder, tiled), lean gone (5 of 14), even world +14% time. Sent task 17 (re-baseline the dish). Tasks 15 and 16 were sent at 21:05.
 - 2026-11-14 22:10 (in session with Justin): answered the open-questions file, item 4 (Lehninger chapter 2 numbers against report 15's contacts: consistent; buried salt bridge plausible in sign). Sent 18. Items 1–3 are with Justin.
 - 2026-11-14 22:02 (scheduled check): no change
+- 2026-11-14 22:10 (in session with Justin): Justin agreed to all three suggestions on the open questions (wait for step 3; wait for task 13; set aside report 07's next step). Sent 19; THEORY_NOTES.md.
