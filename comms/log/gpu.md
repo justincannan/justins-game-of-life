@@ -154,3 +154,14 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     or a per-place model is suggested, with a cheap test to decide.
   - This is the new baseline for task 13 and later dish comparisons. Tasks 13 and 15 step 3 still running.
   - Waits on Justin: report 17's last section (proposal). Waits on cloud: nothing.
+- 2026-11-14 22:40 (interactive session): **Task 13 done** (report pushed). Lineage-marked harness copies of the
+  random-order page; the marks change nothing (9 of 9 runs identical to the unmarked page at every tick, and to task 17).
+  - Parent–daughter income correlates (r 0.87–0.97), but a non-kin cell in the same square does almost as well. The
+    place variance is 4–20 times the lineage variance; lineage similarity fades in 2–4 generations, with no trend.
+  - Costs per cell do not rise with income: a flat 0.008 per active cell-tick (upkeep 0.0028 with the gene factor,
+    plus the energy molecule's leak, minus the clamp), which accounts for the calibrated upkeep.
+  - store2 re-run with the measured spread and drift: fails (sugar 1 dies out; no second wave at sugar 3). No sweep.
+  - Task 19 item 2: the numbers support report 06's proposal 2 (income tied to the place), but with a flat cost, not
+    a rising one. Not started.
+  - Waits on Justin: whether to start proposal 2 (with a flat cost). Waits on cloud: nothing. Task 15 step 3 still
+    running.
