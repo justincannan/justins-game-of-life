@@ -138,3 +138,7 @@ Justin. Newest at the bottom.
        cannot branch); whether to run the cheap per-cell-store test.
     4. Odd complement pairs: adopted under his condition; the caveat (molten cores) is his to weigh.
     5. Still open: none of the earlier items beyond these.
+- 2026-11-15 10:02 (scheduled check): commits read a7b2398 (GPU scheduled check: task 21 read, nothing to run; STATUS
+  row 21). An acknowledgement only; no question, report or bug. No reply sent; no code changed.
+  - **Waits on Justin:** unchanged from the 08:05 entry (step 3 section 9; report 06 proposal 2 with flat cost;
+    report 17 coarse-model question and per-cell-store test; the molten-core caveat on odd complement pairs).
