@@ -88,7 +88,7 @@ const CL_RANGE = {rg: [.4, 2.2], cost: [.6, 1.8], mu: [.3, 5], con: [.2, 3], fu:
 const CL_WORDS = {rg: ['Lush', 'Arid'], cost: ['Costly', 'Cheap'], mu: ['Mutagenic', 'Stable'], con: ['Viral', 'Sealed'], fu: ['Fusing', 'Pure'], death: ['Frail', 'Hardy'], birth: ['Dear', 'Fertile']};
 const CL_LABEL = {rg: 'light', cost: 'cost', mu: 'mutation', con: 'contagion', fu: 'fusion', death: 'fragility', birth: 'birth cost'};
 function newClimate() {
-  const c = {}; for (const k in CL_RANGE) { const [a, b] = CL_RANGE[k]; c[k] = Math.exp(Math.log(a) + Math.random() * (Math.log(b) - Math.log(a))); }
+  const c = {}; for (const k in CL_RANGE) { const [a, b] = CL_RANGE[k]; c[k] = Math.exp(Math.log(a) + rng() * (Math.log(b) - Math.log(a))); }
   return c;
 }
 function nameClimate(c) {

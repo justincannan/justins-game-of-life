@@ -328,6 +328,8 @@ let cat = new Uint16Array(1), lastCat = 0;
 let cH = new Uint32Array(1), codeChg = 0, codeBirths = 0, coatMade = 0, rxAct = new Float32Array(1), coat = new Float32Array(1), rx = new Uint32Array(1), rxStr = new Uint8Array(1), rx2 = new Uint32Array(1), rxStr2 = new Uint8Array(1), rxRun = 0, rxGain = 0, rxCost = 0;   // each cell's reactions (see domReact)
 const CATN = ['light harvest', 'respiration', 'uptake', 'keeping water', 'heat tolerance', 'copying fidelity', 'defence', 'building'];
 const CA = (i, k) => P.catOn ? (cat[i] >> (2 * k)) & 3 : 0;
+let sOrg = new Uint8Array(1); const oTmp = new Uint8Array(SL * 2);   // where each monomer came from (display only): 0 by descent, 1 from outside (another cell, the water), 2 from a virus
+function ORG() { if (sOrg.length !== N * SL) sOrg = new Uint8Array(N * SL); return sOrg; }
 const sTmp = new Uint8Array(SL * 2), sStk = new Uint8Array(SL * 2), sEx = new Uint8Array(16);
 function seqAlloc() { cH = new Uint32Array(N); coat = new Float32Array(N); rxAct = new Float32Array(N); seq = new Uint8Array(N * SL); slen = new Uint8Array(N); cat = new Uint16Array(N); rx = new Uint32Array(N); rxStr = new Uint8Array(N); regd = new Uint8Array(N); regList.length = 0; }
 // the nucleus regulates expression (the second articulation): a clump whose code says so silences one kind of monomer in its
@@ -361,7 +363,10 @@ const RXE = new Float32Array(16); { const pr = [2, 3, 5, 7, 11, 13, 17, 19, 23, 
 // adaptors: each sets code[its inner sum] = its opening monomer, the nearest to the front winning. They run no reaction.
 const sCode = new Uint8Array(16), sAd = new Uint8Array(SL); let lastCH = 0, lastAd = 0;
 function rxOf(d) { const s = dO[d] & 15; let t = (s + 1 + sCode[dQ[d] & 15]) & 15; if (t === s) t = s ^ 8; return (s << 4) | t; }
-function domReact(i) { domReactW(i, rx[i], rxStr[i]); if (rx2[i]) domReactW(i, rx2[i], rxStr2[i]); }   // a cell's reactions, from all its genes
+function domReact(i) { domReactW(i, rx[i], rxStr[i]); if (rx2[i]) domReactW(i, rx2[i], rxStr2[i]);
+  if (P.domCost > 0) { let nr = 0; for (let q = 0; q < 4; q++) { if ((rx[i] >>> (8 * q)) & 255) nr++; if ((rx2[i] >>> (8 * q)) & 255) nr++; }   // each working domain costs a little to keep running (Justin, 16 November): a repeated reaction runs faster but each copy pays
+    const c = P.domCost * nr; light[i] -= c; domCostSum += c; } }
+let domCostSum = 0;   // a cell's reactions, from all its genes
 function domReactW(i, r, st) {                             // run one word of reactions on the cell's own square's molecules
   const c = cmap[i] << 4;
   for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; const s = b >> 4, t = b & 15, k = (st >> (2 * q)) & 3 || 1;
@@ -402,7 +407,7 @@ function infoldGene(a, o, n) {
 }
 function seqFromGen(i, g) {                               // a cell with no sequence yet (the first organism, a painted cell) gets one that infolds to its compound
   if (slen.length !== N) seqAlloc(); g = g >>> 0;
-  const o = i * SL; let n = 0;
+  const o = i * SL; let n = 0; ORG().fill(0, o, o + SL);
   for (let k = 0; k < 16; k++) { const e = (g >>> (2 * k)) & 3; for (let q = 0; q < e; q++) seq[o + n++] = k; }
   slen[i] = n; if (infold(seq, o, n) === g) { cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; return; }
   for (let t = 0; t < 40; t++) { for (let h = n - 1; h > 0; h--) { const r = (rng() * (h + 1)) | 0, x = seq[o + h]; seq[o + h] = seq[o + r]; seq[o + r] = x; } if (infold(seq, o, n) === g) break; }
@@ -412,21 +417,21 @@ function seqBirth(i, pj, pb, rate) {                      // copy (or cross) the
   coat[i] = 0; rxAct[i] = 0; const pCH = pj >= 0 ? cH[pj] : 0;
   if (slen.length !== N) seqAlloc();
   if (!slen[pj]) seqFromGen(pj, gen[pj]);
-  const L = slen[pj], o = pj * SL; let n = 0, ch = false;
+  const L = slen[pj], o = pj * SL; let n = 0, ch = false; const OG = ORG();
   if (pb >= 0 && pb !== pj) { if (!slen[pb]) seqFromGen(pb, gen[pb]); const Lb = slen[pb], ob = pb * SL, cut = 1 + ((rng() * Math.max(1, Math.min(L, Lb) - 1)) | 0);
-    for (let h = 0; h < Math.min(cut, L); h++) sTmp[n++] = seq[o + h]; for (let h = cut; h < Lb && n < SL; h++) sTmp[n++] = seq[ob + h]; }
-  else for (let h = 0; h < L; h++) sTmp[n++] = seq[o + h];
+    for (let h = 0; h < Math.min(cut, L); h++) { oTmp[n] = OG[o + h]; sTmp[n++] = seq[o + h]; } for (let h = cut; h < Lb && n < SL; h++) { oTmp[n] = OG[ob + h]; sTmp[n++] = seq[ob + h]; } }
+  else for (let h = 0; h < L; h++) { oTmp[n] = OG[o + h]; sTmp[n++] = seq[o + h]; }
   const p = rate * P.seqMu * (1 - .25 * CA(pj, 5));          // the parent's copying-fidelity enzyme proofreads the copy
   for (let h = 0; h < n; h++) if (rng() < p) { sTmp[h] = (rng() * 16) | 0; ch = true; }
   if (n > 1 && rng() < P.seqDup) { const len = 1 + ((rng() * Math.min(4, n)) | 0), a = (rng() * (n - len + 1)) | 0;      // a stretch copied twice: the second copy is free to vary
-    if (n + len <= SL) { for (let h = n - 1; h >= a + len; h--) sTmp[h + len] = sTmp[h]; for (let q = 0; q < len; q++) sTmp[a + len + q] = sTmp[a + q]; n += len; ch = true; } }
+    if (n + len <= SL) { oTmp.copyWithin(a + len, a, n); for (let h = n - 1; h >= a + len; h--) sTmp[h + len] = sTmp[h]; for (let q = 0; q < len; q++) sTmp[a + len + q] = sTmp[a + q]; n += len; ch = true; } }
   if (P.domOn && P.domDup > 0 && n > 3 && rng() < P.domDup) {     // a whole domain copied twice: the second copy is free to drift into a new job
     infold(sTmp, 0, n); if (dN) { const d = (rng() * dN) | 0, a = dA[d], len = dB[d] - a + 1;
-      if (n + len <= SL) { for (let h = n - 1; h > dB[d]; h--) sTmp[h + len] = sTmp[h]; for (let q = 0; q < len; q++) sTmp[dB[d] + 1 + q] = sTmp[a + q]; n += len; ch = true; domDupN++; } } }
+      if (n + len <= SL) { oTmp.copyWithin(dB[d] + 1 + len, dB[d] + 1, n); oTmp.copyWithin(dB[d] + 1, a, a + len); for (let h = n - 1; h > dB[d]; h--) sTmp[h + len] = sTmp[h]; for (let q = 0; q < len; q++) sTmp[dB[d] + 1 + q] = sTmp[a + q]; n += len; ch = true; domDupN++; } } }
   if (n > 2 && rng() < P.seqDel) { const len = 1 + ((rng() * Math.min(4, n - 1)) | 0), a = (rng() * (n - len + 1)) | 0;
-    for (let h = a; h + len < n; h++) sTmp[h] = sTmp[h + len]; n -= len; ch = true; }
-  { const n1 = geneOps(sTmp, n); if (n1 !== n) { n = n1; ch = true; } }   // whole genes duplicated or lost
-  const oi = i * SL; for (let h = 0; h < n; h++) seq[oi + h] = sTmp[h]; slen[i] = n;
+    oTmp.copyWithin(a, a + len, n); for (let h = a; h + len < n; h++) sTmp[h] = sTmp[h + len]; n -= len; ch = true; }
+  { const n1 = geneOps(sTmp, n, oTmp); if (n1 !== n) { n = n1; ch = true; } }   // whole genes duplicated or lost
+  const oi = i * SL; for (let h = 0; h < n; h++) seq[oi + h] = sTmp[h]; slen[i] = n; OG.set(oTmp.subarray(0, n), oi);
   const g = infold(seq, oi, n); cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; codeBirths++; if (lastCH !== pCH) codeChg++;
   if (ch && pb < 0) { seqMut++; if (g === (gen[pj] >>> 0)) seqNeutral++; }
   return g;
@@ -449,15 +454,16 @@ function seqTransfer(i, j) { GT.j = -1; if (P.geneHGT > 0 && rng() < P.geneHGT) 
     b = at[(rng() * at.length) | 0];
   }
   tuJ = j; tuB = b; tuLen = len; tuCat = cat[j]; tuRx = rx[j]; tuRxS = rxStr[j]; tuCH = cH[j];   // kept so a refused splice can be undone
+  { const OG = ORG(); for (let q = 0; q < len; q++) { tuOldO[q] = OG[j * SL + b + q]; if (seq[j * SL + b + q] !== seq[i * SL + a + q]) OG[j * SL + b + q] = OG[i * SL + a + q] || 1; } }   // only monomers that actually change are marked: a stretch identical to what was there leaves the tag as it was
   for (let q = 0; q < len; q++) { tuOld[q] = seq[j * SL + b + q]; seq[j * SL + b + q] = seq[i * SL + a + q]; }
   const g = infold(seq, j * SL, Lj); cat[j] = lastCat; rx[j] = lastRx; rxStr[j] = lastRxS; cH[j] = lastCH; return g;
 }
-let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0; const tuOld = new Uint8Array(256);
+let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0; const tuOld = new Uint8Array(256), tuOldO = new Uint8Array(256);
 function seqTransferUndo(j) { if (GT.j === j) { geneTransferUndo(j); return; }                             // the page refused the splice (the cell cannot pay): its sequence and program go back
-  if (tuJ !== j) return; for (let q = 0; q < tuLen; q++) seq[j * SL + tuB + q] = tuOld[q];
+  if (tuJ !== j) return; for (let q = 0; q < tuLen; q++) { seq[j * SL + tuB + q] = tuOld[q]; sOrg[j * SL + tuB + q] = tuOldO[q]; }
   cat[j] = tuCat; rx[j] = tuRx; rxStr[j] = tuRxS; cH[j] = tuCH; tuJ = -1;
 }
-function moveSeq(a, b) { if (slen.length !== N) seqAlloc(); seq.copyWithin(b * SL, a * SL, a * SL + SL); slen[b] = slen[a]; slen[a] = 0; cat[b] = cat[a]; cat[a] = 0; rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a]; coat[b] = coat[a]; coat[a] = 0; cH[b] = cH[a]; cH[a] = 0; rxAct[b] = rxAct[a]; rxAct[a] = 0; if (regd[a]) { regd[b] = 1; regd[a] = 0; regList.push(b); } }
+function moveSeq(a, b) { if (slen.length !== N) seqAlloc(); { const OG = ORG(); OG.copyWithin(b * SL, a * SL, a * SL + slen[a]); } seq.copyWithin(b * SL, a * SL, a * SL + SL); slen[b] = slen[a]; slen[a] = 0; cat[b] = cat[a]; cat[a] = 0; rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a]; coat[b] = coat[a]; coat[a] = 0; cH[b] = cH[a]; cH[a] = 0; rxAct[b] = rxAct[a]; rxAct[a] = 0; if (regd[a]) { regd[b] = 1; regd[a] = 0; regList.push(b); } }
 function seqHtml(i) {
   if (!P.seqOn || i == null || !alive[i]) return ''; if (slen.length !== N) seqAlloc(); if (!slen[i]) seqFromGen(i, gen[i]);
   const o = i * SL, n = slen[i], br = new Array(n).fill('·'), st = [];
@@ -487,14 +493,14 @@ function seqPanel() {
       dom += `<br>Reading codes: <b>${Math.round(100 * wc / Math.max(1, tot2))}%</b> of cells read with a code their own adaptors changed · <b>${codes.size}</b> changed codes in the sample, the commonest held by ${Math.round(100 * top1 / Math.max(1, tot2))}% · code changed at <b>${codeBirths ? (100 * codeChg / codeBirths).toFixed(2) : 0}%</b> of births so far`; }
     if (m && P.rxDom) { const cnt = new Map(); let withRx = 0, tot = 0;
       for (let i = 0; i < N; i += 11) { if (!alive[i] || !slen[i]) continue; const r = rx[i]; if (r) withRx++; tot++;
-        for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; cnt.set(b, (cnt.get(b) || 0) + 1); } }
+        const seenR = new Set(); for (const w of [r, rx2[i]]) for (let q = 0; q < 4; q++) { const b = (w >>> (8 * q)) & 255; if (!b) break; seenR.add(b); } for (const b of seenR) cnt.set(b, (cnt.get(b) || 0) + 1); }   // each reaction counted once a cell, from both words
       const top = [...cnt.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([b, c]) => `${(b & 15) === ((b >> 4) ^ 8) && P.cellClumps && P.sugarCoat > 0 ? 'sugar→coat' : MONO[b >> 4] + '→' + MONO[b & 15]} ${Math.round(100 * c / Math.max(1, tot))}%`).join(', ');
       dom += `<br>Reactions: <b>${Math.round(100 * withRx / Math.max(1, tot))}%</b> of cells run at least one · most common: ${top || 'none'} · light gained <b>${rxGain.toFixed(0)}</b>, spent <b>${rxCost.toFixed(0)}</b> so far`; }
-    if (m && P.seqOn) { let tg = 0, multi = 0, mk = 0, ml = 0, dupG = 0, mx = 1;
+    if (m && P.seqOn) { let tg = 0, multi = 0, mk = 0, ml = 0, dupG = 0, mx = 1, nO = 0, nV = 0; const OG = ORG();
       for (let i = 0; i < N; i += 11) { if (!alive[i] || !slen[i]) continue; const o = i * SL, L = slen[i], k = geneSegs(seq, o, L); tg += k; if (k > 1) multi++; if (k > mx) mx = k; ml += L;
-        let inG = 0; for (let q = 0; q < k; q++) inG += gSeg[2 * q + 1] - gSeg[2 * q]; mk += L - inG;
+        let inG = 0; for (let q = 0; q < k; q++) inG += gSeg[2 * q + 1] - gSeg[2 * q]; mk += L - inG; for (let h = 0; h < L; h++) { const v = OG[o + h]; if (v === 1) nO++; else if (v === 2) nV++; }
         const seen = new Set(); for (let q = 0; q < k; q++) { const t = seq.slice(o + gSeg[2 * q], o + gSeg[2 * q + 1]).join(','); if (seen.has(t)) dupG++; else seen.add(t); } }
-      dom += `<br>Genes: <b>${(tg / m).toFixed(2)}</b> a cell · <b>${Math.round(100 * multi / m)}%</b> of cells carry more than one (most <b>${mx}</b>) · <b>${ml ? Math.round(100 * mk / ml) : 0}%</b> of monomers are gene markers · <b>${tg ? Math.round(100 * dupG / tg) : 0}%</b> of genes are exact copies of another in the same cell · so far ${geneDupN} genes duplicated, ${geneDelN} lost, ${geneHGTN} passed between cells, ${virIntegN} taken in from viruses`; }
+      dom += `<br>Genes: <b>${(tg / m).toFixed(2)}</b> a cell · <b>${Math.round(100 * multi / m)}%</b> of cells carry more than one (most <b>${mx}</b>) · <b>${ml ? Math.round(100 * mk / ml) : 0}%</b> of monomers are gene markers · <b>${tg ? Math.round(100 * dupG / tg) : 0}%</b> of genes are exact copies of another in the same cell · monomers by origin: <b>${ml ? (100 * nV / ml).toFixed(1) : 0}%</b> from viruses, <b>${ml ? (100 * nO / ml).toFixed(1) : 0}%</b> from outside, the rest by descent ${P.domCost > 0 ? ` · working domains have cost <b>${domCostSum.toFixed(0)}</b> light so far` : ''} · so far ${geneDupN} genes duplicated, ${geneDelN} lost, ${geneHGTN} passed between cells, ${virIntegN} taken in from viruses`; }
     if (m) dom = dom + `<br>Domains: <b>${(dn / m).toFixed(1)}</b> a cell, averaging <b>${dn ? (dsz / dn).toFixed(1) : 0}</b> monomers · <b>${dn ? Math.round(100 * dmul / dn) : 0}%</b> folded firmer by a same-kind pair inside · <b>${prs ? Math.round(100 * hid / prs) : 0}%</b> of pairs held inside another kind's domain${P.domDup > 0 ? ` · ${domDupN} whole domains duplicated so far` : ''}`; }
   return n ? `<div style="margin-bottom:6px;color:var(--muted)">Line of expression: sequences average <b>${(tl / n).toFixed(1)}</b> monomers · <b>${ss.size}</b> different sequences make <b>${gs.size}</b> compounds · <b>${seqMut ? Math.round(100 * seqNeutral / seqMut) : 0}%</b> of copying errors left the compound unchanged${work}${dom}</div>` : '';
 }
@@ -524,8 +530,8 @@ function olfPanel() {
   return `<div style="margin-bottom:6px;color:var(--muted)">Open, lift, fold: life supplies ${P.rxn ? `<b>${pc('co2')}</b> of the CO₂ · <b>${pc('wat')}</b> of the water · ` : ''}<b>${pc('min')}</b> of the molecules${P.rxn ? ' · all the oxygen and sugar' : ''}. Crossings are logged in the chronicle.</div>`;
 }
 // a cell carried off by the water takes its sequence and enzymes with it, and lands with them
-function seqTake(i) { if (!P.seqOn || slen.length !== N || !slen[i]) return {sq: null, ct: 0}; const o = i * SL, r = {sq: seq.slice(o, o + slen[i]), ct: cat[i], rx: rx[i], rs: rxStr[i], ch: cH[i]}; slen[i] = 0; return r; }
-function seqPut(i, s) { if (slen.length !== N) seqAlloc(); if (s.sq) { seq.set(s.sq, i * SL); slen[i] = s.sq.length; cat[i] = s.ct; rx[i] = s.rx || 0; rxStr[i] = s.rs || 0; cH[i] = s.ch || 0; } else slen[i] = 0; }
+function seqTake(i) { if (!P.seqOn || slen.length !== N || !slen[i]) return {sq: null, ct: 0}; const o = i * SL, r = {sq: seq.slice(o, o + slen[i]), og: ORG().slice(o, o + slen[i]), ct: cat[i], rx: rx[i], rs: rxStr[i], ch: cH[i]}; slen[i] = 0; return r; }
+function seqPut(i, s) { if (slen.length !== N) seqAlloc(); if (s.sq) { seq.set(s.sq, i * SL); if (s.og) ORG().set(s.og, i * SL); else ORG().fill(0, i * SL, i * SL + s.sq.length); slen[i] = s.sq.length; cat[i] = s.ct; rx[i] = s.rx || 0; rxStr[i] = s.rs || 0; cH[i] = s.ch || 0; } else slen[i] = 0; }
 // ---------------- species, as a readout (a measure, not a cause). Every 100 ticks a sample of living cells is fingerprinted
 // by the three-letter stretches of their sequences (a MinHash of 16), and similar fingerprints are gathered into clusters.
 // Clusters are matched to the last census so a species keeps its number; the chronicle logs the established ones as they
@@ -946,7 +952,7 @@ function popGid(i) {
 }
 function popPlace(i, gt, inact, e) {
   alive[i] = 1; gen[i] = gt.gen; xg[i] = gt.xg; dor[i] = inact ? 1 : 0; light[i] = e;
-  if (P.seqOn) { if (gt.seq) { seq.set(gt.seq, i * SL); slen[i] = gt.len; } else seqFromGen(i, gt.gen); gen[i] = infold(seq, i * SL, slen[i]); cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; }
+  if (P.seqOn) { if (gt.seq) { seq.set(gt.seq, i * SL); ORG().fill(0, i * SL, i * SL + gt.len); slen[i] = gt.len; } else seqFromGen(i, gt.gen); gen[i] = infold(seq, i * SL, slen[i]); cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; }
 }
 function popUI() { const b = document.getElementById('popFold'); if (b) b.style.display = popWin ? '' : 'none'; }
 
@@ -1038,9 +1044,10 @@ function fragStep() {                                  // every 8 ticks: breakin
       let best = -1, bm = -1; for (let p = 0; p + L <= n0; p++) { let m = 0; for (let h = 0; h < L; h++) if (seq[o + p + h] === frSeq[fo + h]) m++; if (m > bm) { bm = m; best = p; } }
       if (bm * 2 < L || bm === L) continue;                                   // too little homology, or nothing would change
       const old = seq.slice(o + best, o + best + L), g0 = gen[i];
-      for (let h = 0; h < L; h++) seq[o + best + h] = frSeq[fo + h];
+      const oldO = ORG().slice(o + best, o + best + L);
+      for (let h = 0; h < L; h++) { if (seq[o + best + h] !== frSeq[fo + h]) sOrg[o + best + h] = 1; seq[o + best + h] = frSeq[fo + h]; }
       const g1 = infold(seq, o, n0);
-      if (g1 !== g0 && P.chemOn && !swapChem(c << 4, g0, g1)) { seq.set(old, o + best); continue; }   // the cell cannot pay for its new compound
+      if (g1 !== g0 && P.chemOn && !swapChem(c << 4, g0, g1)) { seq.set(old, o + best); sOrg.set(oldO, o + best); continue; }   // the cell cannot pay for its new compound
       gen[i] = g1; cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; changed[i] = 1;
       fragReturn(sl, 1); frAmt[sl] -= 1; if (frAmt[sl] < .05) { if (frAmt[sl] > 0) fragReturn(sl, frAmt[sl]); frAmt[sl] = 0; } FRS.taken++; break; } }
 }
@@ -1108,8 +1115,10 @@ function geneListHtml(i) {
     infoldGene(seq, o + s0, e0 - s0); let ads = 0, work = 0; for (let d = 0; d < dN; d++) { if (sAd[d]) ads++; else if (dS[d] >= P.domMin) work++; }
     const rs = []; for (let r = 0; r < 4; r++) { const b = (lastRx >>> (8 * r)) & 255; if (!b) break; rs.push(`${rxName(b)}${((lastRxS >> (2 * r)) & 3) > 1 ? ' ×' + ((lastRxS >> (2 * r)) & 3) : ''}`); }
     const capped = Math.max(0, Math.min(rs.length, 8 - total)); total += rs.length;
+    let oO = 0, oV = 0; { const OG = ORG(); for (let h = s0; h < e0; h++) { const v = OG[o + h]; if (v === 1) oO++; else if (v === 2) oV++; } }
+    const L0 = e0 - s0, from = oV * 2 > L0 ? 'from a virus' : oO * 2 > L0 ? 'from outside' : (oV || oO) ? 'by descent, partly from outside' : 'by descent';
     const twin = seen.has(txt) ? ` <span style="color:var(--muted)">(a copy of gene ${seen.get(txt)})</span>` : ''; if (!seen.has(txt)) seen.set(txt, q + 1);
-    rows.push(`<div><b>Gene ${q + 1}</b> · monomers ${s0 + 1}–${e0} (${e0 - s0}) · ${dN} domain${dN === 1 ? '' : 's'}${ads ? ` (${ads} adaptor${ads === 1 ? '' : 's'})` : ''}${twin}<br><span style="font-family:monospace;font-size:11px;word-break:break-all">${txt.length > 64 ? txt.slice(0, 64) + '…' : txt}</span><br>Reactions: ${rs.length ? rs.map((t, r) => r < capped ? t : `<span style="color:var(--muted);text-decoration:line-through">${t}</span>`).join(', ') : '<span style="color:var(--muted)">none</span>'}</div>`); });
+    rows.push(`<div><b>Gene ${q + 1}</b> · monomers ${s0 + 1}–${e0} (${e0 - s0}) · ${dN} domain${dN === 1 ? '' : 's'}${ads ? ` (${ads} adaptor${ads === 1 ? '' : 's'})` : ''} · ${from}${(oV || oO) ? ` (${oV ? oV + ' virus' : ''}${oV && oO ? ', ' : ''}${oO ? oO + ' outside' : ''} of ${L0})` : ''}${twin}<br><span style="font-family:monospace;font-size:11px;word-break:break-all">${txt.length > 64 ? txt.slice(0, 64) + '…' : txt}</span><br>Reactions: ${rs.length ? rs.map((t, r) => r < capped ? t : `<span style="color:var(--muted);text-decoration:line-through">${t}</span>`).join(', ') : '<span style="color:var(--muted)">none</span>'}</div>`); });
   const mk = n - segs.reduce((a, [s0, e0]) => a + e0 - s0, 0);
   return `<div style="margin-top:6px"><b>Its genes</b> <span style="color:var(--muted)">(${k} gene${k === 1 ? '' : 's'}${mk ? `, ${mk} marker monomers` : ''}; reactions past the cell's 8 are struck through: they are carried but do not run)</span>${rows.join('')}</div>`;
 }
@@ -1272,15 +1281,16 @@ function markerFor(a, o, n, at, next) {                    // a marker kind that
   for (let m = 0; m < 16; m++) { const k = (at * 7 + m * 5 + 3) & 15; if ((at > 0 && a[o + at - 1] === k) || next === k) continue; return k; }
   return 0;
 }
-function geneOps(buf, n) {                                 // at division: a whole gene duplicated (after itself) or lost
+function geneOps(buf, n, ob) {                                 // at division: a whole gene duplicated (after itself) or lost
   if (!(P.geneDup > 0 || P.geneDel > 0)) return n;
   if (P.geneDup > 0 && rng() < P.geneDup) { const k = geneSegs(buf, 0, n), q = (rng() * k) | 0, s0 = gSeg[2 * q], e0 = gSeg[2 * q + 1], L = e0 - s0;
     if (L > 0 && n + L + GMARK <= SL) { const tail = buf.slice(e0, n), mk = markerFor(buf, 0, n, e0, buf[s0]);
+      if (ob) { const ot = ob.slice(e0, n), o0 = ob[s0]; let v = e0; for (let h = 0; h < GMARK; h++) ob[v++] = o0; ob.copyWithin(v, s0, e0); v += L; ob.set(ot, v); }
       let w = e0; for (let h = 0; h < GMARK; h++) buf[w++] = mk; for (let h = 0; h < L; h++) buf[w++] = buf[s0 + h]; for (let h = 0; h < tail.length; h++) buf[w++] = tail[h];
       n = w; geneDupN++; } }
   if (P.geneDel > 0 && rng() < P.geneDel) { const k = geneSegs(buf, 0, n); if (k >= 2) { const q = (rng() * k) | 0;
       let s0 = gSeg[2 * q], e0 = gSeg[2 * q + 1]; if (q > 0) s0 = gSeg[2 * (q - 1) + 1]; else e0 = gSeg[2]; // take one neighbouring marker with it
-      const tail = buf.slice(e0, n); let w = s0; for (let h = 0; h < tail.length; h++) buf[w++] = tail[h]; n = w; geneDelN++; } }
+      if (ob) ob.copyWithin(s0, e0, n); const tail = buf.slice(e0, n); let w = s0; for (let h = 0; h < tail.length; h++) buf[w++] = tail[h]; n = w; geneDelN++; } }
   return n;
 }
 let geneDupN = 0, geneDelN = 0, geneHGTN = 0, virIntegN = 0;
@@ -1293,6 +1303,7 @@ function geneTransfer(i, j) {                              // contagion carries 
       for (let h = 0; h < L; h++) if (seq[oj + a0 + h] !== seq[oi + s0 + h]) { same = false; break; } if (same) return null; } }
   GT.j = j; GT.len = Lj; GT.cat = cat[j]; GT.rx = rx[j]; GT.rs = rxStr[j]; GT.rx2 = rx2[j]; GT.rs2 = rxStr2[j]; GT.ch = cH[j];
   const oj = j * SL, mk = markerFor(seq, oj, Lj, Lj, seq[i * SL + s0]); let w = Lj;
+  { const OG = ORG(); for (let h = 0; h < GMARK; h++) OG[oj + Lj + h] = 1; for (let h = 0; h < L; h++) OG[oj + Lj + GMARK + h] = OG[i * SL + s0 + h] || 1; }
   for (let h = 0; h < GMARK; h++) seq[oj + w++] = mk; for (let h = 0; h < L; h++) seq[oj + w++] = seq[i * SL + s0 + h]; slen[j] = w; geneHGTN++;
   const g = infold(seq, oj, w); cat[j] = lastCat; rx[j] = lastRx; rxStr[j] = lastRxS; rx2[j] = lastRx2; rxStr2[j] = lastRxS2; cH[j] = lastCH; return g;
 }
@@ -1300,7 +1311,7 @@ function geneTransferUndo(j) { slen[j] = GT.len; cat[j] = GT.cat; rx[j] = GT.rx;
 function virIntegrate(i) {                                  // a chain inside a cell joins its genome as a new gene (a prophage), if the cell can pay for the change in its compound
   const n0 = slen[i], L = VIR.len[i], o = i * SL; if (!L || n0 + GMARK + L > SL) return false;
   const g0 = gen[i] >>> 0, mk = markerFor(seq, o, n0, n0, VIR.seq[i * FL]); let w = n0;
-  for (let h = 0; h < GMARK; h++) seq[o + w++] = mk; for (let h = 0; h < L; h++) seq[o + w++] = VIR.seq[i * FL + h];
+  for (let h = 0; h < GMARK; h++) seq[o + w++] = mk; for (let h = 0; h < L; h++) seq[o + w++] = VIR.seq[i * FL + h]; ORG().fill(2, o + n0, o + w);
   const g1 = infold(seq, o, w);
   if (g1 !== g0 && !swapChem(cmap[i] << 4, g0, g1)) { infold(seq, o, n0); return false; }
   slen[i] = w; gen[i] = g1; cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; rx2[i] = lastRx2; rxStr2[i] = lastRxS2; cH[i] = lastCH; changed[i] = 1;
@@ -1308,3 +1319,16 @@ function virIntegrate(i) {                                  // a chain inside a 
 }
 let sameCompN = 0;                                          // contagion splices that changed a cell's sequence (and maybe its program) but not its compound: kept, counted
 { const _resetS = reset; reset = function (...a) { sameCompN = 0; return _resetS.apply(this, a); }; }
+
+// ---------------- repeatable runs (16 November): with P.seed set, every new world (not an automatic restart) reseeds the
+// random numbers and redraws the geography from that seed, and the sequence buffer is cleared, so the same seed gives the
+// same run. P.seed 0 keeps the old behaviour (Math.random).
+function seedRng(s0) { let s = (s0 >>> 0) || 1; rng = () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
+{ const _resetR = reset; reset = function (...a) {
+  if (!a[1]) domCostSum = 0;
+  if (P.seed > 0 && !a[1]) { seedRng(P.seed); geoSeed(); chemCapFill(); Z.list.length = 0; layoutZones(); envAlloc(); }   // fresh environment arrays: nothing of the old weather is left   // zone climates redrawn from the seed too
+  if (frAmt) { frAmt.fill(0); frLen.fill(0); frSeq.fill(0); frRx.fill(0); frStr.fill(0); frLig.fill(0); }   // free chains from the old world do not carry into the new one
+  if (coatS) { coatS.fill(0); coatM.fill(0); coatK.fill(0); } VORDt = -1;
+  if (!a[1]) tick = 0;   // the new world's first weather step runs at tick 0, not at the old world's time
+  if (typeof seq !== 'undefined' && seq && seq.fill) { seq.fill(0); if (sOrg.length > 1) sOrg.fill(0); for (const a of [slen, cat, rx, rxStr, rx2, rxStr2, cH, rxAct, coat]) if (a && a.fill) a.fill(0); }
+  return _resetR.apply(this, a); }; }

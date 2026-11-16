@@ -232,3 +232,9 @@ Justin. Newest at the bottom.
   sent; no code changed.
   - **Waits on Justin:** nothing new. Design questions on the genome's stage 1 (design/genome_stage1.md) as before.
   - Correction to the line above: stage 1 is built (01:30 entry), so its design questions are not open; nothing waits on Justin from this check.
+
+## 16 Nov ~11:30 (interactive)
+- Built: P.seed repeatable runs (+ reset leftovers fixed, incl. free chains), P.domCost .001, gene origin tags, reaction
+  share fix. Measured: 6,000-tick gene runs with and without cost; tick timing. THEORY_NOTES "Built: repeatable runs…".
+- New GPU tasks: 30 (repeatable runs, notice for 29), 31 (modern-founder detailed models, designs first), 32
+  (population runs on the GPU, low priority).

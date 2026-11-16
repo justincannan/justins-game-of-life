@@ -1947,3 +1947,56 @@ line (genes a cell, share multi-gene, marker share, exact copies, and the runnin
 Proposals (Claude's, not yet decided): keep the page in JavaScript rather than port it to Python (plain Python is
 slower, and the page's sequential random-order updates do not parallelise without changing the dynamics); run long and
 many-seed runs headless in Node; move only diffusion and fields to the graphics card if timing shows they dominate.
+
+## Built: repeatable runs, domain running cost, gene origin tags; timing (cloud session, 16 November, about 10:10–11:30)
+Queue items 1–3 (Justin approved the queue at 10:09).
+
+**Repeatable runs.** `P.seed` (default 0, the old behaviour): with a positive seed, every new world reseeds the rng and
+redraws the geography, zone climates and environment. Causes found and fixed (detail in comms/to_gpu task 30):
+geography drawn before seeding; zone climates from Math.random; the environment's first step at the old world's tick;
+leftover sequence buffers, reaction words and coats; and **free chains in the water carried from the old world into
+the new one on every reset** (a real bug, fixed for all users). Checked: even, vent, pond, springs, 600 ticks, three
+fresh page loads, identical. Results before this commit are not exactly repeatable.
+
+**Running cost per working domain** (Justin's decision): `P.domCost`, default 0.001 light a tick for each reaction a
+cell carries (base upkeep is 0.01). Repeated copies each pay. Measured 6,000 ticks, seed 1, soup (test/genes_long.py):
+
+| | even, cost 0 | even, cost 0.001 | vent, cost 0 | vent, cost 0.001 |
+|---|---|---|---|---|
+| cells at 6,000 | 106,671 | 88,887 | **0 (died out after 5,000)** | 61,729 |
+| reactions a cell | 4.76 | 3.10 | 7.33 (at 5,000) | 7.59 |
+| cells with more than 4 reactions | 43,586 | 15,440 | 81,800 (at 5,000) | 58,479 |
+| exact-copy gene pairs | 17,737 | 3,466 | 2,905 (at 5,000) | 8,125 |
+| mean length | 30.2 | 26.6 | 151 (at 5,000) | 175 |
+
+- Even world: the cost holds reactions near 3 a cell and thins exact copies to a fifth; the population is 17% smaller.
+- Even world: genomes still lengthen, because only working domains pay. Copying costs 0.0004 a monomer.
+- Vent world: the cost does not restrain reactions or length. Energy there seems plentiful enough to pay.
+- The vent world without the cost died out between ticks 5,000 and 6,000. One seed only, so this may be chance;
+  worth repeating over seeds before reading anything into it.
+
+**Gene origin tags** (Justin's decision): each monomer is marked by descent, from outside (transfer, or a free chain
+taken up), or from a virus. Only monomers that actually change are marked. Display only; confirmed not to change the
+run (90,830 cells at tick 600, same as before). The inspector shows each gene's origin; the summary shows shares.
+Results, cost 0.001, tick 6,000:
+- from outside: **70%** of monomers in both worlds (even: 4% at 1,000; vent: 12% at 1,000). Tags pass on by descent,
+  so this counts everything that entered by transfer at some point in a line's history;
+- from viruses: 0.02% in the even world; **11.4% in the vent world** (0.5% at 2,000, 6.1% at 4,000). Virus genes
+  persist, are duplicated like the cell's own (one cell had three exact copies of a 5-monomer virus gene), and carry
+  sugar→coat reactions.
+
+Proposal (Claude's): 70% transferred within 6,000 ticks may mean contagion is set high. Worth checking against
+the share of horizontally acquired genes in real bacterial genomes before deciding whether to lower it.
+
+**Timing** (test/timing.py, timing2.py; tick 1,000, seed 1):
+- even world (about 77,000 cells): 82 ms a tick. Reactions 13 ms (16%). Grid work (chemistry, fields, energy,
+  signals) about 3 ms (4%). Births, folding, chains, decay and the visiting order about 6 ms. The rest, about
+  60 ms (73%), is the cell-by-cell loop: neighbours, rules, survival, the birth scan.
+- vent world (about 37,000 cells): 53 ms. Reactions 15 ms (28%). Grid work, including the weather and currents,
+  about 5.5 ms (10%). Births and folding about 7 ms.
+
+Proposal (Claude's): the graphics card would gain little on grid work (4–10%). The main gains are running seeds
+in parallel (headless, one per core), then speeding up the cell loop itself.
+
+Also fixed: the summary's "most common reactions" counted repeated copies, giving shares over 100%; now each reaction
+is counted once a cell, across both reaction words.
