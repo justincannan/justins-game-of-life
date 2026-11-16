@@ -1148,6 +1148,7 @@ import re as _re
 s = _re.sub(r"\brx\[(\w+)\] = lastRx; rxStr\[\1\] = lastRxS;", r"rx[\1] = lastRx; rxStr[\1] = lastRxS; rx2[\1] = lastRx2; rxStr2[\1] = lastRxS2;", s)
 for a, b in [("slen = new Uint8Array(N)", "slen = new Uint16Array(N)"), ("slen = new Uint8Array(1)", "slen = new Uint16Array(1)"),
              ("rx = new Uint32Array(N); rxStr = new Uint8Array(N);", "rx = new Uint32Array(N); rxStr = new Uint8Array(N); rx2 = new Uint32Array(N); rxStr2 = new Uint8Array(N);"),
+             ("    if (g === ngen[j]) continue;\n    if (chemOn && !swapChem(", "    if (g === ngen[j]) { if (P.seqOn) sameCompN++; continue; }   // same compound: nothing to pay, so the new sequence stays (Justin, 16 November: keep and count)\n    if (chemOn && !swapChem("),
              ("seq.copyWithin(b * SL, a * SL, a * SL + SL);", "seq.copyWithin(b * SL, a * SL, a * SL + slen[a]);"),
              ("rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a];", "rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a]; rx2[b] = rx2[a]; rx2[a] = 0; rxStr2[b] = rxStr2[a];"),
              ("tuRx = rx[j]; tuRxS = rxStr[j];", "tuRx = rx[j]; tuRxS = rxStr[j]; tuRx2 = rx2[j]; tuRxS2 = rxStr2[j];"),

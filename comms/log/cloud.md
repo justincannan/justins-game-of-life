@@ -220,3 +220,4 @@ Justin. Newest at the bottom.
 - 2026-11-15 23:30 (in session with Justin): drafted design/genome_stage1.md (stage 1: genes per cell); six questions wait on Justin.
 - 2026-11-16 01:30 (in session with Justin): stage 1 of the genome built (genes by runs of 4, 8 reactions, gene dup/loss/transfer, virus integration, 256). Measurements in THEORY_NOTES.md. Found vent founding 0 of 10 on old and new pages.
 - 2026-11-16 00:25 (in session with Justin): Justin agreed: charge–dipole term (27), task 22 item 3 starts with the birth-rate raise (28), stage-1 dish re-baseline and vent founding investigation (29), same-compound contagion kept and counted (cloud).
+- 2026-11-16 00:45 (in session with Justin): same-compound contagion kept and counted (sameCompN; 1,691 by tick 600 in the even world); the fold viewer folds each gene separately and greys the markers. Sent 27, 28, 29.

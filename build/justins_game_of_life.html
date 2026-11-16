@@ -505,7 +505,7 @@ function step() {
     const len = 2 + Math.floor(rng() * 5), at = Math.floor(rng() * (17 - len));   // a run of whole primes
     const mask = ((((1 << (2 * len)) - 1) << (2 * at))) >>> 0;
     const g = P.seqOn ? seqTransfer(i, j) : ((ngen[j] & ~mask) | (ngen[i] & mask)) >>> 0;
-    if (g === ngen[j]) continue;
+    if (g === ngen[j]) { if (P.seqOn) sameCompN++; continue; }   // same compound: nothing to pay, so the new sequence stays (Justin, 16 November: keep and count)
     if (chemOn && !swapChem(cmap[j] << 4, ngen[j], g)) { if (P.seqOn) seqTransferUndo(j); continue; }
     reg(g, ngen[j], 'contagion'); ngen[j] = g; nchanged[j] = 1; writes++;
     if (P.floor) light[i] -= ZCOST[zmap[i]];
@@ -3045,8 +3045,9 @@ function fragCount() { if (!frAmt) return 0; let k = 0; for (let s = 0; s < frAm
 // lines. The shape is a relaxed layout of the brackets, not a computed physical fold. Drag to turn it.
 const FV = {seq: null, n: 0, pairs: [], xyz: null, yaw: 0, pitch: .35, raf: 0, drag: null};
 function fvLayout(a, n) {
-  const st = [], pairs = [];
-  for (let h = 0; h < n; h++) { const m = a[h]; if (st.length && a[st[st.length - 1]] === (m ^ 8)) pairs.push([st.pop(), h]); else st.push(h); }
+  const pairs = [], mark = new Uint8Array(n), k = geneSegs(a, 0, n); mark.fill(1);   // each gene folds on its own; marker monomers belong to none
+  for (let q = 0; q < k; q++) { const st = []; for (let h = gSeg[2 * q]; h < gSeg[2 * q + 1]; h++) { mark[h] = 0; const m = a[h]; if (st.length && a[st[st.length - 1]] === (m ^ 8)) pairs.push([st.pop(), h]); else st.push(h); } }
+  FV.mark = mark; FV.genes = k;
   const p = new Float32Array(n * 3);
   for (let h = 0; h < n; h++) { const t = h * 1.75; p[3 * h] = Math.cos(t) * 1.6; p[3 * h + 1] = h * .25 - n * .125; p[3 * h + 2] = Math.sin(t) * 1.6; }   // start as a loose coil
   const f = new Float32Array(n * 3), spr = (i, j, L, k) => {
@@ -3074,14 +3075,14 @@ function fvDraw() {
     for (const [i, j] of FV.pairs) { g.beginPath(); g.moveTo(X(i), Y(i)); g.lineTo(X(j), Y(j)); g.stroke(); }
     g.setLineDash([]); g.lineWidth = 2; g.strokeStyle = 'rgba(200,200,200,.7)'; g.beginPath(); for (let h = 0; h < n; h++) h ? g.lineTo(X(h), Y(h)) : g.moveTo(X(h), Y(h)); g.stroke();
     const ord = [...Array(n).keys()].sort((a, b) => s[3 * a + 2] - s[3 * b + 2]);
-    for (const h of ord) { const d = .65 + .35 * s[3 * h + 2]; g.fillStyle = (FV.seq[h] & 1) ? `rgba(230,160,40,${d})` : `rgba(70,140,230,${d})`;
+    for (const h of ord) { const d = .65 + .35 * s[3 * h + 2]; g.fillStyle = FV.mark && FV.mark[h] ? `rgba(150,150,150,${d})` : (FV.seq[h] & 1) ? `rgba(230,160,40,${d})` : `rgba(70,140,230,${d})`;
       g.beginPath(); g.arc(X(h), Y(h), Math.max(2, k * .07 * (1 + .3 * s[3 * h + 2])), 0, 7); g.fill(); } }
   FV.raf = requestAnimationFrame(fvDraw);
 }
 function fvShow(i) {
   if (typeof seq === 'undefined' || !seq || !slen || !alive[i] || !slen[i]) return;
   const n = slen[i], a = seq.slice(i * SL, i * SL + n), L = fvLayout(a, n); FV.seq = a; FV.n = n; FV.pairs = L.pairs; FV.xyz = L.xyz;
-  const html = `<div style="margin-top:6px"><b>Its fold</b> <span style="color:var(--muted)">(${n} monomers, ${L.pairs.length} pairs; amber oily, blue polar; a layout of the brackets, not a physical fold; drag to turn)</span></div><canvas class="foldview" width="240" height="190" style="width:240px;height:190px;touch-action:none;cursor:grab"></canvas>`;
+  const html = `<div style="margin-top:6px"><b>Its fold</b> <span style="color:var(--muted)">(${n} monomers in ${FV.genes} gene${FV.genes === 1 ? '' : 's'}, ${L.pairs.length} pairs; amber oily, blue polar, grey gene markers; a layout of the brackets, not a physical fold; drag to turn)</span></div><canvas class="foldview" width="240" height="190" style="width:240px;height:190px;touch-action:none;cursor:grab"></canvas>`;
   for (const el of [document.getElementById('insp'), typeof inspFloatBody !== 'undefined' ? inspFloatBody : null]) if (el) el.insertAdjacentHTML('beforeend', html);
   document.querySelectorAll('canvas.foldview').forEach(cv => {
     cv.onpointerdown = e => { FV.drag = {x: e.clientX, y: e.clientY, yaw: FV.yaw, pitch: FV.pitch}; cv.setPointerCapture(e.pointerId); e.stopPropagation(); };
@@ -3282,6 +3283,8 @@ function virIntegrate(i) {                                  // a chain inside a 
   slen[i] = w; gen[i] = g1; cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; rx2[i] = lastRx2; rxStr2[i] = lastRxS2; rx2[i] = lastRx2; rxStr2[i] = lastRxS2; cH[i] = lastCH; changed[i] = 1;
   VIR.n[i] -= 1; if (VIR.n[i] < 1) { VIR.n[i] = 0; VIR.len[i] = 0; } virIntegN++; return true;
 }
+let sameCompN = 0;                                          // contagion splices that changed a cell's sequence (and maybe its program) but not its compound: kept, counted
+{ const _resetS = reset; reset = function (...a) { sameCompN = 0; return _resetS.apply(this, a); }; }
 
 // ---------------- chemistry controls
 {
