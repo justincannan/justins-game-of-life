@@ -1157,3 +1157,33 @@ function virStep() {                                       // every 8 ticks, aft
   }
 }
 { const _resetV = reset; reset = function (...a) { if (VIR.n) { VIR.n.fill(0); VIR.len.fill(0); VIR.kill.fill(0); VIR.lig.fill(0); } VIR.entered = VIR.copied = VIR.burst = VIR.spilled = 0; return _resetV.apply(this, a); }; }   // a new world starts free of chains inside cells
+
+// ---------------- the first organism in a sunlit world carries a pigment-making fold (Justin, 15 November, option b): it stands
+// for an ancestor that has already evolved phototrophy. The fold is appended to its line of expression as one closed domain,
+// so its compound (the unpaired monomers) is unchanged; descendants inherit, vary or lose it like any other fold.
+function pigFounder() {
+  if (!P.pigment || !P.seqOn || !P.domOn || !P.rxDom || P.env === 'vent' || P.env === 'dish') return 0;
+  if (slen.length !== N) seqAlloc();
+  const fs = []; for (let i = 0; i < N; i++) if (alive[i]) fs.push(i); if (!fs.length) return 0;
+  const tryD = (i, D) => { const o = i * SL, n0 = slen[i]; if (n0 + D.length > SL) return null; const g0 = infold(seq, o, n0);
+    for (let h = 0; h < D.length; h++) seq[o + n0 + h] = D[h]; const g = infold(seq, o, n0 + D.length), r = lastRx;
+    for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; const s = b >> 4, t = b & 15;
+      if (t >= 12 && t !== (s ^ 8) && g === g0) return {g, s, t}; }
+    return null; };
+  let D = null, pt = -1; const i0 = fs[0]; if (!slen[i0]) seqFromGen(i0, gen[i0]);
+  outer: for (let s = 0; s < 16; s++) for (let a = 0; a < 16; a++) { const cand = [[s, a, a ^ 8, s ^ 8], [s, s, s ^ 8, s ^ 8]][a & 1 ? 1 : 0];
+    const r0 = tryD(i0, cand); if (r0) { D = cand; pt = r0.t; break outer; } }
+  if (!D) return 0;
+  let k = 0; for (const i of fs) { if (!slen[i]) seqFromGen(i, gen[i]); const o = i * SL, n0 = slen[i]; if (n0 + D.length > SL) continue;
+    for (let h = 0; h < D.length; h++) seq[o + n0 + h] = D[h]; slen[i] = n0 + D.length;
+    gen[i] = infold(seq, o, slen[i]); cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; changed[i] = 1; k++;
+    if (P.cellClumps && pt >= 0) { coatAlloc(); const c16 = cmap[i] << 4, m = Math.min(P.pigSat, chem[c16 + pt]);   // it starts with some pigment in its coat, taken from the ground's own molecules of that kind
+      if (m > 0) { if (coatM[i] && coatK[i] !== pt) { chem[c16 + coatK[i]] += coatM[i]; coatM[i] = 0; } chem[c16 + pt] -= m; coatK[i] = pt; coatM[i] += m; } } }
+  return k;
+}
+{ const _resetP = reset; reset = function (...a) { const r = _resetP.apply(this, a); if (a[0] === 'organism') { const k = pigFounder(); if (k) log(`The first organism carries a fold that makes a pigment, so it can use light.`); } return r; }; }
+function pigBorn(i, pj) {                                  // a dividing cell shares its pigment: the daughter gets half the pigment in the parent's coat
+  if (!P.pigment || pj < 0 || !coatM || !(coatM[pj] > 0) || coatK[pj] < 12) return;
+  const c16 = cmap[i] << 4; if (coatM[i] > 0) { chem[c16 + coatK[i]] += coatM[i]; coatM[i] = 0; }
+  const h = coatM[pj] * .5; coatM[pj] -= h; coatK[i] = coatK[pj]; coatM[i] = h;
+}
