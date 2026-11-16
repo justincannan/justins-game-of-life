@@ -74,6 +74,14 @@ F_CAP = TT.F_CAP
 EPS_SELF = 5.0           # eps for the Born-like self (desolvation) term, Justin's range 4-6
 EPS_PAIR = 20.0          # effective eps for buried charge-charge interactions (staphylococcal nuclease: 20)
 BORN_F = 0.5             # Born radius = BORN_F x side-chain bead diameter (proposal)
+# task 27 (Justin's decision of 16 November, about 00:19): elec='cd' = 'split' plus a charge-dipole term. Polar
+# neighbours of a buried charge (side-chain donors/acceptors that carry no charge, and backbone beads, |i-j| >= 2,
+# inside the burial contact switch) pay back part of its Born cost:
+#   S_a = 138.9 |q_a| MU_CD / EPS_CD * sum_j s(r_aj) / r_aj^2,   payback = U_self,a (1 - exp(-S_a / U_self,a))
+# (an aligned point dipole at small eps, Sham, Muegge and Warshel 1998; saturating, so polar groups can at most give
+# the charge back its water-like solvation). EPS_CD = eps_self (the same small eps as the self term). MU_CD is the one
+# new constant, calibrated in charges27.py on benchmark B for a pair in a polar-lined pocket.
+MU_CD = 0.085            # e nm (4.1 D), effective dipole of one polar group: calibrated in charges27.py at eps_self 5
 
 
 def born_self(q, d, eps_self=EPS_SELF):
@@ -102,6 +110,8 @@ def sc_props():
 
 
 SC = sc_props()
+# side chains that act as dipoles for the charge-dipole term: donor or acceptor marks, no charge
+DIP_SC = ((SC['don'] | SC['acc']) & (np.abs(SC['q']) < 1e-6)).astype(np.float64)
 ISO = {0: 13, 2: 3, 8: 3, 10: 3}   # oily isosteres of the charged monomers (as saltbridge_tb.py)
 
 
@@ -136,13 +146,55 @@ def local_probs(seq):
     return P / P.sum(1, keepdims=True)
 
 
-def seq_params(seqs, Lmax):
+# task 26 step 2 (Justin's decision of 15 November, about 21:26): the cooperative helix term, helix='coop'.
+# Zimm-Bragg's nucleation moves from the local bias into the tertiary energy, on the explicit helix H-bonds h_j
+# (j -> j+4, in [0, 1]):  E_coop = EPS_NUC sum_j h_j (1 - h_{j-1}),  EPS_NUC = -kT0 ln(sigma) (step 2's sigma = 1e-3),
+# so each helical stretch of H-bonds pays one nucleation cost, as in Zimm-Bragg, and no constant is new here.
+# The local bias then carries only the per-monomer propagation weight s_i (step 2's s_base), not step 2's
+# cooperative helix probability (which already contains nucleation): p_helix,i = K_HELIX s_i / (1 + K_HELIX s_i).
+# K_HELIX is the one calibration constant (an entropy compensation for the H-bond window, as HB_DIVIDE was in task 23),
+# fitted in helix26.py so isolated helices reach step 2's Zimm-Bragg content.
+EPS_NUC = -KT0 * math.log(S.SIGMA_ZB)
+K_HELIX = 4.0            # calibrated in helix26.py (see the report)
+
+
+def local_probs_coop(seq, k_helix=None):
+    k = K_HELIX if k_helix is None else k_helix
+    seq = list(seq)
+    s = np.array([S.s_base(m) for m in seq], float)
+    ph = k * s / (1 + k * s)
+    fs = S.strand_share(seq, [0.0] * len(seq))
+    return np.stack([ph, (1 - ph) * fs, (1 - ph) * (1 - fs)], 1)
+
+
+# helix='coop2' (the version used after the first scan; 'coop' above left isolated helices at 0.03-0.07 for every K
+# up to 100, because the narrow H-bond window costs more entropy than the local bias can pay back):
+# both Zimm-Bragg weights go into the tertiary H-bond term, and the local bias is neutral about helices
+# (p_helix = 0.5 everywhere; step 2's strand/coil split of the rest is kept):
+#   E_helix = sum_j h_j [ -(EPS_HB + EPS_PROP) - kT0 <ln s>_{j+1..j+3} ] + EPS_NUC sum_j h_j (1 - h_{j-1})
+# <ln s> = the mean of ln s_i (step 2's propagation weights) over the three monomers inside the H-bond's turn, so the
+# sequence enters as in Zimm-Bragg (a proline-like 15, s = 0.05, costs 3 kT / 3 per bond it sits in), and EPS_NUC =
+# -kT0 ln sigma is step 2's nucleation. EPS_PROP is the one calibration constant (the entropy the narrow H-bond window
+# costs), fitted in helix26.py so isolated helices reach step 2's Zimm-Bragg content.
+EPS_PROP = 3.0 * KT0     # calibrated in helix26.py (see the report)
+LN_S = np.log(np.array([S.s_base(m) for m in range(16)], float))
+
+
+def local_probs_coop2(seq):
+    seq = list(seq)
+    ph = np.full(len(seq), 0.5)
+    fs = S.strand_share(seq, [0.0] * len(seq))
+    return np.stack([ph, (1 - ph) * fs, (1 - ph) * (1 - fs)], 1)
+
+
+def seq_params(seqs, Lmax, helix='v23', k_helix=None):
     n = len(seqs)
     idx = -np.ones((n, Lmax), np.int64)
     P = np.zeros((n, Lmax, 3)); P[:, :, 2] = 1.0
     for k, s in enumerate(seqs):
         idx[k, :len(s)] = s
-        P[k, :len(s)] = local_probs(s)
+        P[k, :len(s)] = (local_probs_coop(s, k_helix) if helix == 'coop' else local_probs_coop2(s) if helix == 'coop2'
+                         else local_probs(s))
     return idx, P
 
 
@@ -151,13 +203,22 @@ class Model2:
 
     def __init__(self, idx, P, mode='coop', device='cuda', eps_vdw=None, eps_da=None, eps_hb=EPS_HB,
                  eps_core=None, n_half=N_HALF, w_burial=W_BURIAL, charges=True, elec='v23',
-                 eps_self=EPS_SELF, eps_pair=EPS_PAIR, h_charge='keep'):
+                 eps_self=EPS_SELF, eps_pair=EPS_PAIR, h_charge='keep', mu_cd=None, eps_cd=None,
+                 helix='v23', eps_nuc=None, eps_prop=None, w_h=None):
         """elec 'v23': task 23 (one dielectric eps_core for buried pairs). elec 'split' (task 26): buried pairs at
         eps_pair, plus a Born self term per buried charge at eps_self. h_charge 'keep' leaves the burial table as it
         is; 'iso' gives charged monomers their oily isostere's burial h, so the charge's desolvation is counted only
         once (by the Born term)."""
         dev = torch.device(device)
         self.elec, self.eps_pair = elec, eps_pair
+        self.mu_cd = MU_CD if mu_cd is None else mu_cd
+        self.helix = helix
+        self.eps_nuc = EPS_NUC if eps_nuc is None else eps_nuc
+        self.eps_prop = EPS_PROP if eps_prop is None else eps_prop
+        if np.ndim(self.eps_prop):            # one value per chain (calibration scans only)
+            self.eps_prop = torch.as_tensor(np.asarray(self.eps_prop, np.float32), device=dev)[:, None]
+        self.w_h = W_H if w_h is None else w_h      # helix H-bond window width (nm); task 23: 0.05
+        self.eps_cd = eps_self if eps_cd is None else eps_cd
         self.dev, self.mode = dev, mode
         self.eps_hb, self.n_half, self.w_burial = eps_hb, n_half, w_burial
         self.eps_core = EPS_CORE if eps_core is None else eps_core
@@ -192,7 +253,9 @@ class Model2:
         self.eab = W[ii[:, :, None], ii[:, None, :]] * self.nl3
         self.h = f(h_table(h_charge))[ii] * mf
         q = f(SC['q'])[ii] * mf * (1.0 if charges else 0.0)
-        self.uself = f(born_self(SC['q'], SC['d'], eps_self))[ii] * mf * (1.0 if (charges and elec == 'split') else 0.0)
+        self.uself = f(born_self(SC['q'], SC['d'], eps_self))[ii] * mf * (1.0 if (charges and elec in ('split', 'cd')) else 0.0)
+        self.qabs = q.abs()
+        self.dip = f(DIP_SC)[ii] * mf
         self.qq = q[:, :, None] * q[:, None, :] * self.nb2
         self.arm = (f(SC['arm'])[ii] * mf)[:, :, None]
         self.logp = torch.log(f(P).clamp_min(1e-6))
@@ -200,6 +263,11 @@ class Model2:
         self.amask = mf[:, 2:] * mf[:, 1:-1] * mf[:, :-2]
         self.dmask = mf[:, 3:] * mf[:, 2:-1] * mf[:, 1:-2] * mf[:, :-3]
         self.h4mask = mf[:, 4:] * mf[:, :-4]
+        lns = f(LN_S)[ii] * mf
+        if L > 4:
+            self.lns_bond = (lns[:, 1:-3] + lns[:, 2:-2] + lns[:, 3:-1]) / 3.0
+        else:
+            self.lns_bond = torch.zeros(C, 0, device=dev)
         self.triu3 = torch.triu(torch.ones(L, L, device=dev), 3)[None] * pm
         self.last = m.sum(1) - 1
         z = torch.zeros(C, 1, device=dev)
@@ -290,9 +358,19 @@ class Model2:
         else:
             e_pack = 0.5 * (self.eab * s_ss).sum((1, 2))
         rr = rss.clamp_min(0.35)
-        eps_in = self.eps_pair if self.elec == 'split' else self.eps_core
+        eps_in = self.eps_pair if self.elec in ('split', 'cd') else self.eps_core
         e_el = 0.5 * (self.qq * COULOMB / rr * ((1 - G) * torch.exp(-rr / LAMBDA_D) / EPS_W + G / eps_in)).sum((1, 2))
-        e_self = (self.uself * g).sum(1)
+        if self.elec == 'cd':
+            rsc = rr; rbc = rsb.clamp_min(0.35)
+            wsum = (s_ss * self.nb2 * self.dip[:, None, :] / rsc ** 2).sum(2) + (s_sb * self.nb2 / rbc ** 2).sum(2)
+            S_cd = COULOMB * self.qabs * self.mu_cd / self.eps_cd * wsum
+            us = self.uself.clamp_min(1e-6)
+            e_cd = -self.uself * (1 - torch.exp(-S_cd / us))
+            e_self = ((self.uself + e_cd) * g).sum(1)
+            self._e_cd = (e_cd * g).sum(1)
+        else:
+            e_self = (self.uself * g).sum(1)
+            self._e_cd = torch.zeros_like(e_self)
         e_el = e_el + e_self
         # backbone H-bonds: helix i -> i+4
         ar = torch.arange(L - 4, device=x.device) if L > 4 else None
@@ -300,8 +378,14 @@ class Model2:
             r4 = rbb.diagonal(4, 1, 2); r3 = rbb.diagonal(3, 1, 2)[:, :-1]
             chir = torch.sigmoid(torch.sin(phi) / 0.15)        # right-handed dihedrals i and i+1
             c2 = chir[:, :-1] * chir[:, 1:]
-            hh = torch.exp(-((r4 - R_H4) / W_H) ** 2) * torch.exp(-((r3 - R_H3) / W_H) ** 2) * c2
-            e_hh = -self.eps_hb * (hh * self.h4mask).sum(1)
+            hh = torch.exp(-((r4 - R_H4) / self.w_h) ** 2) * torch.exp(-((r3 - R_H3) / self.w_h) ** 2) * c2
+            hm = hh * self.h4mask
+            e_hh = -self.eps_hb * hm.sum(1)
+            if self.helix in ('coop', 'coop2'):
+                prev = torch.cat([torch.zeros_like(hm[:, :1]), hm[:, :-1]], 1)
+                e_hh = e_hh + self.eps_nuc * (hm * (1 - prev)).sum(1)
+            if self.helix == 'coop2':
+                e_hh = e_hh - (hm * (self.eps_prop + KT0 * self.lns_bond)).sum(1)
             # strand pairing
             t = torch.zeros_like(xb)
             tv = xb[:, 2:] - xb[:, :-2]
@@ -316,18 +400,20 @@ class Model2:
         tot = e_bond + e_ang + e_dih + e_sc + e_ev + e_bur + e_pack + e_el + e_hh + e_hs
         if parts:
             return dict(total=tot, bond=e_bond, angle=e_ang, dihedral=e_dih, sc=e_sc, ev=e_ev, burial=e_bur,
-                        pack=e_pack, elec=e_el, elec_self=e_self, hb_helix=e_hh, hb_strand=e_hs, n=n)
+                        pack=e_pack, elec=e_el, elec_self=e_self, elec_cd=self._e_cd, hb_helix=e_hh, hb_strand=e_hs, n=n)
         return tot
 
 
 class REMD2(TT.REMD):
     """Replica exchange for two-bead chains (the integrator and exchange are tertiary.REMD's)."""
 
-    def __init__(self, seqs, n_run, temps, mode='coop', dt=0.004, gamma=2.0, seed=0, device='cuda', **kw):
+    def __init__(self, seqs, n_run, temps, mode='coop', dt=0.004, gamma=2.0, seed=0, device='cuda', P1=None,
+                 k_helix=None, **kw):
         self.seqs = [np.asarray(s) for s in seqs]
         self.ns, self.nr, self.K = len(seqs), n_run, len(temps)
         self.L = max(len(s) for s in seqs)
-        idx1, P1 = seq_params(self.seqs, self.L)
+        idx1, P1_ = seq_params(self.seqs, self.L, helix=kw.get('helix', 'v23'), k_helix=k_helix)
+        P1 = P1_ if P1 is None else P1
         rep = n_run * self.K
         self.idx = np.repeat(idx1, rep, 0)
         self.P1 = P1

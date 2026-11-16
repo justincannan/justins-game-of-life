@@ -23,7 +23,8 @@ OUT = r'D:\labyrinth\automata\jgol_2026-11-13\results\2026-11-15\task23'
 TEMPS = R3.TEMPS
 NBLOCK, SNAP, BURN = R3.NBLOCK, R3.SNAP, R3.BURN
 log = R3.log
-MODEL_KW = ('eps_vdw', 'eps_da', 'eps_hb', 'eps_core', 'n_half', 'w_burial', 'charges')
+MODEL_KW = ('eps_vdw', 'eps_da', 'eps_hb', 'eps_core', 'n_half', 'w_burial', 'charges', 'elec', 'eps_self', 'eps_pair',
+            'h_charge', 'mu_cd', 'eps_cd', 'helix', 'eps_nuc', 'eps_prop', 'w_h')
 
 
 def go_override2(model, natives, rep, eps_go):
@@ -82,7 +83,8 @@ def fold_batch(seqs, n_run, nsteps, mode='coop', seed=0, temps=TEMPS, go=None, e
                 snapX.append(xc.half().cpu().numpy().copy())
     torch.cuda.synchronize()
     t_run = time.time() - t1
-    idx1, P1 = TB.seq_params(sim.seqs, L)
+    idx1, _ = TB.seq_params(sim.seqs, L)
+    P1 = sim.P1
     mq = TB.Model2(np.repeat(idx1, nr, 0), np.repeat(P1, nr, 0), mode=mode, device=sim.dev,
                    **{k: v for k, v in kw.items() if k in MODEL_KW})
     if go is not None:
@@ -156,10 +158,13 @@ def main():
     ap.add_argument('--eps-go', type=float, nargs='*', default=[2.0])
     ap.add_argument('--native-file', default=None)
     ap.add_argument('--seed', type=int, default=0)
+    ap.add_argument('--model', default='{}', help='JSON of Model2 options (task 26), e.g. {"elec": "cd", "h_charge": "iso"}')
     a = ap.parse_args()
+    mk = json.loads(a.model)
+    log('model options', mk)
     t = time.time()
     if a.stage == 'probe':
-        run_set(a.name or 'probe', R3.DESIGNS, a.nrun, a.nsteps, a.mode, a.out, a.max_chains, seed0=900 + a.seed)
+        run_set(a.name or 'probe', R3.DESIGNS, a.nrun, a.nsteps, a.mode, a.out, a.max_chains, seed0=900 + a.seed, **mk)
     elif a.stage == 'go':
         # natives: JSON {name: {"seq": [...], "x": [[...]] (2L x 3)}}
         d = json.load(open(a.native_file))
@@ -172,19 +177,19 @@ def main():
     elif a.stage == 'fold':
         d = json.load(open(a.seqfile))
         items = [(k, v) for k, v in d.items()]
-        run_set(a.name, items, a.nrun, a.nsteps, a.mode, a.out, a.max_chains, seed0=1000 + a.seed)
+        run_set(a.name, items, a.nrun, a.nsteps, a.mode, a.out, a.max_chains, seed0=1000 + a.seed, **mk)
     elif a.stage == 'page':
         items = R3.pick_page(120)
         items = items[:40] + items[60:100]
-        run_set(a.name or 'page', items, a.nrun, a.nsteps, 'coop', a.out, a.max_chains, seed0=200)
+        run_set(a.name or 'page', items, a.nrun, a.nsteps, 'coop', a.out, a.max_chains, seed0=200, **mk)
     elif a.stage == 'additive':
         items = R3.pick_page(120)
         items = (items[:40] + items[60:100])[::2][:30][::2]   # every other one of step 3's 30 (15), cut for GPU time
-        run_set(a.name or 'additive', items, a.nrun, a.nsteps, 'additive', a.out, a.max_chains, seed0=300)
+        run_set(a.name or 'additive', items, a.nrun, a.nsteps, 'additive', a.out, a.max_chains, seed0=300, **mk)
     elif a.stage == 'random':
         rng = np.random.default_rng(11)
         items = [('random32', rng.integers(0, 16, size=32).tolist()) for _ in range(80)][:a.count or 30]
-        run_set(a.name or 'random32', items, a.nrun, a.nsteps, 'coop', a.out, a.max_chains, seed0=400)
+        run_set(a.name or 'random32', items, a.nrun, a.nsteps, 'coop', a.out, a.max_chains, seed0=400, **mk)
     log('stage', a.stage, 'done in %.0fs' % (time.time() - t))
 
 

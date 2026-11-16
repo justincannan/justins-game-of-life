@@ -296,3 +296,16 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Waits on Justin: the two bug fixes in report 29 (the `dishSetup` gene marker; coat arrays on resize); Justin will
     come back on the page code.
   - Waits on cloud: the chemotroph founder in the page. Once it is in, the GPU side can re-measure vent founding.
+- 2026-11-16 12:50 (interactive session): task 27 and task 26 steps 2 and 3 done; sections added to
+  `from_gpu/2026-11-15_26_folding-proposals-approved_report.md`, with `26_helix.png`, `26_design.png`, and code and
+  small results in `beadfold/`. Measured: the charge–dipole term (`elec='cd'`, μ 0.085 e·nm, about a peptide dipole)
+  meets benchmark B in a polar-lined pocket (+0.5 to +6.0 kT) and leaves it costly in an oily one (+13.5 to +19 kT);
+  benchmark A reaches 2.9 kT in one polar case (target > 3). Step 2 fails: no single nucleation/propagation constant
+  gives graded Zimm–Bragg content; helices switch from near 0 to about 0.95 within about 1 kT, because the narrow
+  H-bond window costs about 6 kT of entropy per bond. Step 3: relaxed gaps positive for 35 of 45 candidates, but blind
+  folds find structures below the relaxed target for 41 of 45; none folds to its target; 240 s of GPU per final
+  design. Step 5 not run (task 26's order). GPU about 3.9 h.
+  - Waits on Justin: the helix term (options a–d in the report; Claude prefers a softer single-distance H-bond
+    window, untested); whether to accept step 1's two near-misses; report 29's two bug fixes (coat arrays already
+    fixed by the cloud in f3a8b1c). Task 28 still running here.
+  - Waits on cloud: the chemotroph vent founder.

@@ -41,3 +41,18 @@ work):
 Reports: `comms/from_gpu/2026-11-14_15_design-approved-prototype_report.md` (steps 1-2),
 `comms/from_gpu/2026-11-14_15_step3_tertiary-fold_report.md` (step 3),
 `comms/from_gpu/2026-11-15_23_two-beads_report.md` (task 23, two beads).
+
+Task 26 and task 27 (Justin's decisions of 15 November, about 21:26, and 16 November, about 00:19; the task-23 modes
+`elec='v23'` and `helix='v23'` are the defaults and unchanged):
+- `twobead.py`: `elec='split'` (pairs at eps_pair 20, Born self term at eps_self 4-6), `elec='cd'` (split plus the
+  charge-dipole payback by polar neighbours, MU_CD; task 27), `h_charge='iso'`; `helix='coop'` and `helix='coop2'`
+  (Zimm-Bragg nucleation on the helix H-bonds; step 2, did not meet its check).
+- `charges26.py`, `charges27.py`, `charges27_refold.py`: charge benchmarks and random 32-mers -> `results/t26_step1_charges.json`,
+  `results/t27_charge_dipole.json`.
+- `helix26.py`, `helix26_fig.py`: isolated-helix content against step 2's Zimm-Bragg -> `results/t26_step2_helix.json`,
+  `comms/from_gpu/26_helix.png`.
+- `design26.py`, `design26_summary.py`: the design loop with relaxed targets and relaxed decoys (step 3) ->
+  `results/t26_designs.json`, `results/t26_design_summary.json`, `comms/from_gpu/26_design.png`.
+- `summary26.py`: step 5's summary (not run: step 2 did not meet its check).
+- `run_tb.py` takes `--model '{"elec": "cd", "h_charge": "iso"}'` (Model2 options) for every stage.
+Report: `comms/from_gpu/2026-11-15_26_folding-proposals-approved_report.md`.

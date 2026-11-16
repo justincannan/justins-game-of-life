@@ -1,0 +1,276 @@
+{
+ "timing": {
+  "decoy_fold_s": 445.1673696041107,
+  "total_s": 3604.671715736389,
+  "relax_s": 1701.1335809230804,
+  "n_relaxed": 125550
+ },
+ "args": {
+  "out": "D:\\labyrinth\\automata\\jgol_2026-11-13\\results\\2026-11-16\\task26\\design",
+  "rounds": 3,
+  "chains": 6,
+  "mc_steps": 60,
+  "active": 16,
+  "warm_iters": 80,
+  "full_iters": 250,
+  "target_iters": 2000,
+  "max_pool": 250,
+  "keep": 3,
+  "fold_runs": 3,
+  "fold_steps": 20000,
+  "decoy_steps": 20000,
+  "model": "{\"elec\": \"cd\", \"h_charge\": \"iso\"}",
+  "final_out": "D:\\labyrinth\\automata\\justins-game-of-life\\beadfold\\results\\t26_designs.json"
+ },
+ "model": {
+  "elec": "cd",
+  "h_charge": "iso"
+ },
+ "rounds": [
+  {
+   "round": 0,
+   "mc_s": 401.338898897171,
+   "fold_s": 471.1341438293457,
+   "pool": {
+    "design_helixhairpin": 439,
+    "design_sheet3": 439,
+    "bundle3": 439,
+    "sheet4": 439,
+    "bba": 439
+   },
+   "per_target": {
+    "design_helixhairpin": {
+     "n": 3,
+     "gap_full_max": 14.608043141690509,
+     "gap_full_median": 9.010692553158513,
+     "target_minus_fold_min": 6.972588644660227,
+     "target_minus_fold_median": 8.905221289504333,
+     "rmsd_best_min": 0.48990321819043986,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 3,
+     "drift_max": 0.1265183164297279,
+     "n_blowups": 0
+    },
+    "design_sheet3": {
+     "n": 3,
+     "gap_full_max": 8.041227954062329,
+     "gap_full_median": 6.612151838034336,
+     "target_minus_fold_min": -1.0121583512620838,
+     "target_minus_fold_median": 6.5510958501172,
+     "rmsd_best_min": 0.5102072712293255,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 1,
+     "gap_positive": 2,
+     "drift_max": 0.09095410354932722,
+     "n_blowups": 0
+    },
+    "bundle3": {
+     "n": 3,
+     "gap_full_max": 27.145323139606802,
+     "gap_full_median": 20.030297975795023,
+     "target_minus_fold_min": 11.461862207089865,
+     "target_minus_fold_median": 12.896831645767698,
+     "rmsd_best_min": 0.6516861590329122,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 3,
+     "drift_max": 0.1512085416482044,
+     "n_blowups": 0
+    },
+    "sheet4": {
+     "n": 3,
+     "gap_full_max": 2.337095668945693,
+     "gap_full_median": -6.492951491853702,
+     "target_minus_fold_min": 28.39758229017383,
+     "target_minus_fold_median": 33.642295783677234,
+     "rmsd_best_min": 0.8551478566754434,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 1,
+     "drift_max": 0.09744632585149066,
+     "n_blowups": 0
+    },
+    "bba": {
+     "n": 3,
+     "gap_full_max": 21.511232679673867,
+     "gap_full_median": 10.960659820959144,
+     "target_minus_fold_min": 2.1146579978582167,
+     "target_minus_fold_median": 26.692833849946744,
+     "rmsd_best_min": 0.5496651141145664,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 3,
+     "drift_max": 0.1913962593378425,
+     "n_blowups": 0
+    }
+   }
+  },
+  {
+   "round": 1,
+   "mc_s": 434.47503447532654,
+   "fold_s": 476.1616117954254,
+   "pool": {
+    "design_helixhairpin": 439,
+    "design_sheet3": 439,
+    "bundle3": 439,
+    "sheet4": 439,
+    "bba": 439
+   },
+   "per_target": {
+    "design_helixhairpin": {
+     "n": 3,
+     "gap_full_max": 17.342076328313432,
+     "gap_full_median": 14.721144277516899,
+     "target_minus_fold_min": -5.575846640607416,
+     "target_minus_fold_median": 2.4884230847769047,
+     "rmsd_best_min": 0.5483316143038443,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 1,
+     "gap_positive": 3,
+     "drift_max": 0.1411285271637361,
+     "n_blowups": 0
+    },
+    "design_sheet3": {
+     "n": 3,
+     "gap_full_max": 13.912941138738212,
+     "gap_full_median": 2.2936872558799664,
+     "target_minus_fold_min": -3.199380572119523,
+     "target_minus_fold_median": 4.466055090975111,
+     "rmsd_best_min": 0.6623505950410576,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 1,
+     "gap_positive": 2,
+     "drift_max": 0.10334722733606065,
+     "n_blowups": 0
+    },
+    "bundle3": {
+     "n": 3,
+     "gap_full_max": 20.517025129714874,
+     "gap_full_median": 17.44327315376598,
+     "target_minus_fold_min": -1.4411112764700533,
+     "target_minus_fold_median": 14.17938073541093,
+     "rmsd_best_min": 0.4455102780227599,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 1,
+     "gap_positive": 3,
+     "drift_max": 0.1503041726266973,
+     "n_blowups": 0
+    },
+    "sheet4": {
+     "n": 3,
+     "gap_full_max": 1.9213736962179553,
+     "gap_full_median": -0.10648372601927747,
+     "target_minus_fold_min": 1.325144325247976,
+     "target_minus_fold_median": 12.613193746291913,
+     "rmsd_best_min": 0.5480990865431539,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 1,
+     "drift_max": 0.13232938761073001,
+     "n_blowups": 0
+    },
+    "bba": {
+     "n": 3,
+     "gap_full_max": 5.7679406687636,
+     "gap_full_median": -7.081541445121019,
+     "target_minus_fold_min": 21.238774836516868,
+     "target_minus_fold_median": 22.3177073216643,
+     "rmsd_best_min": 0.5440479455754021,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 1,
+     "drift_max": 0.11592964806596444,
+     "n_blowups": 0
+    }
+   }
+  },
+  {
+   "round": 2,
+   "mc_s": 450.4355218410492,
+   "fold_s": 506.31192350387573,
+   "pool": {
+    "design_helixhairpin": 439,
+    "design_sheet3": 439,
+    "bundle3": 439,
+    "sheet4": 439,
+    "bba": 439
+   },
+   "per_target": {
+    "design_helixhairpin": {
+     "n": 3,
+     "gap_full_max": 14.833273949985944,
+     "gap_full_median": 2.7735887158927035,
+     "target_minus_fold_min": 7.1332123846105375,
+     "target_minus_fold_median": 21.187884449471632,
+     "rmsd_best_min": 0.5357723905386275,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 3,
+     "drift_max": 0.11640641382586116,
+     "n_blowups": 0
+    },
+    "design_sheet3": {
+     "n": 3,
+     "gap_full_max": 3.9650797511973295,
+     "gap_full_median": 3.768198262534881,
+     "target_minus_fold_min": 4.462216442354979,
+     "target_minus_fold_median": 15.36394181932144,
+     "rmsd_best_min": 0.4335741984163462,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 3,
+     "drift_max": 0.09454618069852062,
+     "n_blowups": 0
+    },
+    "bundle3": {
+     "n": 3,
+     "gap_full_max": 16.38389215998228,
+     "gap_full_median": 10.305861249942083,
+     "target_minus_fold_min": 20.193897740800963,
+     "target_minus_fold_median": 20.911801499869725,
+     "rmsd_best_min": 0.5127124763513277,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 3,
+     "drift_max": 0.12737433372067739,
+     "n_blowups": 0
+    },
+    "sheet4": {
+     "n": 3,
+     "gap_full_max": 10.214004598513085,
+     "gap_full_median": 1.4403624355230633,
+     "target_minus_fold_min": 24.593362218940285,
+     "target_minus_fold_median": 26.62163685876679,
+     "rmsd_best_min": 0.7841547462341163,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 2,
+     "drift_max": 0.15401604481980688,
+     "n_blowups": 0
+    },
+    "bba": {
+     "n": 3,
+     "gap_full_max": 1.9540800072834656,
+     "gap_full_median": 0.6838022240252997,
+     "target_minus_fold_min": 19.13350699902822,
+     "target_minus_fold_median": 21.350768557015797,
+     "rmsd_best_min": 0.5745618698011975,
+     "frac_same_max": 0.3333333333333333,
+     "target_lower": 0,
+     "gap_positive": 2,
+     "drift_max": 0.1219256457302414,
+     "n_blowups": 0
+    }
+   }
+  }
+ ],
+ "cost": {
+  "total_s": 3604.671715736389,
+  "candidates": 45,
+  "s_per_candidate": 80.10381590525309,
+  "relax_s": 1701.1335809230804,
+  "n_relaxed": 125550,
+  "ms_per_relaxation": 13.549451062708725
+ }
+}
