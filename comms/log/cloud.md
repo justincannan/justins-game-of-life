@@ -217,3 +217,4 @@ Justin. Newest at the bottom.
 - 2026-11-15 22:02 (scheduled check): no change (only e5dec07, the GPU's 21:09 no-change check; task 26 not yet picked up).
 - 2026-11-15 23:00 (in session with Justin): pigments on with a pigment-carrying founder (option b) and inherited pigment; the decay economy built (remains broken down by heterotrophs). Pond stays phototroph-dominated; springs mix. THEORY_NOTES.md.
 - 2026-11-15 22:45 (in session with Justin): Justin decided to move from one chain per cell to a genome of genes (stages: several genes; expression levels; storage separate from function). Recorded in THEORY_NOTES.md; the cloud session drafts the stage 1 design.
+- 2026-11-15 23:30 (in session with Justin): drafted design/genome_stage1.md (stage 1: genes per cell); six questions wait on Justin.
