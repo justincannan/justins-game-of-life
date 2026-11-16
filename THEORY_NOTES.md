@@ -1756,3 +1756,18 @@ harness's), 1 to 3 seeds each, so they are indications, not validations.
 **Observation, not caused by these changes:** the vent world's one-organism start founded life in only 2 of 7 seeds,
 with or without viruses and with either visiting order. That is in fresh pages on this harness; an earlier note
 recorded 6 of 6. Proposal: the GPU session or the cloud session checks vent founding over 10+ seeds.
+
+## Decisions (Justin, 15 November, about 21:26)
+- **Folding: task 23's proposals 1, 2, 3 and 5 are approved, in that order.** Proposal 4 (sheets) comes after, if
+  sheets still lag.
+  1. **Charges:** a self (desolvation) term with a low dielectric for each buried charge, and charge–charge
+     interactions with a high effective dielectric of about 20. This follows Schutz and Warshel 2001 (the optimal
+     constant for self-energies is not the one for charge–charge interactions), Sham et al. 1998, and staphylococcal
+     nuclease pair data (ε about 20). Recheck task 20's benchmarks.
+  2. **Helices:** a cooperative helix term (Zimm–Bragg-like nucleation and propagation in the tertiary energy),
+     recalibrated against step 2.
+  3. **Design test:** relaxed target and relaxed decoys, more rounds, gaps on relaxed energies. This is also the tool
+     for developed starting proteins.
+  5. **Repeat** the design test on the same targets, then step 3's sets.
+- **Copying errors:** Justin leans to keeping the page's rate (30–40 times Drake's rule) for fast evolution. Kept for
+  now.
