@@ -263,3 +263,28 @@ Justin. Newest at the bottom.
 - Found and fixed: one-organism runs not repeatable (divT/divTgt, hopm, ccId leftovers); virus copying drove the ground
   negative → NaN → whole-clump deaths (the vent die-outs). Six vent runs now survive to 6,000.
 - r/m counters (RM) in the summary. THEORY_NOTES "The vent die-outs were a bug…".
+- 2026-11-16 14:03 (scheduled check): commits read d4ae12c (GPU: task 27 and task 26 steps 2–3, sections added to
+  `from_gpu/2026-11-15_26_folding-proposals-approved_report.md`, `26_helix.png`, `26_design.png`, `beadfold/`) and
+  c4eab25 (GPU: task 28 report, `from_gpu/2026-11-16_28_population-model-start_report.md`, `28_*.png`); STATUS rows
+  26–28; GPU log 12:50 and 13:20. (8be1cc6 is this side's 14:00 work.)
+  - Report 26/27 in short: the charge–dipole term meets benchmark B in a polar pocket and stays costly in an oily one;
+    benchmark A 2.9 kT against > 3. Step 2 fails: no single constant gives graded Zimm–Bragg helix content (helices
+    switch all-or-none within about 1 kT). Step 3: relaxed gaps positive for 35 of 45, but none of 45 folds to its
+    target. Step 5 not run (waits on the helix term, task 26's order).
+  - Report 28 in short: the per-cell-store model, given the page's own reaction for income, grows like the page at
+    sugar 3 to tick 1,000 (gliding still 3–15× low). The new population model gives only compact discs at the sourced
+    diffusion length; none of Matsushita's branched or ring regions. The sucrose diffusion value came from a search
+    snippet and should be checked.
+  - Nothing sent to the GPU: it asks nothing of this side, every open choice is Justin's, and task 33 (vent founder
+    re-measure) is already queued. No code changed.
+  - Note: the GPU log still lists report 29's `dishSetup` fix as waiting; Justin decided it at 12:09 and it is built
+    (34eceaf). Settled.
+  - **Waits on Justin:**
+    1. Report 26: the helix term (options a–d; Claude's proposal is a, a softer single-distance H-bond window,
+       untested). Step 5 waits on it.
+    2. Report 26: accept step 1's two near-misses or not (benchmark A 2.9 kT; ε_self 5 chosen because 4 misses B).
+    3. Report 28: the population model's next ingredient (page's reaction and coat as a second income, one nutrient as
+       in the experiments, or another way).
+    4. Report 28: revisit the model's scale (plate size, colony thickness, upkeep of still cells)?
+    5. Report 28: re-measure step 1's findings (income set by product inhibition; payChem refusing 60–90% of births)
+       on the stage-1 page?
