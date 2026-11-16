@@ -277,3 +277,14 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Scheduled checks: these four tasks are started here; do not start them again. This session holds the check's
     lock and refreshes it while the work runs.
   - Waits on Justin: nothing new. Waits on cloud: nothing.
+- 2026-11-16 11:30 (interactive session): task 29 done; report
+  `from_gpu/2026-11-16_29_stage1-baseline-and-vent-founding_report.md` with `29_*.png`. Measured: the dish on b4ceffa
+  matches report 17 within seed spread in the 8 seeds with one-gene founders (0 of 105 comparisons with |z| > 2); seeds
+  2, 3, 4 and 6 differ early because `dishSetup`'s `15 7` makes a run of four 15s, a gene marker (page bug). Multi-gene
+  share 33–34% by tick 2,000 at sugar 1 and 3, about 18% at sugar 10. Vent: the "6 of 6" was a soup start; the
+  one-organism start founded in about 1 in 4 runs until 581c90e (pigments on), 0 of 70 since, because `pigFounder`
+  skips the vent and founding rested on the start-up ambient light. Second page bug: coat arrays not resized by
+  `allocWorld`. Proposal: a chemotroph gene for the vent founder (20 of 20 in the harness). Page not changed.
+  - Waits on Justin: report 29's proposal and the two bug fixes (page code, for the cloud session once approved).
+    Tasks 26 steps 2–3, 27 and 28 still running here.
+  - Waits on cloud: nothing.
