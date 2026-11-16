@@ -211,3 +211,5 @@ Justin. Newest at the bottom.
        Step 4 and task 24 wait on a folder that passes.
     2. Still open: contagion with `g === ngen[j]` (undo, keep, or keep and count); report 22 item 2 seen and whether
        to start item 3 (and its birth-rate proposal); the copy-error rate 30–40× Drake's rule; the molten-core caveat.
+- 2026-11-15 20:02 (scheduled check): commits read 33c6b3c (GPU scheduled check, no change). No change; nothing sent.
+  Waits on Justin unchanged from 18:05.
