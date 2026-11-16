@@ -1074,6 +1074,7 @@ function allocWorld(nw, nh, keep) {
   }
   lampCount = 0; for (let i = 0; i < N; i++) if (lamp[i] !== 0) lampCount++;
   chemAlloc();
+  if (typeof coatAlloc === 'function' && coatS) coatAlloc();   // the coat's parts follow the world's size (report 29: past the old size pigOf read undefined, so light was NaN); cleared like coat itself
   layoutZones();
 }
 function sizeWorld(keep) {
@@ -2826,7 +2827,9 @@ function dishSetup() {
   en.fill(f * P.dishSugar); for (let c = 0; c < n; c++) if (!dishSq[c]) en[c] = 0; o2.fill(P.o2air || 4); fe.fill(0);   // the plate starts in air, with no iron to soak up the oxygen          // the agar's sugar, laid once with the rest of the food
   for (let i = 0; i < N; i++) if (alive[i]) xg[i] |= (3 << 10) | (P.dishDorm ? 3 << 14 : 0);   // and, if dishDorm, goes dormant when starved   // the inoculum eats sugar (the heterotroph gene, at full strength)
   if (!P.seqOn || slen.length !== N) return;
-  for (let i = 0; i < N; i++) { if (!alive[i]) continue; if (!slen[i]) seqFromGen(i, gen[i]); if (!slen[i] || slen[i] + 2 > SL) continue; const o = i * SL; seq[o + slen[i]] = 15; seq[o + slen[i] + 1] = 7; slen[i] += 2;
+  for (let i = 0; i < N; i++) { if (!alive[i]) continue; if (!slen[i]) seqFromGen(i, gen[i]); if (!slen[i] || slen[i] + 2 > SL) continue; const o = i * SL;
+    let at = slen[i]; while (at > 0 && seq[o + at - 1] === 15) at--; if (slen[i] - at < 3) at = slen[i];   // the pair goes before a trailing run of three 15s, so it cannot make a run of four, a gene marker (report 29; Justin, 16 November)
+    for (let h = slen[i] - 1; h >= at; h--) seq[o + h + 2] = seq[o + h]; seq[o + at] = 15; seq[o + at + 1] = 7; slen[i] += 2;
     gen[i] = infold(seq, o, slen[i]); cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; rx2[i] = lastRx2; rxStr2[i] = lastRxS2; cH[i] = lastCH; }
 }
 
@@ -3216,6 +3219,28 @@ function pigFounder() {
   return k;
 }
 { const _resetP = reset; reset = function (...a) { const r = _resetP.apply(this, a); if (a[0] === 'organism') { const k = pigFounder(); if (k) log(`The first organism carries a fold that makes a pigment, so it can use light.`); } return r; }; }
+// the vent founder's chemotroph gene (Justin, 16 November, report 29 proposal 1): as the sunlit founder gets a pigment gene,
+// the vent founder gets one closed domain behind a marker whose reaction runs downhill on a molecule plentiful in its
+// square, found by the same search; the compound is unchanged. Scored by the energy released times the square's supply.
+function chemoFounder() {
+  if (P.chemoFounder === false || !P.seqOn || !P.domOn || !P.rxDom || P.env !== 'vent') return 0;
+  if (slen.length !== N) seqAlloc();
+  const fs = []; for (let i = 0; i < N; i++) if (alive[i]) fs.push(i); if (!fs.length) return 0;
+  const i0 = fs[0]; if (!slen[i0]) seqFromGen(i0, gen[i0]); const c16 = cmap[i0] << 4;
+  let D = null, best = 0;
+  for (let s0 = 0; s0 < 16; s0++) for (let a = 0; a < 16; a++) { const core = [[s0, a, a ^ 8, s0 ^ 8], [s0, s0, s0 ^ 8, s0 ^ 8]][a & 1 ? 1 : 0], mk = (s0 + 5) & 15, cand = (s0 === mk || (s0 ^ 8) === mk) ? core : [mk, mk, mk, mk, ...core];
+    const o = i0 * SL, n0 = slen[i0]; if (n0 + cand.length > SL) continue; const g0 = infold(seq, o, n0);
+    for (let h = 0; h < cand.length; h++) seq[o + n0 + h] = cand[h]; const g = infold(seq, o, n0 + cand.length), r = lastRx; if (g !== g0) continue;
+    for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; const sk = b >> 4, t = b & 15; if (t === (sk ^ 8)) continue;
+      const sc = (RXE[sk] - RXE[t]) * chem[c16 + sk]; if (sc > best) { best = sc; D = cand; } } }
+  infold(seq, i0 * SL, slen[i0]); if (!D) return 0;
+  let k = 0; for (const i of fs) { if (!slen[i]) seqFromGen(i, gen[i]); const o = i * SL, n0 = slen[i]; if (n0 + D.length > SL) continue;
+    for (let h = 0; h < D.length; h++) seq[o + n0 + h] = D[h]; slen[i] = n0 + D.length;
+    gen[i] = infold(seq, o, slen[i]); cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; rx2[i] = lastRx2; rxStr2[i] = lastRxS2; rx2[i] = lastRx2; rxStr2[i] = lastRxS2; cH[i] = lastCH; changed[i] = 1; k++; }
+  CHF.gene = D.map(m => MONO[m]).join(''); return k;
+}
+const CHF = {gene: ''};
+{ const _resetC = reset; reset = function (...a) { const r = _resetC.apply(this, a); if (a[0] === 'organism') { const k = chemoFounder(); if (k) log(`The first organism carries a fold that runs a reaction downhill on the vent's molecules, so it can live on chemistry (${CHF.gene}).`); } return r; }; }
 function pigBorn(i, pj) {                                  // a dividing cell shares its pigment: the daughter gets half the pigment in the parent's coat
   if (!P.pigment || pj < 0 || !coatM || !(coatM[pj] > 0) || coatK[pj] < 12) return;
   const c16 = cmap[i] << 4; if (coatM[i] > 0) { chem[c16 + coatK[i]] += coatM[i]; coatM[i] = 0; }

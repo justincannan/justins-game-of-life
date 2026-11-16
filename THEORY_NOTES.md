@@ -2000,3 +2000,16 @@ in parallel (headless, one per core), then speeding up the cell loop itself.
 
 Also fixed: the summary's "most common reactions" counted repeated copies, giving shares over 100%; now each reaction
 is counted once a cell, across both reaction words.
+
+## Decisions (Justin, 16 November, about 12:09), report 29; built
+Justin accepted the recommendations:
+1. **The vent founder carries a chemotroph gene** (decided at 12:05 in the GPU session). Built as `chemoFounder()`:
+   - the same search as `pigFounder`, scored by energy released times the founder square's supply of the starting
+     molecule; one closed domain behind a marker, compound unchanged; `P.chemoFounder` (default on), vent only;
+   - checked: seeds 11–30, one organism, 400 ticks: 20 of 20 founded (7,500–20,100 cells);
+   - the search picked `4 4 4 4 15 0 8 7` in 18 seeds, the GPU session's gene; seeds 19 and 30 got `2 2 2 2 13 2 10 5`.
+2. **The dish founder's pair goes before a trailing run of three 15s** (option a), so it cannot make a gene marker.
+   Checked, seeds 1–12: every founder is one gene with reaction word 0xf0. The pair moved in seeds 9, 11 and 12.
+   Others are unchanged, so report 17 stays the baseline.
+3. **The coat-array fix stays** (applied by the 12:02 scheduled check before Justin's decision; now approved).
+4. **Repeat the vent die-out over seeds**, and **check the transfer rate against real bacteria** (both under way).
