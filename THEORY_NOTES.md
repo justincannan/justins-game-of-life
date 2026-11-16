@@ -1870,3 +1870,46 @@ Justin's decisions (design/genome_stage1.md, section 6), all as proposed:
 3. **The GPU session re-baselines the dish on the stage-1 page,** and investigates vent founding (0 of 10 seeds on the
    old and new pages).
 4. **Same-compound contagion: keep and count.** The cloud session adds the counter.
+
+## Following the genes over longer runs (cloud session, 16 November, about 09:00–09:20)
+Measurements on the stage-1 page, soup start, seed 1, 6,000 ticks, sampled every 1,000 (test/genes_long.py). "Near
+copies" are two same-length genes in one cell differing at a quarter of their monomers or fewer.
+
+| | even world, tick 1,000 → 6,000 | vent world, tick 1,000 → 6,000 |
+|---|---|---|
+| cells with more than one gene | 41% → 46% | 85% → 95% |
+| genes a cell (most in one cell) | 1.57 → 1.64 (6 → 11) | 2.81 → 3.57 (9 → 15) |
+| mean length (longest) | 14.2 → 22.5 (79 → 256) | 55 → 194 (256 from tick 1,000) |
+| monomers that are markers | 21% → 14% | 14% → 6% |
+| exact-copy gene pairs | 20,164 → 14,326 | 12,277 → 2,894 |
+| near copies (share running a different reaction) | 3,809 (20%) → 3,530 (35%) | 10,381 (39%) → 3,381 (40%) |
+| reactions a cell; cells running more than 4 | 3.15 → 3.87; 16% → 25% | 5.1 → 7.3; 54% → 92% |
+| genes duplicated / lost / passed / from viruses, total | 12,527 / 5,638 / 31,715 / 28 | 17,527 / 23,163 / 74,554 / 12,916 |
+
+Findings (measures, not causes):
+- **Genomes grow.** Slowly in the even world, speeding up after tick 4,000; fast in the vent world, where the 256 cap
+  is reached by tick 1,000 and the mean is near it by 6,000. In the vent world losses now outnumber duplications,
+  which is what pressing against the cap would look like.
+- **Duplicates diverge into new jobs.** Exact copies fall over time; at any sample a few thousand near copies exist, and
+  a third or more of them run a different reaction from their twin. This is the duplication-then-divergence route.
+- **Virus chains join genomes**, rarely in the even world (28) and often in the vent world (12,916), where the
+  epidemics are. Whether they stay is not yet measured: genes carry no record of where they came from.
+- **Markers are not overused overall.** The share falls as genes lengthen. Single cells can be high (one 5-gene cell
+  had 18 marker monomers in 52).
+- **Repeated reactions.** Cells often carry the same reaction several times (one gene: l→m four times). Each copy runs,
+  so the copies raise that reaction's rate. This looks like gene dosage (more copies, more product), which is real
+  biology, but it was not designed for.
+- **Transfer accelerates** (even world: 212 by tick 1,000, 31,715 by 6,000), as kin genomes become similar enough to
+  splice.
+- **Test caveat:** two runs with the same seed gave 81,927 and 89,309 cells at tick 1,000. The page likely runs frames
+  before the test stops it. Seeded comparisons need the harness to stop the page first; worth telling the GPU session
+  for task 29.
+
+Proposals (Claude's, for Justin):
+1. Is the 256 cap the right limit, or should length cost more? The copying cost is 0.0004 light a monomer.
+2. Tag each gene with its origin (own, transferred, virus) for display only, to see whether virus genes persist.
+3. Is the dosage effect of repeated reactions wanted, or should identical reactions share one rate?
+
+The inspector now lists each gene: its monomers, domains (and adaptors), reactions with strength, and whether it is an
+exact copy of another gene in the cell. Reactions past the cell's 8 are struck through. The summary has a "Genes:"
+line (genes a cell, share multi-gene, marker share, exact copies, and the running totals).

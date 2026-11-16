@@ -490,6 +490,11 @@ function seqPanel() {
         for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; cnt.set(b, (cnt.get(b) || 0) + 1); } }
       const top = [...cnt.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([b, c]) => `${(b & 15) === ((b >> 4) ^ 8) && P.cellClumps && P.sugarCoat > 0 ? 'sugar→coat' : MONO[b >> 4] + '→' + MONO[b & 15]} ${Math.round(100 * c / Math.max(1, tot))}%`).join(', ');
       dom += `<br>Reactions: <b>${Math.round(100 * withRx / Math.max(1, tot))}%</b> of cells run at least one · most common: ${top || 'none'} · light gained <b>${rxGain.toFixed(0)}</b>, spent <b>${rxCost.toFixed(0)}</b> so far`; }
+    if (m && P.seqOn) { let tg = 0, multi = 0, mk = 0, ml = 0, dupG = 0, mx = 1;
+      for (let i = 0; i < N; i += 11) { if (!alive[i] || !slen[i]) continue; const o = i * SL, L = slen[i], k = geneSegs(seq, o, L); tg += k; if (k > 1) multi++; if (k > mx) mx = k; ml += L;
+        let inG = 0; for (let q = 0; q < k; q++) inG += gSeg[2 * q + 1] - gSeg[2 * q]; mk += L - inG;
+        const seen = new Set(); for (let q = 0; q < k; q++) { const t = seq.slice(o + gSeg[2 * q], o + gSeg[2 * q + 1]).join(','); if (seen.has(t)) dupG++; else seen.add(t); } }
+      dom += `<br>Genes: <b>${(tg / m).toFixed(2)}</b> a cell · <b>${Math.round(100 * multi / m)}%</b> of cells carry more than one (most <b>${mx}</b>) · <b>${ml ? Math.round(100 * mk / ml) : 0}%</b> of monomers are gene markers · <b>${tg ? Math.round(100 * dupG / tg) : 0}%</b> of genes are exact copies of another in the same cell · so far ${geneDupN} genes duplicated, ${geneDelN} lost, ${geneHGTN} passed between cells, ${virIntegN} taken in from viruses`; }
     if (m) dom = dom + `<br>Domains: <b>${(dn / m).toFixed(1)}</b> a cell, averaging <b>${dn ? (dsz / dn).toFixed(1) : 0}</b> monomers · <b>${dn ? Math.round(100 * dmul / dn) : 0}%</b> folded firmer by a same-kind pair inside · <b>${prs ? Math.round(100 * hid / prs) : 0}%</b> of pairs held inside another kind's domain${P.domDup > 0 ? ` · ${domDupN} whole domains duplicated so far` : ''}`; }
   return n ? `<div style="margin-bottom:6px;color:var(--muted)">Line of expression: sequences average <b>${(tl / n).toFixed(1)}</b> monomers · <b>${ss.size}</b> different sequences make <b>${gs.size}</b> compounds · <b>${seqMut ? Math.round(100 * seqNeutral / seqMut) : 0}%</b> of copying errors left the compound unchanged${work}${dom}</div>` : '';
 }
@@ -1092,6 +1097,23 @@ function fvShow(i) {
   if (!FV.raf) FV.raf = requestAnimationFrame(fvDraw);
 }
 { const _inspFV = inspect; inspect = function (x, y) { _inspFV(x, y); try { fvShow(idx(x, y)); } catch (e) { console.warn('fold viewer', e); } }; }
+
+// ---------------- the gene list (display only): each gene of the inspected cell with its own domains and reactions.
+function geneListHtml(i) {
+  if (typeof seq === 'undefined' || !seq || !slen || !alive[i] || !slen[i] || !P.seqOn) return '';
+  const o = i * SL, n = slen[i], k = geneSegs(seq, o, n), segs = []; for (let q = 0; q < k; q++) segs.push([gSeg[2 * q], gSeg[2 * q + 1]]);
+  const rxName = b => (b & 15) === ((b >> 4) ^ 8) && P.cellClumps && P.sugarCoat > 0 ? 'sugar→coat' : MONO[b >> 4] + '→' + MONO[b & 15];
+  const seen = new Map(), rows = []; let total = 0;
+  segs.forEach(([s0, e0], q) => { const txt = Array.from(seq.slice(o + s0, o + e0), m => MONO[m]).join('');
+    infoldGene(seq, o + s0, e0 - s0); let ads = 0, work = 0; for (let d = 0; d < dN; d++) { if (sAd[d]) ads++; else if (dS[d] >= P.domMin) work++; }
+    const rs = []; for (let r = 0; r < 4; r++) { const b = (lastRx >>> (8 * r)) & 255; if (!b) break; rs.push(`${rxName(b)}${((lastRxS >> (2 * r)) & 3) > 1 ? ' ×' + ((lastRxS >> (2 * r)) & 3) : ''}`); }
+    const capped = Math.max(0, Math.min(rs.length, 8 - total)); total += rs.length;
+    const twin = seen.has(txt) ? ` <span style="color:var(--muted)">(a copy of gene ${seen.get(txt)})</span>` : ''; if (!seen.has(txt)) seen.set(txt, q + 1);
+    rows.push(`<div><b>Gene ${q + 1}</b> · monomers ${s0 + 1}–${e0} (${e0 - s0}) · ${dN} domain${dN === 1 ? '' : 's'}${ads ? ` (${ads} adaptor${ads === 1 ? '' : 's'})` : ''}${twin}<br><span style="font-family:monospace;font-size:11px;word-break:break-all">${txt.length > 64 ? txt.slice(0, 64) + '…' : txt}</span><br>Reactions: ${rs.length ? rs.map((t, r) => r < capped ? t : `<span style="color:var(--muted);text-decoration:line-through">${t}</span>`).join(', ') : '<span style="color:var(--muted)">none</span>'}</div>`); });
+  const mk = n - segs.reduce((a, [s0, e0]) => a + e0 - s0, 0);
+  return `<div style="margin-top:6px"><b>Its genes</b> <span style="color:var(--muted)">(${k} gene${k === 1 ? '' : 's'}${mk ? `, ${mk} marker monomers` : ''}; reactions past the cell's 8 are struck through: they are carried but do not run)</span>${rows.join('')}</div>`;
+}
+{ const _inspGL = inspect; inspect = function (x, y) { _inspGL(x, y); try { const h = geneListHtml(idx(x, y)); if (h) for (const el of [document.getElementById('insp'), typeof inspFloatBody !== 'undefined' ? inspFloatBody : null]) if (el) el.insertAdjacentHTML('beforeend', h); } catch (e) { console.warn('gene list', e); } }; }
 
 // ---------------- the visiting order (Justin, 14 November): a fresh random order of the places each tick, from the seeded rng.
 // For speed the shuffle keeps neighbours together: 8 x 8 tiles are visited in random order, and inside each tile the 64

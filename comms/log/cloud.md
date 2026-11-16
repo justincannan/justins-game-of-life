@@ -222,3 +222,8 @@ Justin. Newest at the bottom.
 - 2026-11-16 00:25 (in session with Justin): Justin agreed: charge–dipole term (27), task 22 item 3 starts with the birth-rate raise (28), stage-1 dish re-baseline and vent founding investigation (29), same-compound contagion kept and counted (cloud).
 - 2026-11-16 00:45 (in session with Justin): same-compound contagion kept and counted (sameCompN; 1,691 by tick 600 in the even world); the fold viewer folds each gene separately and greys the markers. Sent 27, 28, 29.
 - 2026-11-16 08:04 (scheduled check): no change (no GPU commits since c4750dd, report 26 step 1, already answered by task 27; tasks 27–29 not yet picked up).
+
+## 16 Nov ~09:20 (interactive)
+- Built: inspector gene list (geneListHtml), summary "Genes:" line. Rebuilt, syntax-checked.
+- Measured 6,000-tick gene runs, even and vent (THEORY_NOTES "Following the genes"). test/genes_long.py.
+- For GPU (task 29): same seed gave different counts at tick 1,000 across runs; stop the page before seeding.
