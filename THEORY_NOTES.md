@@ -1822,3 +1822,41 @@ next. Measured on the harness world (476 × 248), 1 seed per case unless stated:
   learned (task 24). The design of stage 1 can be written now (cloud session), to be built once folds are ready.
 - Fit with folding: each gene's chain is folded and cached separately. Many short chains are easier to fold and to learn
   than one long one, so stage 1 also helps tasks 24 and 26.
+
+## Stage 1 of the genome: decided and built (Justin, 15 November, about 23:45; built about 00:00–01:30)
+Justin's decisions (design/genome_stage1.md, section 6), all as proposed:
+- a run of 4 identical monomers marks a gene boundary;
+- 8 reactions per cell, 4 per gene;
+- the compound is summed over genes;
+- gene duplication, loss and transfer, and virus chains integrating as genes;
+- lines up to 256 monomers;
+- built now, on bracket folds.
+
+**Built** (tools/env.js):
+- `infoldGene` is the old fold; the new `infold` splits the line at markers and folds each gene, combining:
+  - the compound, summed and capped at 3;
+  - reactions, in `rx` then `rx2`;
+  - domains, at absolute positions.
+
+  A line without a marker takes the old path unchanged.
+- `geneOps` at division (`geneDup` and `geneDel`, 0.005 each).
+- `geneTransfer` in contagion (`geneHGT` 0.1, undone like other splices if the cell cannot pay). A gene the recipient
+  already has is not taken again: without that rule, kin transferred whole genomes into each other.
+- `virIntegrate` (`virInteg` 0.02 per check): pays for any change in the compound with `swapChem`, or does not happen.
+- `slen` is now 16-bit.
+- `moveSeq` copies only the used length.
+- The founder's pigment fold is its own gene, behind a marker.
+
+**Measured** (harness world 476 × 248):
+- **Even world from a soup, seed 1:**
+  - multi-gene genomes 31% of cells by tick 1,000 (25,478 two-gene, 2,319 three or more);
+  - 13% of cells use more than 4 reactions (12,165);
+  - lines a mean of 11.3 monomers, longest 64 (before: 9.9 and 30);
+  - 3,172 gene duplications, 750 losses and 115 transfers;
+  - no virus integrations yet;
+  - speed 68 ms a tick against 62.
+- **Founding:**
+  - pond from one organism, alive at tick 500: 6 of 8 seeds, against 8 of 8 on the previous page (two of the new
+    ones are marginal: 10 and 5 cells), so possibly a small cost. Revisit with more seeds;
+  - vent from one organism: 0 of 10 seeds on both the previous and the new page (seeds 11–20). **Vent founding is
+    broken independently of this change.**

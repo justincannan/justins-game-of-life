@@ -321,11 +321,11 @@ function earlyCheck() {
 // ---------------- the line of expression: each cell carries an ordered sequence of monomers (the 16 molecules). Infolding it
 // gives its compound: reading along, a monomer that meets its complement (the molecule eight places away) pairs with it and
 // both are buried; the monomers left unpaired are exposed, and their counts (up to 3 each) are the compound's exponents
-const SL = 128, MONO = 'abcdefghijklmnop';
+const SL = 256, MONO = 'abcdefghijklmnop';
 let seq = new Uint8Array(1), slen = new Uint8Array(1), seqMut = 0, seqNeutral = 0;
 // the buried pairs work: a pair of monomer k with its complement k+8 is an enzyme of kind k (strength up to 3), kept in cat[i], two bits a kind
 let cat = new Uint16Array(1), lastCat = 0;
-let cH = new Uint32Array(1), codeChg = 0, codeBirths = 0, coatMade = 0, rxAct = new Float32Array(1), coat = new Float32Array(1), rx = new Uint32Array(1), rxStr = new Uint8Array(1), rxRun = 0, rxGain = 0, rxCost = 0;   // each cell's reactions (see domReact)
+let cH = new Uint32Array(1), codeChg = 0, codeBirths = 0, coatMade = 0, rxAct = new Float32Array(1), coat = new Float32Array(1), rx = new Uint32Array(1), rxStr = new Uint8Array(1), rx2 = new Uint32Array(1), rxStr2 = new Uint8Array(1), rxRun = 0, rxGain = 0, rxCost = 0;   // each cell's reactions (see domReact)
 const CATN = ['light harvest', 'respiration', 'uptake', 'keeping water', 'heat tolerance', 'copying fidelity', 'defence', 'building'];
 const CA = (i, k) => P.catOn ? (cat[i] >> (2 * k)) & 3 : 0;
 const sTmp = new Uint8Array(SL * 2), sStk = new Uint8Array(SL * 2), sEx = new Uint8Array(16);
@@ -347,7 +347,7 @@ function regApply(i, sk) {
 // inner pairs of other kinds are held inside it and do not act on their own. Only the outermost domains work.
 // dN top-level domains, with kind dK, strength dS, and span dA..dB (inclusive, positions in the sequence)
 const sPos = new Uint8Array(SL * 2), dK = new Uint8Array(SL), dS = new Uint8Array(SL), dA = new Uint8Array(SL), dB = new Uint8Array(SL), dO = new Uint8Array(SL), dQ = new Uint16Array(SL), dT = new Uint16Array(SL);
-let lastRx = 0, lastRxS = 0;
+let lastRx = 0, lastRxS = 0, lastRx2 = 0, lastRxS2 = 0;
 let dN = 0, dHidden = 0, dPairs = 0;
 // reactions from shape: a domain turns one molecule into another. What it takes is the monomer that opens its outer pair;
 // what it makes is set by the monomers folded inside it: (taken + 1 + the inner sum) mod 16, where the inner sum adds the
@@ -361,8 +361,9 @@ const RXE = new Float32Array(16); { const pr = [2, 3, 5, 7, 11, 13, 17, 19, 23, 
 // adaptors: each sets code[its inner sum] = its opening monomer, the nearest to the front winning. They run no reaction.
 const sCode = new Uint8Array(16), sAd = new Uint8Array(SL); let lastCH = 0, lastAd = 0;
 function rxOf(d) { const s = dO[d] & 15; let t = (s + 1 + sCode[dQ[d] & 15]) & 15; if (t === s) t = s ^ 8; return (s << 4) | t; }
-function domReact(i) {                                     // run this cell's reactions on its own square's molecules
-  const r = rx[i], c = cmap[i] << 4; let st = rxStr[i];
+function domReact(i) { domReactW(i, rx[i], rxStr[i]); if (rx2[i]) domReactW(i, rx2[i], rxStr2[i]); }   // a cell's reactions, from all its genes
+function domReactW(i, r, st) {                             // run one word of reactions on the cell's own square's molecules
+  const c = cmap[i] << 4;
   for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; const s = b >> 4, t = b & 15, k = (st >> (2 * q)) & 3 || 1;
     if (t === (s ^ 8) && P.cellClumps && P.sugarCoat > 0) {   // a fold that pairs a monomer with its complement chains sugar instead:
       const use = Math.min(P.sugarCoat * k, en[cmap[i]]), work = .2 * use; if (use > 0 && light[i] > P.sugarKeep + work) { coatAlloc(); en[cmap[i]] -= use; coatS[i] += use; light[i] -= work; coat[i] += use; rxCost += work; coatMade += use; }   // coat is made of sugar; building it costs a little energy
@@ -378,7 +379,7 @@ function domReact(i) {                                     // run this cell's re
     if (pl) pl[t] += held;
     chem[c + s] -= amt; chem[c + t] += amt - kept - held; light[i] += de; rxRun++; if (de > 0) rxGain += de; else rxCost -= de; }
 }
-function infold(a, o, n) {
+function infoldGene(a, o, n) {
   let sp = 0; sEx.fill(0); dN = 0; dHidden = 0; dPairs = 0;
   for (let h = 0; h < n; h++) { const m = a[o + h];
     if (sp && sStk[sp - 1] === (m ^ 8)) { sp--; const k = m & 7, op = sPos[sp]; dPairs++;
@@ -424,13 +425,14 @@ function seqBirth(i, pj, pb, rate) {                      // copy (or cross) the
       if (n + len <= SL) { for (let h = n - 1; h > dB[d]; h--) sTmp[h + len] = sTmp[h]; for (let q = 0; q < len; q++) sTmp[dB[d] + 1 + q] = sTmp[a + q]; n += len; ch = true; domDupN++; } } }
   if (n > 2 && rng() < P.seqDel) { const len = 1 + ((rng() * Math.min(4, n - 1)) | 0), a = (rng() * (n - len + 1)) | 0;
     for (let h = a; h + len < n; h++) sTmp[h] = sTmp[h + len]; n -= len; ch = true; }
+  { const n1 = geneOps(sTmp, n); if (n1 !== n) { n = n1; ch = true; } }   // whole genes duplicated or lost
   const oi = i * SL; for (let h = 0; h < n; h++) seq[oi + h] = sTmp[h]; slen[i] = n;
   const g = infold(seq, oi, n); cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; codeBirths++; if (lastCH !== pCH) codeChg++;
   if (ch && pb < 0) { seqMut++; if (g === (gen[pj] >>> 0)) seqNeutral++; }
   return g;
 }
 let hgtTried = 0, hgtFailed = 0, domDupN = 0;
-function seqTransfer(i, j) {                              // contagion: a stretch of one cell's sequence is spliced into its neighbour's
+function seqTransfer(i, j) { GT.j = -1; if (P.geneHGT > 0 && rng() < P.geneHGT) { const r = geneTransfer(i, j); if (r !== null) return r; }                              // contagion: a stretch of one cell's sequence is spliced into its neighbour's
   if (slen.length !== N) seqAlloc(); tuJ = -1;
   if (!slen[i]) seqFromGen(i, gen[i]); if (!slen[j]) seqFromGen(j, ngen[j]);
   const Li = slen[i], Lj = slen[j]; if (Li < 2 || Lj < 2) return ngen[j] >>> 0;
@@ -451,7 +453,7 @@ function seqTransfer(i, j) {                              // contagion: a stretc
   const g = infold(seq, j * SL, Lj); cat[j] = lastCat; rx[j] = lastRx; rxStr[j] = lastRxS; cH[j] = lastCH; return g;
 }
 let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0; const tuOld = new Uint8Array(256);
-function seqTransferUndo(j) {                             // the page refused the splice (the cell cannot pay): its sequence and program go back
+function seqTransferUndo(j) { if (GT.j === j) { geneTransferUndo(j); return; }                             // the page refused the splice (the cell cannot pay): its sequence and program go back
   if (tuJ !== j) return; for (let q = 0; q < tuLen; q++) seq[j * SL + tuB + q] = tuOld[q];
   cat[j] = tuCat; rx[j] = tuRx; rxStr[j] = tuRxS; cH[j] = tuCH; tuJ = -1;
 }
@@ -1136,15 +1138,16 @@ function virStep() {                                       // every 8 ticks, aft
     if (!alive[i]) { if (VIR.n[i] > 0) virSpill(i); continue; }
     const c = cmap[i];
     if (!(VIR.n[i] > 0)) {                                  // entry: a chain whose first monomer one of this cell's domains takes
-      const r = rx[i]; if (!r || dor[i]) continue;
+      const r = rx[i], r2 = rx2[i]; if (!r || dor[i]) continue;
       for (let s = 0; s < FR; s++) { const sl = c * FR + s, a = frAmt[sl]; if (a < 1) continue; const m0 = frSeq[sl * FL];
-        let fits = false; for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; if ((b >> 4) === m0) { fits = true; break; } }
+        let fits = false; for (let q = 0; q < 8; q++) { const b = ((q < 4 ? r : r2) >>> (8 * (q & 3))) & 255; if (!b) { if (q < 4) { q = 3; continue; } break; } if ((b >> 4) === m0) { fits = true; break; } }
         if (!fits || rng() >= P.virUp * Math.min(1, a / 4)) continue;
         for (let h = 0; h < frLen[sl]; h++) VIR.seq[i * FL + h] = frSeq[sl * FL + h];
         VIR.len[i] = frLen[sl]; VIR.lig[i] = frLig[sl]; VIR.n[i] = 1; frAmt[sl] -= 1; if (frAmt[sl] < .05) { if (frAmt[sl] > 0) fragReturn(sl, frAmt[sl]); frAmt[sl] = 0; }
         VIR.entered++; break; }
       continue;
     }
+    if (P.virInteg > 0 && P.seqOn && slen[i] && !dor[i] && rng() < P.virInteg && virIntegrate(i) && !(VIR.n[i] > 0)) continue;   // the chain may join the genome as a gene (a prophage)
     if (!VIR.lig[i] || dor[i]) continue;                    // copying: only a chain with a copying fold gets the cell to copy it
     const L = VIR.len[i], o = i * FL, c16 = c << 4, k = Math.min(4, VIR.n[i]) * VIR.lig[i] * P.virCopy;
     let copies = Math.floor(k) + (rng() < k - Math.floor(k) ? 1 : 0);
@@ -1171,7 +1174,7 @@ function pigFounder() {
       if (t >= 12 && t !== (s ^ 8) && g === g0) return {g, s, t}; }
     return null; };
   let D = null, pt = -1; const i0 = fs[0]; if (!slen[i0]) seqFromGen(i0, gen[i0]);
-  outer: for (let s = 0; s < 16; s++) for (let a = 0; a < 16; a++) { const cand = [[s, a, a ^ 8, s ^ 8], [s, s, s ^ 8, s ^ 8]][a & 1 ? 1 : 0];
+  outer: for (let s = 0; s < 16; s++) for (let a = 0; a < 16; a++) { const core = [[s, a, a ^ 8, s ^ 8], [s, s, s ^ 8, s ^ 8]][a & 1 ? 1 : 0], mk = (s + 5) & 15, cand = (s === mk || (s ^ 8) === mk) ? core : [mk, mk, mk, mk, ...core];   // its own gene, behind a marker
     const r0 = tryD(i0, cand); if (r0) { D = cand; pt = r0.t; break outer; } }
   if (!D) return 0;
   let k = 0; for (const i of fs) { if (!slen[i]) seqFromGen(i, gen[i]); const o = i * SL, n0 = slen[i]; if (n0 + D.length > SL) continue;
@@ -1207,3 +1210,76 @@ function detStep() {
     if (P.rxn) { co2[c] += rot; OLF.co2L += rot; } }
 }
 { const _resetD = reset; reset = function (...a) { if (DET.a) DET.a.fill(0); DET.made = DET.toSugar = DET.rot = 0; return _resetD.apply(this, a); }; }
+
+// ---------------- stage 1 of the genome (Justin, 15 November; design/genome_stage1.md)
+// A run of 4 or more identical monomers marks a gene boundary. The marker's monomers belong to no gene. Each gene folds on
+// its own with infoldGene (the old infold): pairs never cross a marker, and adapters act inside their own gene. The cell's
+// compound is the genes' unpaired monomers summed (capped at 3 per kind, as before); its reactions are the genes' reactions,
+// up to 4 per gene and 8 per cell (lastRx, then lastRx2). A line with no marker is one gene and folds exactly as before.
+const GMARK = 4, gK = new Uint8Array(SL), gS = new Uint8Array(SL), gA = new Uint8Array(SL), gB = new Uint8Array(SL), gO = new Uint8Array(SL),
+  gQ = new Uint16Array(SL), gT = new Uint16Array(SL), gAd = new Uint8Array(SL), gSeg = new Int16Array(SL * 2), gEx = new Uint8Array(16);
+let lastGenes = 1;
+function geneSegs(a, o, n) {                               // the genes of a line: [start, end) pairs in gSeg; returns how many
+  let k = 0, s = 0, h = 0;
+  while (h < n) { let r = h + 1; while (r < n && a[o + r] === a[o + h]) r++;
+    if (r - h >= GMARK) { if (h > s) { gSeg[2 * k] = s; gSeg[2 * k + 1] = h; k++; } s = r; }
+    h = r; }
+  if (n > s) { gSeg[2 * k] = s; gSeg[2 * k + 1] = n; k++; }
+  return k;
+}
+function infold(a, o, n) {
+  const k = geneSegs(a, o, n);
+  if (k === 1 && gSeg[0] === 0 && gSeg[1] === n) { lastGenes = 1; const g = infoldGene(a, o, n); lastRx2 = 0; lastRxS2 = 0; return g; }   // one gene, no marker: as before
+  lastGenes = k; gEx.fill(0); let catS = new Uint8Array(8), rxs = [], strs = [], ch = 0, ad = 0, hid = 0, prs = 0, nd = 0;
+  for (let q = 0; q < k; q++) { const s0 = gSeg[2 * q], e0 = gSeg[2 * q + 1], g = infoldGene(a, o + s0, e0 - s0);
+    for (let m = 0; m < 16; m++) gEx[m] = Math.min(3, gEx[m] + ((g >>> (2 * m)) & 3));
+    for (let m = 0; m < 8; m++) catS[m] = Math.min(3, catS[m] + ((lastCat >> (2 * m)) & 3));
+    for (let r = 0; r < 4; r++) { const b = (lastRx >>> (8 * r)) & 255; if (!b) break; rxs.push(b); strs.push((lastRxS >> (2 * r)) & 3); }
+    if (lastCH) ch = (Math.imul(ch ^ lastCH ^ (q + 1), 2654435761) >>> 0) || 1; ad += lastAd; hid += dHidden; prs += dPairs;
+    for (let d = 0; d < dN && nd < SL; d++, nd++) { gK[nd] = dK[d]; gS[nd] = dS[d]; gA[nd] = dA[d] + s0; gB[nd] = dB[d] + s0; gO[nd] = dO[d]; gQ[nd] = dQ[d]; gT[nd] = dT[d]; gAd[nd] = sAd[d]; } }
+  dN = nd; for (let d = 0; d < nd; d++) { dK[d] = gK[d]; dS[d] = gS[d]; dA[d] = gA[d]; dB[d] = gB[d]; dO[d] = gO[d]; dQ[d] = gQ[d]; dT[d] = gT[d]; sAd[d] = gAd[d]; }
+  dHidden = hid; dPairs = prs; lastCH = ch; lastAd = ad;
+  lastRx = 0; lastRxS = 0; lastRx2 = 0; lastRxS2 = 0;
+  for (let r = 0; r < Math.min(8, rxs.length); r++) { if (r < 4) { lastRx |= rxs[r] << (8 * r); lastRxS |= strs[r] << (2 * r); } else { lastRx2 |= rxs[r] << (8 * (r - 4)); lastRxS2 |= strs[r] << (2 * (r - 4)); } }
+  lastRx >>>= 0; lastRx2 >>>= 0;
+  lastCat = 0; for (let m = 0; m < 8; m++) lastCat |= catS[m] << (2 * m);
+  sEx.set(gEx); let g = 0; for (let m = 0; m < 16; m++) g = (g | (gEx[m] << (2 * m))) >>> 0; return g;
+}
+function markerFor(a, o, n, at, next) {                    // a marker kind that does not run on into its neighbours
+  for (let m = 0; m < 16; m++) { const k = (at * 7 + m * 5 + 3) & 15; if ((at > 0 && a[o + at - 1] === k) || next === k) continue; return k; }
+  return 0;
+}
+function geneOps(buf, n) {                                 // at division: a whole gene duplicated (after itself) or lost
+  if (!(P.geneDup > 0 || P.geneDel > 0)) return n;
+  if (P.geneDup > 0 && rng() < P.geneDup) { const k = geneSegs(buf, 0, n), q = (rng() * k) | 0, s0 = gSeg[2 * q], e0 = gSeg[2 * q + 1], L = e0 - s0;
+    if (L > 0 && n + L + GMARK <= SL) { const tail = buf.slice(e0, n), mk = markerFor(buf, 0, n, e0, buf[s0]);
+      let w = e0; for (let h = 0; h < GMARK; h++) buf[w++] = mk; for (let h = 0; h < L; h++) buf[w++] = buf[s0 + h]; for (let h = 0; h < tail.length; h++) buf[w++] = tail[h];
+      n = w; geneDupN++; } }
+  if (P.geneDel > 0 && rng() < P.geneDel) { const k = geneSegs(buf, 0, n); if (k >= 2) { const q = (rng() * k) | 0;
+      let s0 = gSeg[2 * q], e0 = gSeg[2 * q + 1]; if (q > 0) s0 = gSeg[2 * (q - 1) + 1]; else e0 = gSeg[2]; // take one neighbouring marker with it
+      const tail = buf.slice(e0, n); let w = s0; for (let h = 0; h < tail.length; h++) buf[w++] = tail[h]; n = w; geneDelN++; } }
+  return n;
+}
+let geneDupN = 0, geneDelN = 0, geneHGTN = 0, virIntegN = 0;
+const GT = {j: -1, len: 0, cat: 0, rx: 0, rs: 0, rx2: 0, rs2: 0, ch: 0};
+function geneTransfer(i, j) {                              // contagion carries one whole gene of the donor and adds it to the recipient as a new gene
+  const Li = slen[i], Lj = slen[j]; const k = geneSegs(seq, i * SL, Li), q = (rng() * k) | 0, s0 = gSeg[2 * q], e0 = gSeg[2 * q + 1], L = e0 - s0;
+  if (L < 2 || Lj + GMARK + L > SL) return null;
+  { const oi = i * SL, oj = j * SL, kj = geneSegs(seq, oj, Lj);              // a gene the recipient already has is not taken again (kin share their genes)
+    for (let r = 0; r < kj; r++) { const a0 = gSeg[2 * r], b0 = gSeg[2 * r + 1]; if (b0 - a0 !== L) continue; let same = true;
+      for (let h = 0; h < L; h++) if (seq[oj + a0 + h] !== seq[oi + s0 + h]) { same = false; break; } if (same) return null; } }
+  GT.j = j; GT.len = Lj; GT.cat = cat[j]; GT.rx = rx[j]; GT.rs = rxStr[j]; GT.rx2 = rx2[j]; GT.rs2 = rxStr2[j]; GT.ch = cH[j];
+  const oj = j * SL, mk = markerFor(seq, oj, Lj, Lj, seq[i * SL + s0]); let w = Lj;
+  for (let h = 0; h < GMARK; h++) seq[oj + w++] = mk; for (let h = 0; h < L; h++) seq[oj + w++] = seq[i * SL + s0 + h]; slen[j] = w; geneHGTN++;
+  const g = infold(seq, oj, w); cat[j] = lastCat; rx[j] = lastRx; rxStr[j] = lastRxS; rx2[j] = lastRx2; rxStr2[j] = lastRxS2; cH[j] = lastCH; return g;
+}
+function geneTransferUndo(j) { slen[j] = GT.len; cat[j] = GT.cat; rx[j] = GT.rx; rxStr[j] = GT.rs; rx2[j] = GT.rx2; rxStr2[j] = GT.rs2; cH[j] = GT.ch; GT.j = -1; geneHGTN--; }
+function virIntegrate(i) {                                  // a chain inside a cell joins its genome as a new gene (a prophage), if the cell can pay for the change in its compound
+  const n0 = slen[i], L = VIR.len[i], o = i * SL; if (!L || n0 + GMARK + L > SL) return false;
+  const g0 = gen[i] >>> 0, mk = markerFor(seq, o, n0, n0, VIR.seq[i * FL]); let w = n0;
+  for (let h = 0; h < GMARK; h++) seq[o + w++] = mk; for (let h = 0; h < L; h++) seq[o + w++] = VIR.seq[i * FL + h];
+  const g1 = infold(seq, o, w);
+  if (g1 !== g0 && !swapChem(cmap[i] << 4, g0, g1)) { infold(seq, o, n0); return false; }
+  slen[i] = w; gen[i] = g1; cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; rx2[i] = lastRx2; rxStr2[i] = lastRxS2; cH[i] = lastCH; changed[i] = 1;
+  VIR.n[i] -= 1; if (VIR.n[i] < 1) { VIR.n[i] = 0; VIR.len[i] = 0; } virIntegN++; return true;
+}

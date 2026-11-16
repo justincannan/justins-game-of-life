@@ -218,3 +218,4 @@ Justin. Newest at the bottom.
 - 2026-11-15 23:00 (in session with Justin): pigments on with a pigment-carrying founder (option b) and inherited pigment; the decay economy built (remains broken down by heterotrophs). Pond stays phototroph-dominated; springs mix. THEORY_NOTES.md.
 - 2026-11-15 22:45 (in session with Justin): Justin decided to move from one chain per cell to a genome of genes (stages: several genes; expression levels; storage separate from function). Recorded in THEORY_NOTES.md; the cloud session drafts the stage 1 design.
 - 2026-11-15 23:30 (in session with Justin): drafted design/genome_stage1.md (stage 1: genes per cell); six questions wait on Justin.
+- 2026-11-16 01:30 (in session with Justin): stage 1 of the genome built (genes by runs of 4, 8 reactions, gene dup/loss/transfer, virus integration, 256). Measurements in THEORY_NOTES.md. Found vent founding 0 of 10 on old and new pages.

@@ -1043,7 +1043,7 @@ rep('''for (let y = 0; y < H; y++) {
     const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
     {
       const xm = (x - 1 + W) % W, xp = (x + 1) % W, zi = zmap[i];''')
-rep("dishLysis:.002,", "dishLysis:.002, randOrder:true, springZone:true, springFlow:.3, springSrc:4, springRain:.0001, pondInflow:4, pigment:true, pigSat:.05, pigBase:0, virOn:true, virUp:.05, virCopy:.5, virE:.01, virBurst:12, detOn:true, detBreak:.05, detLeach:.001, detRot:.002,")
+rep("dishLysis:.002,", "dishLysis:.002, randOrder:true, springZone:true, springFlow:.3, springSrc:4, springRain:.0001, pondInflow:4, pigment:true, pigSat:.05, pigBase:0, virOn:true, virUp:.05, virCopy:.5, virE:.01, virBurst:12, detOn:true, detBreak:.05, detLeach:.001, detRot:.002, geneDup:.005, geneDel:.005, geneHGT:.1, virInteg:.02,")
 
 # light use depends on a fold (Justin's queue, 15 November): with P.pigment, a cell absorbs light only as far as it holds a
 # pigment, one of the four costliest molecules (kinds 12-15, the top of the ladder) kept in its coat, which it makes with its own domains.
@@ -1059,6 +1059,10 @@ rep("if ((tick & 7) === 0) fragStep();", "if ((tick & 7) === 0) { fragStep(); vi
 # heterotrophs break down into sugar (detStep in env.js)
 rep("if (chemOn) fragRelease(i); if (coat[i]) { coatReturn(i, 1); coat[i] = 0; } }", "if (chemOn) fragRelease(i); if (coat[i]) { coatReturn(i, 1); coat[i] = 0; } detDie(i); }")
 rep("if ((tick & 7) === 0) { fragStep(); virStep(); }", "if ((tick & 7) === 0) { fragStep(); virStep(); } detStep();")
+
+# stage 1 of the genome (Justin, 15 November; design/genome_stage1.md): the line is divided into genes by runs of 4
+# identical monomers; each gene folds on its own (infold in env.js; the old one becomes infoldGene); up to 4 reactions
+# per gene and 8 per cell (rx and rx2); the line may be 256 long
 
 # the chemistry code goes in before the wiring
 GPU = (open(sys.argv[7], encoding='utf-8').read() + '\n') if len(sys.argv) > 7 else ''   # gpu3d.js, optional: before env.js, which reads G3
@@ -1139,5 +1143,18 @@ s = s.replace("P.env === 'even'", "(P.env === 'even' || P.env === 'dish')").repl
 _before = s
 s = clumpify(s)
 
+# stage 1 of the genome: every place that stores a cell's reactions stores the second word too
+import re as _re
+s = _re.sub(r"\brx\[(\w+)\] = lastRx; rxStr\[\1\] = lastRxS;", r"rx[\1] = lastRx; rxStr[\1] = lastRxS; rx2[\1] = lastRx2; rxStr2[\1] = lastRxS2;", s)
+for a, b in [("slen = new Uint8Array(N)", "slen = new Uint16Array(N)"), ("slen = new Uint8Array(1)", "slen = new Uint16Array(1)"),
+             ("rx = new Uint32Array(N); rxStr = new Uint8Array(N);", "rx = new Uint32Array(N); rxStr = new Uint8Array(N); rx2 = new Uint32Array(N); rxStr2 = new Uint8Array(N);"),
+             ("seq.copyWithin(b * SL, a * SL, a * SL + SL);", "seq.copyWithin(b * SL, a * SL, a * SL + slen[a]);"),
+             ("rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a];", "rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a]; rx2[b] = rx2[a]; rx2[a] = 0; rxStr2[b] = rxStr2[a];"),
+             ("tuRx = rx[j]; tuRxS = rxStr[j];", "tuRx = rx[j]; tuRxS = rxStr[j]; tuRx2 = rx2[j]; tuRxS2 = rxStr2[j];"),
+             ("rx[j] = tuRx; rxStr[j] = tuRxS;", "rx[j] = tuRx; rxStr[j] = tuRxS; rx2[j] = tuRx2; rxStr2[j] = tuRxS2;"),
+             ("let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0;", "let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0, tuRx2 = 0, tuRxS2 = 0;"),
+             ("rx: rx[i], rs: rxStr[i],", "rx: rx[i], rs: rxStr[i], rx2: rx2[i], rs2: rxStr2[i],"),
+             ("rx[i] = s.rx || 0; rxStr[i] = s.rs || 0;", "rx[i] = s.rx || 0; rxStr[i] = s.rs || 0; rx2[i] = s.rx2 || 0; rxStr2[i] = s.rs2 || 0;")]:
+    c = s.count(a); assert c >= 1, ('genome stage 1: not found', a); s = s.replace(a, b)
 open(dst, 'w', encoding='utf-8', newline='\n').write(s)
 print('patched', len(s), 'chars')

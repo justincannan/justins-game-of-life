@@ -1,6 +1,6 @@
 # Stage 1 design: from one chain to a genome of genes
 
-Draft by the cloud session, 15 November 2026, for Justin's review. Justin decided to follow this line (THEORY_NOTES.md,
+Draft by the cloud session, 15 November 2026. **Decided by Justin, 15 November about 23:45: every proposal in section 6 accepted (run of 4; 8 per cell, 4 per gene; compound summed; gene duplication, loss, transfer and virus integration; 256 and 8 genes; build now). Built 16 November; see THEORY_NOTES.md.** Justin decided to follow this line (THEORY_NOTES.md,
 "Decision (Justin, 15 November, about 22:42)"). Everything below is a proposal unless marked as a measurement. Nothing is
 built.
 
