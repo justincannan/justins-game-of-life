@@ -257,3 +257,9 @@ Justin. Newest at the bottom.
     1. Report 29 proposal 1: a chemotroph gene for the vent founder (or another route) — vent one-organism founding
        is 0 of 70 on current pages.
     2. The `dishSetup` fix and which form (report 29 section 3); then the GPU's 5-minute re-run of seeds 2, 3, 4, 6.
+
+## 16 Nov ~14:00 (interactive)
+- Justin's decisions 12:09 built: chemotroph vent founder (20/20), dish pair fix, coat fix kept. GPU task 33.
+- Found and fixed: one-organism runs not repeatable (divT/divTgt, hopm, ccId leftovers); virus copying drove the ground
+  negative → NaN → whole-clump deaths (the vent die-outs). Six vent runs now survive to 6,000.
+- r/m counters (RM) in the summary. THEORY_NOTES "The vent die-outs were a bug…".

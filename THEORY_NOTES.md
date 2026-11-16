@@ -2013,3 +2013,39 @@ Justin accepted the recommendations:
    Others are unchanged, so report 17 stays the baseline.
 3. **The coat-array fix stays** (applied by the 12:02 scheduled check before Justin's decision; now approved).
 4. **Repeat the vent die-out over seeds**, and **check the transfer rate against real bacteria** (both under way).
+
+## The vent die-outs were a bug; repeatability of one-organism runs; transfer measured (cloud session, 16 November, about 12:20–14:00)
+**Repeatable runs, one-organism start.** The soup start repeated, but one-organism runs did not. Stale division
+targets (`divT`, `divTgt`), hop marks and clump ids from the old world were acting in the new one. Now cleared on
+reset. Checked: vent from one organism, 400 ticks, two page loads, identical.
+
+**The die-outs.** From one organism (seeds 11–13), vent worlds collapsed from 28,000–44,000 cells to none within
+500 ticks: all three without the running cost (ticks 2,000–4,500), two of three with it (4,500–5,000).
+- Traced in seed 12: one clump of about 22,000 cells (70% of the population) died in a single tick.
+- Every member's energy was NaN: one cell reacted on a square holding −1 of a molecule, the reaction formula divided
+  by zero, and the clump's shared energy spread the NaN to every member.
+- The negative amount came from **the virus copying step (Claude's code, 15 November).** It checked one unit of each
+  monomer kind, but a chain that uses a kind three times needs three. Negative amounts began at tick 688.
+- Fixed: the copy checks the whole chain's needs. Reactions also refuse a NaN or non-positive amount, so a bad amount
+  in the ground cannot poison a cell again.
+- After the fix, all six runs (seeds 11–13, cost 0 and 0.001) survive to tick 6,000 (29,700–49,000 cells), with no NaN
+  and no negative amounts.
+
+**Earlier vent results are affected:** this morning's 6,000-tick vent gene runs, the seed-1 soup die-out, and any vent
+run long enough for viruses to copy (pond and springs too, wherever virus chains copied). They are superseded.
+
+**Transfer against real bacteria** (Justin asked for this check):
+- The 70% "from outside" accumulates by descent over 6,000 ticks, so it is not a per-generation rate. Within-population
+  exchange is better compared by r/m: monomers changed by recombination for each changed by mutation.
+- Vos and Didelot 2009 (MLST data, many species): r/m runs from about 0.02 (*Leptospira interrogans*) to about 64
+  (*Flavobacterium psychrophilum*). It is above 1 in 56% of datasets; they class 2–10 as "high".
+- The page (seed 1, per 500 ticks, test/rm.py):
+  - even world: r/m 0.8 early, rising to about 7 by tick 3,000;
+  - vent world: from 0.9 to about 6;
+  - whole genes added by transfer: another 5–6 monomers for each copying error, on top of that.
+- So splicing sits in the "high" band of real bacteria, not outside the range. Whole-gene gain is a separate
+  process. For comparison, E. coli has about 18% of its genes from transfer since splitting from Salmonella, over
+  about 100 million years (Lawrence and Ochman 1998, via BioNumbers).
+
+Proposal (Claude's): no change to contagion for now. If whole-gene transfer should be rarer than splicing, lower
+P.geneHGT (0.1 of contagion events now).

@@ -366,7 +366,7 @@ function rxOf(d) { const s = dO[d] & 15; let t = (s + 1 + sCode[dQ[d] & 15]) & 1
 function domReact(i) { domReactW(i, rx[i], rxStr[i]); if (rx2[i]) domReactW(i, rx2[i], rxStr2[i]);
   if (P.domCost > 0) { let nr = 0; for (let q = 0; q < 4; q++) { if ((rx[i] >>> (8 * q)) & 255) nr++; if ((rx2[i] >>> (8 * q)) & 255) nr++; }   // each working domain costs a little to keep running (Justin, 16 November): a repeated reaction runs faster but each copy pays
     const c = P.domCost * nr; light[i] -= c; domCostSum += c; } }
-let domCostSum = 0;   // a cell's reactions, from all its genes
+let domCostSum = 0; const RM = {mut: 0, rec: 0, gene: 0};   // monomers changed by copying errors, by splices of a neighbour's or the water's chains, and added as whole transferred genes (a measure, for r/m)   // a cell's reactions, from all its genes
 function domReactW(i, r, st) {                             // run one word of reactions on the cell's own square's molecules
   const c = cmap[i] << 4;
   for (let q = 0; q < 4; q++) { const b = (r >>> (8 * q)) & 255; if (!b) break; const s = b >> 4, t = b & 15, k = (st >> (2 * q)) & 3 || 1;
@@ -377,7 +377,7 @@ function domReactW(i, r, st) {                             // run one word of re
     // so the same fold works hard where its product is scarce and idles where it is plentiful. Regulation by position, from chemistry alone
     let f = chem[c + s] / (P.rxKm + chem[c + s]); if (P.rxInhib) { const S = chem[c + s], pl = body[i] && P.cellClumps ? mxPool.get(body[i]) : null, bo = pl ? bodies.get(body[i]) : null;
       const Pr = chem[c + t] + (pl && bo ? pl[t] * 16 / Math.max(16, bo.size) : 0); f = S / (P.rxKm + S + Pr); }   // Michaelis-Menten, with the product competing for the enzyme (inhibition constant = rxKm)
-    const amt = P.rxRate * P.chunit * k * f; if (amt <= 0 || chem[c + s] < amt) continue; rxAct[i] += amt / P.chunit;
+    const amt = P.rxRate * P.chunit * k * f; if (!(amt > 0) || chem[c + s] < amt) continue;   // !(amt > 0) also stops a NaN, so a bad amount in the ground cannot poison a cell's energy rxAct[i] += amt / P.chunit;
     const dR = RXE[s] - RXE[t], de = dR >= 0 ? P.rxE * k * f * dR : amt * dR * amt / (P.rxE * k * f + 1e-12); if (de < 0 && light[i] < -de) continue;   // downhill: a share of the energy released (rxE/rxRate); uphill: the energy stored, divided by the same share, and only if the cell can pay
     const kept = P.cellClumps ? P.coatFrac * amt : 0; if (kept) { coatAlloc(); coat[i] += (kept / P.chunit) * RXE[t]; if (coatM[i] && coatK[i] !== t) { chem[c + coatK[i]] += coatM[i]; coatM[i] = 0; } coatK[i] = t; coatM[i] += kept; }   // the kept molecules become coat, and stay matter
     const pl = body[i] && P.cellClumps ? mxPool.get(body[i]) : null, held = pl ? P.mxRetain * (amt - kept) : 0;   // the matrix keeps part of what a clump's cells make
@@ -422,7 +422,7 @@ function seqBirth(i, pj, pb, rate) {                      // copy (or cross) the
     for (let h = 0; h < Math.min(cut, L); h++) { oTmp[n] = OG[o + h]; sTmp[n++] = seq[o + h]; } for (let h = cut; h < Lb && n < SL; h++) { oTmp[n] = OG[ob + h]; sTmp[n++] = seq[ob + h]; } }
   else for (let h = 0; h < L; h++) { oTmp[n] = OG[o + h]; sTmp[n++] = seq[o + h]; }
   const p = rate * P.seqMu * (1 - .25 * CA(pj, 5));          // the parent's copying-fidelity enzyme proofreads the copy
-  for (let h = 0; h < n; h++) if (rng() < p) { sTmp[h] = (rng() * 16) | 0; ch = true; }
+  for (let h = 0; h < n; h++) if (rng() < p) { const v0 = sTmp[h]; sTmp[h] = (rng() * 16) | 0; ch = true; if (sTmp[h] !== v0) RM.mut++; }
   if (n > 1 && rng() < P.seqDup) { const len = 1 + ((rng() * Math.min(4, n)) | 0), a = (rng() * (n - len + 1)) | 0;      // a stretch copied twice: the second copy is free to vary
     if (n + len <= SL) { oTmp.copyWithin(a + len, a, n); for (let h = n - 1; h >= a + len; h--) sTmp[h + len] = sTmp[h]; for (let q = 0; q < len; q++) sTmp[a + len + q] = sTmp[a + q]; n += len; ch = true; } }
   if (P.domOn && P.domDup > 0 && n > 3 && rng() < P.domDup) {     // a whole domain copied twice: the second copy is free to drift into a new job
@@ -454,13 +454,13 @@ function seqTransfer(i, j) { GT.j = -1; if (P.geneHGT > 0 && rng() < P.geneHGT) 
     b = at[(rng() * at.length) | 0];
   }
   tuJ = j; tuB = b; tuLen = len; tuCat = cat[j]; tuRx = rx[j]; tuRxS = rxStr[j]; tuCH = cH[j];   // kept so a refused splice can be undone
-  { const OG = ORG(); for (let q = 0; q < len; q++) { tuOldO[q] = OG[j * SL + b + q]; if (seq[j * SL + b + q] !== seq[i * SL + a + q]) OG[j * SL + b + q] = OG[i * SL + a + q] || 1; } }   // only monomers that actually change are marked: a stretch identical to what was there leaves the tag as it was
+  { const OG = ORG(); tuRec = 0; for (let q = 0; q < len; q++) { tuOldO[q] = OG[j * SL + b + q]; if (seq[j * SL + b + q] !== seq[i * SL + a + q]) { OG[j * SL + b + q] = OG[i * SL + a + q] || 1; tuRec++; } } RM.rec += tuRec; }   // only monomers that actually change are marked: a stretch identical to what was there leaves the tag as it was
   for (let q = 0; q < len; q++) { tuOld[q] = seq[j * SL + b + q]; seq[j * SL + b + q] = seq[i * SL + a + q]; }
   const g = infold(seq, j * SL, Lj); cat[j] = lastCat; rx[j] = lastRx; rxStr[j] = lastRxS; cH[j] = lastCH; return g;
 }
-let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0; const tuOld = new Uint8Array(256), tuOldO = new Uint8Array(256);
+let tuJ = -1, tuB = 0, tuLen = 0, tuCat = 0, tuRx = 0, tuRxS = 0, tuCH = 0; const tuOld = new Uint8Array(256), tuOldO = new Uint8Array(256); let tuRec = 0;
 function seqTransferUndo(j) { if (GT.j === j) { geneTransferUndo(j); return; }                             // the page refused the splice (the cell cannot pay): its sequence and program go back
-  if (tuJ !== j) return; for (let q = 0; q < tuLen; q++) { seq[j * SL + tuB + q] = tuOld[q]; sOrg[j * SL + tuB + q] = tuOldO[q]; }
+  if (tuJ !== j) return; RM.rec -= tuRec; tuRec = 0; for (let q = 0; q < tuLen; q++) { seq[j * SL + tuB + q] = tuOld[q]; sOrg[j * SL + tuB + q] = tuOldO[q]; }
   cat[j] = tuCat; rx[j] = tuRx; rxStr[j] = tuRxS; cH[j] = tuCH; tuJ = -1;
 }
 function moveSeq(a, b) { if (slen.length !== N) seqAlloc(); { const OG = ORG(); OG.copyWithin(b * SL, a * SL, a * SL + slen[a]); } seq.copyWithin(b * SL, a * SL, a * SL + SL); slen[b] = slen[a]; slen[a] = 0; cat[b] = cat[a]; cat[a] = 0; rx[b] = rx[a]; rx[a] = 0; rxStr[b] = rxStr[a]; coat[b] = coat[a]; coat[a] = 0; cH[b] = cH[a]; cH[a] = 0; rxAct[b] = rxAct[a]; rxAct[a] = 0; if (regd[a]) { regd[b] = 1; regd[a] = 0; regList.push(b); } }
@@ -500,7 +500,7 @@ function seqPanel() {
       for (let i = 0; i < N; i += 11) { if (!alive[i] || !slen[i]) continue; const o = i * SL, L = slen[i], k = geneSegs(seq, o, L); tg += k; if (k > 1) multi++; if (k > mx) mx = k; ml += L;
         let inG = 0; for (let q = 0; q < k; q++) inG += gSeg[2 * q + 1] - gSeg[2 * q]; mk += L - inG; for (let h = 0; h < L; h++) { const v = OG[o + h]; if (v === 1) nO++; else if (v === 2) nV++; }
         const seen = new Set(); for (let q = 0; q < k; q++) { const t = seq.slice(o + gSeg[2 * q], o + gSeg[2 * q + 1]).join(','); if (seen.has(t)) dupG++; else seen.add(t); } }
-      dom += `<br>Genes: <b>${(tg / m).toFixed(2)}</b> a cell · <b>${Math.round(100 * multi / m)}%</b> of cells carry more than one (most <b>${mx}</b>) · <b>${ml ? Math.round(100 * mk / ml) : 0}%</b> of monomers are gene markers · <b>${tg ? Math.round(100 * dupG / tg) : 0}%</b> of genes are exact copies of another in the same cell · monomers by origin: <b>${ml ? (100 * nV / ml).toFixed(1) : 0}%</b> from viruses, <b>${ml ? (100 * nO / ml).toFixed(1) : 0}%</b> from outside, the rest by descent ${P.domCost > 0 ? ` · working domains have cost <b>${domCostSum.toFixed(0)}</b> light so far` : ''} · so far ${geneDupN} genes duplicated, ${geneDelN} lost, ${geneHGTN} passed between cells, ${virIntegN} taken in from viruses`; }
+      dom += `<br>Genes: <b>${(tg / m).toFixed(2)}</b> a cell · <b>${Math.round(100 * multi / m)}%</b> of cells carry more than one (most <b>${mx}</b>) · <b>${ml ? Math.round(100 * mk / ml) : 0}%</b> of monomers are gene markers · <b>${tg ? Math.round(100 * dupG / tg) : 0}%</b> of genes are exact copies of another in the same cell · monomers by origin: <b>${ml ? (100 * nV / ml).toFixed(1) : 0}%</b> from viruses, <b>${ml ? (100 * nO / ml).toFixed(1) : 0}%</b> from outside, the rest by descent ${P.domCost > 0 ? ` · working domains have cost <b>${domCostSum.toFixed(0)}</b> light so far` : ''} · monomers changed by splices for each by copying error (r/m) <b>${RM.mut ? (RM.rec / RM.mut).toFixed(2) : '–'}</b>, whole genes added by transfer <b>${RM.mut ? (RM.gene / RM.mut).toFixed(2) : '–'}</b> · so far ${geneDupN} genes duplicated, ${geneDelN} lost, ${geneHGTN} passed between cells, ${virIntegN} taken in from viruses`; }
     if (m) dom = dom + `<br>Domains: <b>${(dn / m).toFixed(1)}</b> a cell, averaging <b>${dn ? (dsz / dn).toFixed(1) : 0}</b> monomers · <b>${dn ? Math.round(100 * dmul / dn) : 0}%</b> folded firmer by a same-kind pair inside · <b>${prs ? Math.round(100 * hid / prs) : 0}%</b> of pairs held inside another kind's domain${P.domDup > 0 ? ` · ${domDupN} whole domains duplicated so far` : ''}`; }
   return n ? `<div style="margin-bottom:6px;color:var(--muted)">Line of expression: sequences average <b>${(tl / n).toFixed(1)}</b> monomers · <b>${ss.size}</b> different sequences make <b>${gs.size}</b> compounds · <b>${seqMut ? Math.round(100 * seqNeutral / seqMut) : 0}%</b> of copying errors left the compound unchanged${work}${dom}</div>` : '';
 }
@@ -1046,10 +1046,10 @@ function fragStep() {                                  // every 8 ticks: breakin
       let best = -1, bm = -1; for (let p = 0; p + L <= n0; p++) { let m = 0; for (let h = 0; h < L; h++) if (seq[o + p + h] === frSeq[fo + h]) m++; if (m > bm) { bm = m; best = p; } }
       if (bm * 2 < L || bm === L) continue;                                   // too little homology, or nothing would change
       const old = seq.slice(o + best, o + best + L), g0 = gen[i];
-      const oldO = ORG().slice(o + best, o + best + L);
-      for (let h = 0; h < L; h++) { if (seq[o + best + h] !== frSeq[fo + h]) sOrg[o + best + h] = 1; seq[o + best + h] = frSeq[fo + h]; }
+      const oldO = ORG().slice(o + best, o + best + L), rec0 = RM.rec;
+      for (let h = 0; h < L; h++) { if (seq[o + best + h] !== frSeq[fo + h]) { sOrg[o + best + h] = 1; RM.rec++; } seq[o + best + h] = frSeq[fo + h]; }
       const g1 = infold(seq, o, n0);
-      if (g1 !== g0 && P.chemOn && !swapChem(c << 4, g0, g1)) { seq.set(old, o + best); sOrg.set(oldO, o + best); continue; }   // the cell cannot pay for its new compound
+      if (g1 !== g0 && P.chemOn && !swapChem(c << 4, g0, g1)) { seq.set(old, o + best); sOrg.set(oldO, o + best); RM.rec = rec0; continue; }   // the cell cannot pay for its new compound
       gen[i] = g1; cat[i] = lastCat; rx[i] = lastRx; rxStr[i] = lastRxS; cH[i] = lastCH; changed[i] = 1;
       fragReturn(sl, 1); frAmt[sl] -= 1; if (frAmt[sl] < .05) { if (frAmt[sl] > 0) fragReturn(sl, frAmt[sl]); frAmt[sl] = 0; } FRS.taken++; break; } }
 }
@@ -1158,6 +1158,7 @@ function pigOf(i) { if (!coatM || !coatK || coatK[i] < 12) return P.pigBase; ret
 // - at virBurst copies the cell bursts: it dies, and the copies go back into the ground as chains, to meet other cells;
 // - a dividing cell gives half its copies to its daughter; a cell that dies otherwise spills its copies.
 const VIR = {seq: null, len: null, n: null, kill: null, lig: null, entered: 0, copied: 0, burst: 0, spilled: 0};
+const virNeed = new Uint8Array(16);
 function virAlloc() { if (!VIR.n || VIR.n.length !== N) { VIR.seq = new Uint8Array(N * FL); VIR.len = new Uint8Array(N); VIR.n = new Float32Array(N); VIR.kill = new Uint8Array(N); VIR.lig = new Uint8Array(N); } }
 function virSpill(i) { if (!VIR.n || !(VIR.n[i] > 0)) return; fragAlloc(); fragInsert(cmap[i], VIR.seq, i * FL, VIR.len[i], VIR.n[i]); VIR.spilled += VIR.n[i]; VIR.n[i] = 0; VIR.len[i] = 0; VIR.kill[i] = 0; }
 function virMove(i, j) { if (!VIR.n || !(VIR.n[i] > 0)) return; VIR.seq.copyWithin(j * FL, i * FL, i * FL + FL); VIR.len[j] = VIR.len[i]; VIR.n[j] = VIR.n[i]; VIR.lig[j] = VIR.lig[i]; VIR.kill[j] = VIR.kill[i]; VIR.n[i] = 0; VIR.len[i] = 0; VIR.kill[i] = 0; }
@@ -1187,7 +1188,7 @@ function virStep() {                                       // every 8 ticks, aft
     let copies = Math.floor(k) + (rng() < k - Math.floor(k) ? 1 : 0);
     while (copies-- > 0) {
       const eCost = P.virE * L; if (light[i] < eCost) break;
-      let ok = true; for (let h = 0; h < L; h++) if (chem[c16 + VIR.seq[o + h]] < P.chunit) { ok = false; break; } if (!ok) break;
+      virNeed.fill(0); for (let h = 0; h < L; h++) virNeed[VIR.seq[o + h]]++; let ok = true; for (let m = 0; m < 16; m++) if (virNeed[m] && chem[c16 + m] < virNeed[m] * P.chunit) { ok = false; break; } if (!ok) break;   // enough of each kind for the whole chain (a kind used three times needs three units: before 16 November one was checked, and the ground went negative)
       for (let h = 0; h < L; h++) chem[c16 + VIR.seq[o + h]] -= P.chunit; light[i] -= eCost; VIR.n[i] += 1; VIR.copied++;
     }
     if (VIR.n[i] >= P.virBurst) { VIR.kill[i] = 1; VIR.burst++; }
@@ -1327,11 +1328,11 @@ function geneTransfer(i, j) {                              // contagion carries 
       for (let h = 0; h < L; h++) if (seq[oj + a0 + h] !== seq[oi + s0 + h]) { same = false; break; } if (same) return null; } }
   GT.j = j; GT.len = Lj; GT.cat = cat[j]; GT.rx = rx[j]; GT.rs = rxStr[j]; GT.rx2 = rx2[j]; GT.rs2 = rxStr2[j]; GT.ch = cH[j];
   const oj = j * SL, mk = markerFor(seq, oj, Lj, Lj, seq[i * SL + s0]); let w = Lj;
-  { const OG = ORG(); for (let h = 0; h < GMARK; h++) OG[oj + Lj + h] = 1; for (let h = 0; h < L; h++) OG[oj + Lj + GMARK + h] = OG[i * SL + s0 + h] || 1; }
+  RM.gene += L + GMARK; { const OG = ORG(); for (let h = 0; h < GMARK; h++) OG[oj + Lj + h] = 1; for (let h = 0; h < L; h++) OG[oj + Lj + GMARK + h] = OG[i * SL + s0 + h] || 1; }
   for (let h = 0; h < GMARK; h++) seq[oj + w++] = mk; for (let h = 0; h < L; h++) seq[oj + w++] = seq[i * SL + s0 + h]; slen[j] = w; geneHGTN++;
   const g = infold(seq, oj, w); cat[j] = lastCat; rx[j] = lastRx; rxStr[j] = lastRxS; rx2[j] = lastRx2; rxStr2[j] = lastRxS2; cH[j] = lastCH; return g;
 }
-function geneTransferUndo(j) { slen[j] = GT.len; cat[j] = GT.cat; rx[j] = GT.rx; rxStr[j] = GT.rs; rx2[j] = GT.rx2; rxStr2[j] = GT.rs2; cH[j] = GT.ch; GT.j = -1; geneHGTN--; }
+function geneTransferUndo(j) { RM.gene -= slen[j] - GT.len; slen[j] = GT.len; cat[j] = GT.cat; rx[j] = GT.rx; rxStr[j] = GT.rs; rx2[j] = GT.rx2; rxStr2[j] = GT.rs2; cH[j] = GT.ch; GT.j = -1; geneHGTN--; }
 function virIntegrate(i) {                                  // a chain inside a cell joins its genome as a new gene (a prophage), if the cell can pay for the change in its compound
   const n0 = slen[i], L = VIR.len[i], o = i * SL; if (!L || n0 + GMARK + L > SL) return false;
   const g0 = gen[i] >>> 0, mk = markerFor(seq, o, n0, n0, VIR.seq[i * FL]); let w = n0;
@@ -1349,10 +1350,10 @@ let sameCompN = 0;                                          // contagion splices
 // same run. P.seed 0 keeps the old behaviour (Math.random).
 function seedRng(s0) { let s = (s0 >>> 0) || 1; rng = () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; }; }
 { const _resetR = reset; reset = function (...a) {
-  if (!a[1]) domCostSum = 0;
+  if (!a[1]) { domCostSum = 0; RM.mut = RM.rec = RM.gene = 0; }
   if (P.seed > 0 && !a[1]) { seedRng(P.seed); geoSeed(); chemCapFill(); Z.list.length = 0; layoutZones(); envAlloc(); }   // fresh environment arrays: nothing of the old weather is left   // zone climates redrawn from the seed too
   if (frAmt) { frAmt.fill(0); frLen.fill(0); frSeq.fill(0); frRx.fill(0); frStr.fill(0); frLig.fill(0); }   // free chains from the old world do not carry into the new one
   if (coatS) { coatS.fill(0); coatM.fill(0); coatK.fill(0); } VORDt = -1;
-  if (!a[1]) tick = 0;   // the new world's first weather step runs at tick 0, not at the old world's time
+  if (!a[1]) { tick = 0; if (typeof divT !== 'undefined' && divT && divT.length === N && divTgt) { divT.fill(-1); divTgt.fill(0); } if (typeof hopm !== 'undefined' && hopm && hopm.fill) hopm.fill(0); if (typeof ccId !== 'undefined' && ccId && ccId.fill) ccId.fill(0); }   // stale division targets and hop marks from the old world   // the new world's first weather step runs at tick 0, not at the old world's time
   if (typeof seq !== 'undefined' && seq && seq.fill) { seq.fill(0); if (sOrg.length > 1) sOrg.fill(0); for (const a of [slen, cat, rx, rxStr, rx2, rxStr2, cH, rxAct, coat]) if (a && a.fill) a.fill(0); }
   return _resetR.apply(this, a); }; }

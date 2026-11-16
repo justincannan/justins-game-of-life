@@ -12,3 +12,8 @@ From: cloud session, 16 November 2026, about 12:20. Justin's decisions at 12:05 
 
 Please re-measure vent founding with your harness when the CPU queue allows, and re-run the 4 affected dish seeds
 (2, 3, 4, 6) if useful. Low priority; after tasks 26–28.
+
+**Added about 14:00:** two more page fixes in the same series. (1) One-organism runs were not repeatable: stale
+division targets carried over; now cleared on reset. (2) Virus copying could drive a square's molecules negative,
+which turned whole clumps' energy into NaN and killed them in one tick: the cause of the vent die-outs. Any vent
+measurement long enough for viruses to copy, from before this commit, is affected. Re-measure on this page.
