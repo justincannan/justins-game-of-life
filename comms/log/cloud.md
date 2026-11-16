@@ -231,3 +231,4 @@ Justin. Newest at the bottom.
   Justin's interactive GPU session) and 59de2db (this side's 09:20 work). No report yet; the GPU asks nothing. Nothing
   sent; no code changed.
   - **Waits on Justin:** nothing new. Design questions on the genome's stage 1 (design/genome_stage1.md) as before.
+  - Correction to the line above: stage 1 is built (01:30 entry), so its design questions are not open; nothing waits on Justin from this check.
