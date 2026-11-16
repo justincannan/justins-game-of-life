@@ -68,6 +68,17 @@ EPS_CORE = 6.0           # calibrated in stage 1 (saltbridge_tb.py); bound eps_w
 COULOMB = 138.935458     # kJ/mol nm / e^2
 EPS_WCA = KT0
 F_CAP = TT.F_CAP
+# task 26 step 1 (Justin's decision of 15 November; constants are proposals, to be checked against the papers):
+# charges split into a self term and a charge-charge term with different dielectrics (Schutz and Warshel 2001;
+# Sham, Muegge and Warshel 1998). elec='v23' keeps task 23's single-dielectric term.
+EPS_SELF = 5.0           # eps for the Born-like self (desolvation) term, Justin's range 4-6
+EPS_PAIR = 20.0          # effective eps for buried charge-charge interactions (staphylococcal nuclease: 20)
+BORN_F = 0.5             # Born radius = BORN_F x side-chain bead diameter (proposal)
+
+
+def born_self(q, d, eps_self=EPS_SELF):
+    """Born-like cost (kJ/mol) of moving charge q on a bead of diameter d from water into a core of eps_self."""
+    return COULOMB * q * q / (2 * BORN_F * d) * (1.0 / eps_self - 1.0 / EPS_W)
 
 
 def sc_props():
@@ -91,6 +102,15 @@ def sc_props():
 
 
 SC = sc_props()
+ISO = {0: 13, 2: 3, 8: 3, 10: 3}   # oily isosteres of the charged monomers (as saltbridge_tb.py)
+
+
+def h_table(h_charge='keep'):
+    h = SC['h'].copy()
+    if h_charge == 'iso':
+        for m, i in ISO.items():
+            h[m] = SC['h'][i]
+    return h
 
 
 def pair_tables(eps_vdw=None, eps_da=None):
@@ -130,8 +150,14 @@ class Model2:
     """Energy of a batch of two-bead chains; x is (C, 2L, 3)."""
 
     def __init__(self, idx, P, mode='coop', device='cuda', eps_vdw=None, eps_da=None, eps_hb=EPS_HB,
-                 eps_core=None, n_half=N_HALF, w_burial=W_BURIAL, charges=True):
+                 eps_core=None, n_half=N_HALF, w_burial=W_BURIAL, charges=True, elec='v23',
+                 eps_self=EPS_SELF, eps_pair=EPS_PAIR, h_charge='keep'):
+        """elec 'v23': task 23 (one dielectric eps_core for buried pairs). elec 'split' (task 26): buried pairs at
+        eps_pair, plus a Born self term per buried charge at eps_self. h_charge 'keep' leaves the burial table as it
+        is; 'iso' gives charged monomers their oily isostere's burial h, so the charge's desolvation is counted only
+        once (by the Born term)."""
         dev = torch.device(device)
+        self.elec, self.eps_pair = elec, eps_pair
         self.dev, self.mode = dev, mode
         self.eps_hb, self.n_half, self.w_burial = eps_hb, n_half, w_burial
         self.eps_core = EPS_CORE if eps_core is None else eps_core
@@ -164,8 +190,9 @@ class Model2:
         self.nl3 = (sep >= 3).float() * pm
         W = f(pair_tables(eps_vdw, eps_da))
         self.eab = W[ii[:, :, None], ii[:, None, :]] * self.nl3
-        self.h = f(SC['h'])[ii] * mf
+        self.h = f(h_table(h_charge))[ii] * mf
         q = f(SC['q'])[ii] * mf * (1.0 if charges else 0.0)
+        self.uself = f(born_self(SC['q'], SC['d'], eps_self))[ii] * mf * (1.0 if (charges and elec == 'split') else 0.0)
         self.qq = q[:, :, None] * q[:, None, :] * self.nb2
         self.arm = (f(SC['arm'])[ii] * mf)[:, :, None]
         self.logp = torch.log(f(P).clamp_min(1e-6))
@@ -263,7 +290,10 @@ class Model2:
         else:
             e_pack = 0.5 * (self.eab * s_ss).sum((1, 2))
         rr = rss.clamp_min(0.35)
-        e_el = 0.5 * (self.qq * COULOMB / rr * ((1 - G) * torch.exp(-rr / LAMBDA_D) / EPS_W + G / self.eps_core)).sum((1, 2))
+        eps_in = self.eps_pair if self.elec == 'split' else self.eps_core
+        e_el = 0.5 * (self.qq * COULOMB / rr * ((1 - G) * torch.exp(-rr / LAMBDA_D) / EPS_W + G / eps_in)).sum((1, 2))
+        e_self = (self.uself * g).sum(1)
+        e_el = e_el + e_self
         # backbone H-bonds: helix i -> i+4
         ar = torch.arange(L - 4, device=x.device) if L > 4 else None
         if self.eps_hb and L > 4:
@@ -286,7 +316,7 @@ class Model2:
         tot = e_bond + e_ang + e_dih + e_sc + e_ev + e_bur + e_pack + e_el + e_hh + e_hs
         if parts:
             return dict(total=tot, bond=e_bond, angle=e_ang, dihedral=e_dih, sc=e_sc, ev=e_ev, burial=e_bur,
-                        pack=e_pack, elec=e_el, hb_helix=e_hh, hb_strand=e_hs, n=n)
+                        pack=e_pack, elec=e_el, elec_self=e_self, hb_helix=e_hh, hb_strand=e_hs, n=n)
         return tot
 
 

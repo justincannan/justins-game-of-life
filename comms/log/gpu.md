@@ -256,3 +256,15 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Waits on Justin: unchanged (task 23's proposals; report 22 item 2 seen and whether to start item 3; the
     same-compound contagion case; the copy-error rate; the molten-core caveat).
   - Waits on cloud: nothing.
+- 2026-11-15 23:20 (scheduled check): commits read 2c5ba15 (task 26: Justin approves proposals 1, 2, 3, 5), 581c90e,
+  5b491ee, 830c47d (cloud page work: pigments, decay economy, genome of genes; nothing for this side), a9160f7.
+  Started task 26, step 1 (charges): `twobead.py` gains `elec='split'` (buried pairs at ε 20, Born self term at
+  ε_self 4–6; task 23's term kept as `elec='v23'`); `charges26.py` measures task 20's benchmarks and random 32-mers'
+  Coulomb energy (CPU, seconds). Benchmark A met (relief 4.9–5.6 kT); benchmark B fails at every ε_self in 4–6 (a buried
+  pair 30–72 kT worse than its isostere, target 0–6). Random 32-mers' Coulomb median −50 kT before, +52 to +89 kT after
+  (re-scored, not refolded). Report `from_gpu/2026-11-15_26_folding-proposals-approved_report.md`.
+  - Waits on Justin: how to settle the self term (report 26, four options: a charge–dipole term, Claude's preference;
+    ε_self about 30; relax benchmark B; a larger Born radius). Still open from before: the same-compound contagion
+    case; report 22 item 2 seen and whether to start item 3; the molten-core caveat.
+  - Waits on cloud: nothing. Next visit: task 26 steps 2 (cooperative helix term) and 3 (relaxed design loop), which
+    do not depend on step 1.
