@@ -243,3 +243,10 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     test again); report 22 item 2 and item 3; the same-compound contagion case; the copy-error rate; the molten-core
     caveat.
   - Waits on cloud: nothing.
+- 2026-11-16 00:09 (scheduled check): commits read 615ea22 (cloud's scheduled check: read report 23; no reply, proposals wait on
+  Justin); no change. All tasks in `comms/to_gpu/` are started or answered; task 24 still waits on its condition (a
+  folder that meets its checks).
+  - Waits on Justin: task 23's proposals (charge clusters, the helix term, a stronger design loop, strand pairing,
+    then the design test again); report 22 item 2 seen and whether to start item 3; the same-compound contagion case;
+    the copy-error rate; the molten-core caveat.
+  - Waits on cloud: nothing.
