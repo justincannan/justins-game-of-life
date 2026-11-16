@@ -1913,3 +1913,37 @@ Proposals (Claude's, for Justin):
 The inspector now lists each gene: its monomers, domains (and adaptors), reactions with strength, and whether it is an
 exact copy of another gene in the cell. Reactions past the cell's 8 are struck through. The summary has a "Genes:"
 line (genes a cell, share multi-gene, marker share, exact copies, and the running totals).
+
+## Decisions (Justin, 16 November, about 09:37–10:06)
+1. **Genome proposals approved** (from "Following the genes"):
+   - length: a small running cost for each working domain each tick (option c); a higher cap later, on the desktop (d);
+   - origin tags on genes (own line, another cell, virus), for display only;
+   - repeated reactions keep adding speed, but each copy pays the running cost (option d).
+2. **The founder is upgraded as features arrive.** The baseline is what is common to all modern life, not early life:
+   the project is not simulating the origin of life. Copying by pairing is kept folded most of the time (a rate and an
+   error rate set by a copier gene), and opened when needed.
+3. **A modern-baseline founder, all five parts approved** (order still to be set):
+   1. 4-letter storage, translated by a three-letter code (64 codons) into the working letters; the translation is
+      folded into a code table the cell carries and can mutate;
+   2. a copier gene (copying by pairing, folded);
+   3. a membrane with transporters (uptake through genes, not a rule);
+   4. an ion gradient driving an ATP-synthase-like gene (with the ions already decided);
+   5. simplified building-block metabolism (precursors a cell must make or take up before copying).
+   Source for the baseline: Goldman and Kaçar 2022 (LUCA's genome and proteome).
+4. **One page, two jobs.** The page stays where everything is assembled and watched; the GPU's detailed models reach it
+   folded (task 24 emulators). Two founders as a setting: the simple founder kept for from-scratch tests, the modern one
+   the default for long runs. Builders: cloud does items 1 and 2, the folded forms of 3–5, and the founder setting;
+   GPU does the detailed models behind 3–5 and their emulators.
+5. **The GPU version records, then replays** (Justin's design). The model runs for a set number of ticks headless, then
+   produces a page like the live one that can be paused, played forward and back to the last tick, and inspected,
+   without the lag of running live. Claude's proposed implementation:
+   - full snapshots every 100–500 ticks (about 10–20 MB compressed each); a light display frame every tick (about
+     20–100 KB compressed), streamed in chunks;
+   - inspecting a cell jumps to the nearest earlier snapshot and re-runs up to the tick;
+   - changing the world (painting, settings) makes a branch: continue live from the snapshot, or send it back to the GPU;
+   - needs exact repeatability (same seed, same run: currently failing, see "Following the genes"), and one codebase
+     (the page's own code run headless in Node on the desktop).
+
+Proposals (Claude's, not yet decided): keep the page in JavaScript rather than port it to Python (plain Python is
+slower, and the page's sequential random-order updates do not parallelise without changing the dynamics); run long and
+many-seed runs headless in Node; move only diffusion and fields to the graphics card if timing shows they dominate.
