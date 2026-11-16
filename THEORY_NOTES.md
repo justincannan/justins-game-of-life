@@ -1771,3 +1771,38 @@ recorded 6 of 6. Proposal: the GPU session or the cloud session checks vent foun
   5. **Repeat** the design test on the same targets, then step 3's sets.
 - **Copying errors:** Justin leans to keeping the page's rate (30–40 times Drake's rule) for fast evolution. Kept for
   now.
+
+## Pigments on, and the decay economy (Justin, 15 November, about 21:31: "I agree"; built about 21:40–23:00)
+Decisions: pigments on; option (b), so the first organism in a sunlit world carries a pigment-making fold; a decay economy
+next. Measured on the harness world (476 × 248), 1 seed per case unless stated: indications only.
+
+**Pigments** (`pigment` now true; `pigFounder()`, `pigBorn()` in env.js).
+- **The founder's fold:**
+  - In sunlit worlds (not vent or dish), the one-organism start gets a closed domain appended to its line of expression.
+    The domain is found by search so that its reaction makes a kind 12–15 molecule. The compound (unpaired monomers) is
+    unchanged.
+  - The founder also starts with pigSat of that pigment in its coat, taken from the ground's molecules of that kind.
+- **Daughters inherit half their parent's pigment** (before, every newborn started with an empty coat and could not use
+  light until it made pigment).
+- Founding:
+  - fold only: pond 1 of 3, springs 0 of 2;
+  - with the starting pigment and inheritance: pond 3 of 3 (5,000–11,000 cells at tick 1,000, against about 20,000
+    without pigments), springs 2 of 2 (about 7,000).
+- Even world from a soup: fine.
+
+**The decay economy** (`detOn`, default on; `detBreak` 0.05, `detLeach` 0.001, `detRot` 0.002; `detDie()`, `detStep()`).
+- **Found:** before, a dying cell's stored energy was lost; only a fixed 0.2 of sugar was released.
+- **Now:**
+  - the stored energy becomes remains in the square, which do not spread;
+  - remains leach and rot slowly;
+  - mostly, they are broken down into sugar by the square's heterotrophs, in proportion to their het levels. The
+    sugar is shared.
+- About 93% of remains return as sugar.
+- **Result: no shift towards a mixed community in the pond.** Cells without pigment but with heterotrophy are 1–7%,
+  with or without remains, and also with dissolved-sugar rot cut from 0.02 to 0.005.
+  - So in the pond the limit is not sugar but space and light: carrying pigment is cheap against what light gives, so
+    nearly every cell keeps it (mixotrophs).
+  - The hot springs do give mixed communities, with 30–67% non-pigmented heterotrophs in some runs, with or without
+    remains.
+- **Proposal:** look for why the springs mix and the pond does not (shade, temperature bands, or the source's chemistry)
+  before adding more ecology.

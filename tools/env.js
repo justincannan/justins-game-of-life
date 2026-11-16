@@ -1187,3 +1187,23 @@ function pigBorn(i, pj) {                                  // a dividing cell sh
   const c16 = cmap[i] << 4; if (coatM[i] > 0) { chem[c16 + coatK[i]] += coatM[i]; coatM[i] = 0; }
   const h = coatM[pj] * .5; coatM[pj] -= h; coatK[i] = coatK[pj]; coatM[i] = h;
 }
+
+// ---------------- the decay economy (Justin, 15 November). Before: a dying cell released a fixed bit of sugar, and the energy it
+// had stored was lost; dissolved sugar rotted away at edecay a tick, as if eaten by microbes the page did not model.
+// Now a dying cell's stored energy becomes remains (detritus) in its square. Remains do not spread. They leach a little sugar
+// on their own (detLeach) and rot slowly to CO2 (detRot), but mostly they are broken down by heterotrophs: each living cell
+// in the square adds its heterotrophy level (the het gene, 0-3) to the square's enzymes, and enzymes free detBreak of the
+// remains per unit per tick as sugar into the water. The sugar is shared, so decomposers feed their neighbours too.
+const DET = {a: null, made: 0, toSugar: 0, rot: 0, hs: null};
+function detAlloc() { const n = cw * chh; if (!DET.a || DET.a.length !== n) { DET.a = new Float32Array(n); DET.hs = new Float32Array(n); } }
+function detDie(i) {
+  if (!P.detOn || P.env === 'dish') return; detAlloc(); const e = light[i]; if (e > 0) { DET.a[cmap[i]] += e; DET.made += e; light[i] = 0; } }
+function detStep() {
+  if (!P.detOn || P.env === 'dish' || !DET.a) return; const n = cw * chh, hs = DET.hs; hs.fill(0);
+  if (P.gHet) for (let i = 0; i < N; i++) if (alive[i] && !dor[i]) { const h = (xg[i] >> 10) & 3; if (h) hs[cmap[i]] += h; }
+  for (let c = 0; c < n; c++) { const d = DET.a[c]; if (!(d > 0)) continue;
+    const brk = d * Math.min(.5, P.detBreak * hs[c]), lch = d * P.detLeach, rot = d * P.detRot, s = brk + lch;
+    DET.a[c] = d - s - rot; en[c] += s; enMade += s; DET.toSugar += s; DET.rot += rot;
+    if (P.rxn) { co2[c] += rot; OLF.co2L += rot; } }
+}
+{ const _resetD = reset; reset = function (...a) { if (DET.a) DET.a.fill(0); DET.made = DET.toSugar = DET.rot = 0; return _resetD.apply(this, a); }; }
