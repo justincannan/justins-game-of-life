@@ -336,3 +336,9 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     a new proton; questions in the report); task 32's proposal (population models on the GPU by default); still open
     from before: report 26's helix term and step 1 near-misses, report 28's choices.
   - Waits on cloud: nothing.
+- 2026-11-16 17:08 (scheduled check): commits read 73e4279 (cloud's 16:02 check: read reports 31–33; nothing sent to
+  the GPU). No new task files; tasks 01–33 all started or handed back. No change.
+  - Waits on Justin: task 31's choices (order of parts 3–5, proposed 5, 3, 4; the per-cell inside pool; coupling ion;
+    the other questions in the report); task 32's proposal (population models on the GPU by default); report 26's
+    helix term and step 1's near-misses; report 28's three choices.
+  - Waits on cloud: nothing.
