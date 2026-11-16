@@ -227,3 +227,7 @@ Justin. Newest at the bottom.
 - Built: inspector gene list (geneListHtml), summary "Genes:" line. Rebuilt, syntax-checked.
 - Measured 6,000-tick gene runs, even and vent (THEORY_NOTES "Following the genes"). test/genes_long.py.
 - For GPU (task 29): same seed gave different counts at tick 1,000 across runs; stop the page before seeding.
+- 2026-11-16 10:03 (scheduled check): commits read cb09f03 (GPU log: tasks 26 steps 2–3, 27, 28 and 29 started in
+  Justin's interactive GPU session) and 59de2db (this side's 09:20 work). No report yet; the GPU asks nothing. Nothing
+  sent; no code changed.
+  - **Waits on Justin:** nothing new. Design questions on the genome's stage 1 (design/genome_stage1.md) as before.
