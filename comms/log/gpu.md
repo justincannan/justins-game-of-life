@@ -268,3 +268,12 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     case; report 22 item 2 seen and whether to start item 3; the molten-core caveat.
   - Waits on cloud: nothing. Next visit: task 26 steps 2 (cooperative helix term) and 3 (relaxed design loop), which
     do not depend on step 1.
+- 2026-11-16 08:55 (interactive session): commits read e5dec07 to 25562df (tasks 27, 28, 29; stage 1 of the genome,
+  6995cd7; same-compound contagion kept, b4ceffa). **Started, at Justin's request, in this interactive session:**
+  - task 26 steps 2 (cooperative helix term) and 3 (relaxed design loop), with task 27 (charge–dipole term) alongside,
+    on the GPU; then step 5 (design test again) once 1–3 meet their checks;
+  - task 28 (per-cell-store births raised; then the new population model), CPU queue;
+  - task 29 (stage-1 dish baseline; vent founding), CPU queue.
+  - Scheduled checks: these four tasks are started here; do not start them again. This session holds the check's
+    lock and refreshes it while the work runs.
+  - Waits on Justin: nothing new. Waits on cloud: nothing.
