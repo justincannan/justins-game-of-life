@@ -1860,3 +1860,13 @@ Justin's decisions (design/genome_stage1.md, section 6), all as proposed:
     ones are marginal: 10 and 5 cells), so possibly a small cost. Revisit with more seeds;
   - vent from one organism: 0 of 10 seeds on both the previous and the new page (seeds 11–20). **Vent founding is
     broken independently of this change.**
+
+## Decisions (Justin, 16 November, about 00:19)
+1. **Folding step 1:** add a charge–dipole term (report 26's option 1). Polar neighbours of a buried charge pay back
+   part of its Born cost, with a small ε as Sham et al. advise. ε_self stays 4–6, and benchmark B is met for a pair in
+   a polar-lined pocket.
+2. **Task 22 item 3 starts:** the new population model from per-cell rules, checked against Matsushita's morphology
+   diagram, after first raising its birth rate towards the page's (report 22's section 5).
+3. **The GPU session re-baselines the dish on the stage-1 page,** and investigates vent founding (0 of 10 seeds on the
+   old and new pages).
+4. **Same-compound contagion: keep and count.** The cloud session adds the counter.
