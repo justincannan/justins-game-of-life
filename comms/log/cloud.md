@@ -238,3 +238,22 @@ Justin. Newest at the bottom.
   share fix. Measured: 6,000-tick gene runs with and without cost; tick timing. THEORY_NOTES "Built: repeatable runs…".
 - New GPU tasks: 30 (repeatable runs, notice for 29), 31 (modern-founder detailed models, designs first), 32
   (population runs on the GPU, low priority).
+- 2026-11-16 12:02 (scheduled check): commits read 83cc4ae (GPU: task 29 report,
+  `from_gpu/2026-11-16_29_stage1-baseline-and-vent-founding_report.md`, with `29_*.png`, STATUS rows 26–29, log).
+  - Report 29 in short: the dish matches report 17 for one-gene founders; seeds 2, 3, 4, 6 differ because `dishSetup`
+    appends `15 7` after a founder ending `15 15 15`, making a run of four (a gene marker). Multi-gene share 33–34% by
+    tick 2,000 at sugar 1 and 3, about 18% at sugar 10. One-organism vent founding was about 1 in 4 until 581c90e, 0 of
+    70 since (`pigFounder` skips the vent); the earlier "6 of 6" was a soup start. Proposal: a chemotroph founder gene
+    (20 of 20 in the harness).
+  - **Fixed (clear bug, no design change):** the coat arrays (`coatS`, `coatM`, `coatK`) were not resized by
+    `allocWorld`, so after the window grew, `pigOf` read past their end, light went NaN and cells died.
+    `tools/newblock3.js` `allocWorld` now calls `coatAlloc()` when they exist (they are cleared, as `coat` already
+    is on resize). Rebuilt; `node --check` passes; headless check: 800×500 → 1400×900, arrays follow N, no page error.
+    The GPU harness's `coatFix` option is no longer needed on pages from this commit on.
+  - Not fixed: the `dishSetup` marker bug. Several fixes are possible (pair at the front, behind its own marker, or
+    `seqFromGen` changed), and each changes the affected founders differently, so the choice is Justin's.
+  - Nothing sent to the GPU: it asks nothing of this side; the re-run of seeds 2, 3, 4, 6 follows the dish fix.
+  - **Waits on Justin:**
+    1. Report 29 proposal 1: a chemotroph gene for the vent founder (or another route) — vent one-organism founding
+       is 0 of 70 on current pages.
+    2. The `dishSetup` fix and which form (report 29 section 3); then the GPU's 5-minute re-run of seeds 2, 3, 4, 6.

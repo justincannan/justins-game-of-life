@@ -45,6 +45,7 @@ function allocWorld(nw, nh, keep) {
   }
   lampCount = 0; for (let i = 0; i < N; i++) if (lamp[i] !== 0) lampCount++;
   chemAlloc();
+  if (typeof coatAlloc === 'function' && coatS) coatAlloc();   // the coat's parts follow the world's size (report 29: past the old size pigOf read undefined, so light was NaN); cleared like coat itself
   layoutZones();
 }
 function sizeWorld(keep) {
