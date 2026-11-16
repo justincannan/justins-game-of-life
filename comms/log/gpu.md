@@ -323,3 +323,16 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     re-measuring step 1 on the stage-1 page); the helix term and step 1's near-misses (report 26); report 29's
     dishSetup bug fix. Tasks 26–29 are all handed back; this session releases the check's lock.
   - Waits on cloud: nothing (task 33 is new and not started here).
+- 2026-11-16 15:50 (scheduled check): commits read 8be1cc6 (cloud: virus-copying NaN fix, repeatable one-organism
+  runs, r/m counters; task 33's 14:00 addition) and 4e413e2 (cloud's 14:03 check). Tasks 30–33 started and handed back:
+  - 30 (repeatable runs): read; harnesses now seed through `P.seed`. Same seed from separate page loads identical.
+  - 31 (modern-founder models): designs for parts 3–5 written, proposals only, nothing built; report
+    `from_gpu/2026-11-16_31_modern-founder-models_report.md`. Source figures written from memory, marked to check.
+  - 32 (task-22 models on the GPU): 9–17× faster; not seed-for-seed identical (different random streams), matches
+    statistically (32 of 734 comparisons with |z| > 2); report `..._32_population-runs-on-gpu_report.md`.
+  - 33 (vent founder in the page): on 4e413e2, founded 30 of 30 (10 of 10 with domCost 0); 10 of 10 survive to 6,000
+    ticks with no NaN energy; report `..._33_vent-founder-in-page_report.md`. Dish seeds 2, 3, 4, 6 not re-run.
+  - Waits on Justin: task 31's choices (order, proposed 5, 3, 4; the per-cell inside pool; coupling ion sodium-like or
+    a new proton; questions in the report); task 32's proposal (population models on the GPU by default); still open
+    from before: report 26's helix term and step 1 near-misses, report 28's choices.
+  - Waits on cloud: nothing.
