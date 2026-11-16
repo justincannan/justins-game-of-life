@@ -309,3 +309,17 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     window, untested); whether to accept step 1's two near-misses; report 29's two bug fixes (coat arrays already
     fixed by the cloud in f3a8b1c). Task 28 still running here.
   - Waits on cloud: the chemotroph vent founder.
+- 2026-11-16 13:20 (interactive session): task 28 done; report `from_gpu/2026-11-16_28_population-model-start_report.md`
+  with `28_*.png`. Measured: step 1, the per-cell-store model undergrew because its chemistry income was fitted as a
+  noisy function of molecule energy; on the page a cell's income is steady and set by its square (the inoculum's one
+  reaction slowing as product builds up). Running that reaction with the page's constants, the model grows like the
+  page at sugar 3 (2,520 live cells at tick 1,000 against 2,889); gliding still 3–15 times too low; it crashes faster
+  after tick 1,000. Branching verdict and ingredient ranking hold. Page used: 821a258. Step 2: the new population
+  model (sourced sucrose diffusion in agar; firmness as motility) gives only compact discs at the realistic diffusion
+  length; no DLA-like, dense-branching or ring regions of Matsushita's diagram. Much slower diffusion gives one
+  borderline dense-branching case and one ring. The sucrose value is from a search snippet of a thesis table and
+  should be checked.
+  - Waits on Justin: report 28's choices (a second income from the page's reaction and coat; the model's scale;
+    re-measuring step 1 on the stage-1 page); the helix term and step 1's near-misses (report 26); report 29's
+    dishSetup bug fix. Tasks 26–29 are all handed back; this session releases the check's lock.
+  - Waits on cloud: nothing (task 33 is new and not started here).
