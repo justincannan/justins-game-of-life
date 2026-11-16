@@ -1806,3 +1806,19 @@ next. Measured on the harness world (476 × 248), 1 seed per case unless stated:
     remains.
 - **Proposal:** look for why the springs mix and the pond does not (shade, temperature bands, or the source's chemistry)
   before adding more ecology.
+
+## Decision (Justin, 15 November, about 22:42): from one chain to a genome of genes
+- Justin decided to follow this line of development. Today each cell has one line of up to 128 monomers that is at once:
+  - its genome (copied, mutated, transferred);
+  - its single protein (up to 4 working domains);
+  - its identity (the unpaired compound).
+- The planned stages (Claude's proposal of the order; each stage is Justin's decision when it comes):
+  1. **Several genes per cell:** the line becomes a genome of separate genes, each folding into its own chain. This
+     gives many functions, and quaternary structure later.
+  2. **Expression levels:** a copy number or rate per gene, and switches on genes, so regulation can evolve.
+  3. **Storage separate from function:** the heritable form and the folded working form become two things, as DNA and
+     protein are.
+- **Timing:** the page uses real folds only once the two-bead folder passes (tasks 23, 26) and its summaries can be
+  learned (task 24). The design of stage 1 can be written now (cloud session), to be built once folds are ready.
+- Fit with folding: each gene's chain is folded and cached separately. Many short chains are easier to fold and to learn
+  than one long one, so stage 1 also helps tasks 24 and 26.
