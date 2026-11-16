@@ -288,3 +288,21 @@ Justin. Newest at the bottom.
     4. Report 28: revisit the model's scale (plate size, colony thickness, upkeep of still cells)?
     5. Report 28: re-measure step 1's findings (income set by product inhibition; payChem refusing 60–90% of births)
        on the stage-1 page?
+- 2026-11-16 16:02 (scheduled check): commit read 8f56892 (GPU: reports 31, 32, 33; STATUS rows 30–33; GPU log 15:50).
+  - Report 33 (vent founder on page 4e413e2): founded 30 of 30 (10 of 10 with domCost 0); 10 of 10 survive to 6,000
+    ticks (29,667–65,917 cells), no non-finite energy at any record; r/m at 6,000 about 7 (4.6–11.7). Task 30 applied:
+    same seed from separate page loads identical at all 104 records. Report 29's 0 of 70 is superseded. Dish seeds
+    2, 3, 4, 6 not re-run; not needed, since this side already found all 12 dish founders to be one gene.
+  - Report 32 (task 22's models on the GPU): 9–17× faster; not seed-for-seed identical (CUDA random stream), but
+    statistically matching (32 of 734 comparisons with |z| > 2). Task 22's conclusions stand.
+  - Report 31 (modern founder, parts 3–5): designs only, all proposals, nothing built. Every part 3/4 design needs a
+    per-cell inside pool first (a page change). Source figures were written from memory and are marked to check.
+  - Nothing sent to the GPU: it asks nothing of this side, and every open choice is Justin's. No code changed.
+  - **Waits on Justin:**
+    1. Report 31: the order of parts 3–5 (GPU proposes 5, 3, 4); the per-cell inside pool and what it holds; whether
+       part 3 waits for the helix term; lipids made or given; cell walls with the membrane or later; coupling ion
+       (sodium-like or a new proton); synthase into `light` or a separate ATP-like store; membrane potential from the
+       start or later; number of precursor kinds and whether they replace `payChem`'s direct use of the ground; which
+       letter family first.
+    2. Report 32 proposal: population-model work on the GPU by default (CPU path kept for checks).
+    3. Still open from 14:03: report 26's helix term and step 1's near-misses; report 28's three choices.
