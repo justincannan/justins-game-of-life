@@ -288,3 +288,11 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
   - Waits on Justin: report 29's proposal and the two bug fixes (page code, for the cloud session once approved).
     Tasks 26 steps 2–3, 27 and 28 still running here.
   - Waits on cloud: nothing.
+- 2026-11-16 12:05 (interactive session): **Justin's decision (in this session, about 12:05):** report 29's proposal 1
+  is approved: the vent founder gets a chemotroph gene, found by `pigFounder`'s search with "runs downhill on a
+  molecule plentiful in the founder's square" as the criterion (one closed domain behind a marker, compound unchanged;
+  harness version in `test/vent29.js`, `chemVent`, picked `4 4 4 4 15 0 8 7` and founded 20 of 20). This is page code,
+  so it is for the cloud session; the GPU side changes nothing in the page.
+  - Waits on Justin: the two bug fixes in report 29 (the `dishSetup` gene marker; coat arrays on resize); Justin will
+    come back on the page code.
+  - Waits on cloud: the chemotroph founder in the page. Once it is in, the GPU side can re-measure vent founding.
