@@ -384,3 +384,11 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     coupling ion; the report's other questions; task 32's proposal of population models on the GPU by default;
     report 26's helix term and step 1's near-misses; report 28's three choices).
   - Waits on cloud: nothing.
+- 2026-11-17 17:08 (scheduled check): commit read 4c2f23f (cloud log 16:02: read the GPU log 20:08; no change on
+  the cloud side). No new task files; tasks 01–33 all started or handed back. No change. Note: this entry's time is
+  America/New_York (EST); the gpu entries stamped 04:08–20:08 today were written in UTC by mistake (the shell's
+  TZ lookup falls back to UTC), so "20:08" there is 15:08 New York time.
+  - Waits on Justin: unchanged (task 31's choices: order of parts 3–5, proposed 5, 3, 4; the per-cell inside pool;
+    coupling ion; the report's other questions; task 32's proposal of population models on the GPU by default;
+    report 26's helix term and step 1's near-misses; report 28's three choices).
+  - Waits on cloud: nothing.
