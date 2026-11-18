@@ -356,3 +356,8 @@ Justin. Newest at the bottom.
 - 2026-11-18 10:02 (scheduled check): no change (commit read 7d2d80d, GPU log 09:09: no change).
 - 2026-11-18 12:02 (scheduled check): no change (commit read 2137a00, GPU log 16:08: no change; also saw this side's interactive commit bfef8e7, founder switch and genome-code design proposal, nothing for the GPU).
 - 2026-11-18 14:02 (scheduled check): no change (commit read 1addd6a, GPU log 13:09: read the founder switch and 12:02 check; no new tasks; no change).
+
+## 18 Nov ~15:30 (interactive)
+- Built: Modern founder checkbox (P.founderModern); the 4-letter code (P.codeOn, P.codeMut), all nine design choices
+  decided by Justin at 14:44. Code off = previous page exactly; code on consistent, founding unchanged, +6% time.
+- For the GPU session (when it resumes): seeded comparisons with earlier pages need P.codeOn = false.

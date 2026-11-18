@@ -2049,3 +2049,43 @@ run long enough for viruses to copy (pond and springs too, wherever virus chains
 
 Proposal (Claude's): no change to contagion for now. If whole-gene transfer should be rarer than splicing, lower
 P.geneHGT (0.1 of contagion events now).
+
+## Decisions (Justin, 18 November, 14:44): the 4-letter code; built
+Justin accepted all nine recommendations in design/genome_code.md:
+1. translation at birth and whenever storage changes, the working chain kept as a cache (the fold);
+2. each cell carries its own inherited table, with one codon reassigned in 1 of 10,000 births (`P.codeMut`);
+3. the founder's table: letter = 4 × first base + second base, so the third base is silent and the second sets
+   oily or polar;
+4. gene markers stay runs of 4 identical letters;
+5. per-base error rate = half the old per-letter rate, so letter-changing errors stay about as frequent;
+6. chains without storage (free chains, viruses, the dish's lines) are back-translated with the receiving cell's
+   table;
+7. transfer splices stored bases, read with the recipient's table;
+8. one byte a codon (one per letter position: 30 MB at the current world size, less than the 90 MB of one byte a
+   base, with the same information);
+9. `P.codeOn` (default on).
+
+Earlier on 18 November (Justin approved the queue on 16 November): the **Modern founder** checkbox
+(`P.founderModern`, default on). Off, the first organism has no pigment or chemotroph gene: the simple founder.
+
+**Built.** `cod` (a codon per letter position), `ctab` and `ctabD` (each cell's table, and whether it has drifted).
+Mirrored through every path a sequence travels: birth (crossing, duplications, deletions, gene duplication and
+loss), splicing and whole-gene transfer, free-chain uptake, virus integration, moving, spores, the dish fold, and
+the founders. Copying errors change one base to another base; a base change that leaves the letter unchanged is
+silent. The inspector shows each gene's stored codons and the cell's table; the summary shows the silent share and
+drifted tables.
+
+**Checks:**
+- **Code off matches the previous page exactly:** even (soup), vent and pond (one organism), 400 ticks, same
+  counts and hashes every 100 ticks.
+- **Code on, every cell consistent:** letters equal the translation of their codons in all 28,833 cells (vent,
+  1,500 ticks) and all 73,314 (even, 1,500 ticks).
+- **Population against code off:** vent 28,833 against 29,326; even 73,314 against 78,917 (one seed each).
+- **Speed:** vent 51.8 ms a tick against 49.0 (+6%); even 74.5 against 77.2.
+- **Silent errors:** 33% of base changes (third base), as designed.
+- **Tables:** by tick 1,500, 62–67 reassignments, and 0.6% of cells (vent) read with a changed table.
+- **Founding, one organism, seeds 21–28, 400 ticks:** pond 6 of 8 (code off: 4), vent 8 of 8 (8), dish 8 of 8 (8),
+  springs 5 of 8 (5).
+- **Repeatable with the code on:** vent from one organism, even from a soup.
+
+Next in the queue: the copier gene (part 2). Its design comes to Justin first.

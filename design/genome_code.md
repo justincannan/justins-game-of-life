@@ -1,4 +1,4 @@
-# The 4-letter code: design (proposals for Justin; nothing here is decided yet)
+# The 4-letter code: design (decided by Justin, 18 November, 14:44: all nine recommendations; built)
 
 Cloud session, 18 November 2026. From Justin's decision of 16 November (THEORY_NOTES, "Decisions (Justin, 16 November,
 about 09:37–10:06)", item 3.1): 4-letter storage, translated by a three-letter code (64 codons) into the working

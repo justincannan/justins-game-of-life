@@ -1043,7 +1043,7 @@ rep('''for (let y = 0; y < H; y++) {
     const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
     {
       const xm = (x - 1 + W) % W, xp = (x + 1) % W, zi = zmap[i];''')
-rep("dishLysis:.002,", "dishLysis:.002, founderModern:true, seed:0, domCost:.001, randOrder:true, springZone:true, springFlow:.3, springSrc:4, springRain:.0001, pondInflow:4, pigment:true, pigSat:.05, pigBase:0, virOn:true, virUp:.05, virCopy:.5, virE:.01, virBurst:12, detOn:true, detBreak:.05, detLeach:.001, detRot:.002, geneDup:.005, geneDel:.005, geneHGT:.1, virInteg:.02,")
+rep("dishLysis:.002,", "dishLysis:.002, codeOn:true, codeMut:.0001, founderModern:true, seed:0, domCost:.001, randOrder:true, springZone:true, springFlow:.3, springSrc:4, springRain:.0001, pondInflow:4, pigment:true, pigSat:.05, pigBase:0, virOn:true, virUp:.05, virCopy:.5, virE:.01, virBurst:12, detOn:true, detBreak:.05, detLeach:.001, detRot:.002, geneDup:.005, geneDel:.005, geneHGT:.1, virInteg:.02,")
 
 # light use depends on a fold (Justin's queue, 15 November): with P.pigment, a cell absorbs light only as far as it holds a
 # pigment, one of the four costliest molecules (kinds 12-15, the top of the ladder) kept in its coat, which it makes with its own domains.
