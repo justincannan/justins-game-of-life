@@ -362,3 +362,4 @@ Justin. Newest at the bottom.
   decided by Justin at 14:44. Code off = previous page exactly; code on consistent, founding unchanged, +6% time.
 - For the GPU session (when it resumes): seeded comparisons with earlier pages need P.codeOn = false.
 - 2026-11-18 16:02 (scheduled check): no change (commit read 700da37, GPU log 15:09: read the 4-letter code and copier-gene proposal; no new tasks; no change; also saw this side's interactive commits b8faf09 and 7107f0d, nothing for the GPU).
+- 2026-11-18 18:02 (scheduled check): no change (commit read 3d4a95d, GPU log 17:08: read the 16:02 check; no new tasks; no change).
