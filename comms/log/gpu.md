@@ -423,3 +423,10 @@ done, what waits on Justin or on the cloud session. Newest at the bottom.
     coupling ion; the report's other questions; task 32's proposal of population models on the GPU by default;
     report 26's helix term and step 1's near-misses; report 28's three choices).
   - Waits on cloud: nothing.
+- 2026-11-18 18:09 (scheduled check): commits read bfef8e7, cd649cc (cloud's founder switch, P.founderModern, and
+  the design proposal design/genome_code.md, not a task for the GPU; cloud log 12:02: no change). No new task files;
+  tasks 01–33 all started or handed back. No change.
+  - Waits on Justin: unchanged (task 31's choices: order of parts 3–5, proposed 5, 3, 4; the per-cell inside pool;
+    coupling ion; the report's other questions; task 32's proposal of population models on the GPU by default;
+    report 26's helix term and step 1's near-misses; report 28's three choices).
+  - Waits on cloud: nothing.
