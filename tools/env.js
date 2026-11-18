@@ -1200,7 +1200,7 @@ function virStep() {                                       // every 8 ticks, aft
 // for an ancestor that has already evolved phototrophy. The fold is appended to its line of expression as one closed domain,
 // so its compound (the unpaired monomers) is unchanged; descendants inherit, vary or lose it like any other fold.
 function pigFounder() {
-  if (!P.pigment || !P.seqOn || !P.domOn || !P.rxDom || P.env === 'vent' || P.env === 'dish') return 0;
+  if (!P.pigment || P.founderModern === false || !P.seqOn || !P.domOn || !P.rxDom || P.env === 'vent' || P.env === 'dish') return 0;
   if (slen.length !== N) seqAlloc();
   const fs = []; for (let i = 0; i < N; i++) if (alive[i]) fs.push(i); if (!fs.length) return 0;
   const tryD = (i, D) => { const o = i * SL, n0 = slen[i]; if (n0 + D.length > SL) return null; const g0 = infold(seq, o, n0);
@@ -1224,7 +1224,7 @@ function pigFounder() {
 // the vent founder gets one closed domain behind a marker whose reaction runs downhill on a molecule plentiful in its
 // square, found by the same search; the compound is unchanged. Scored by the energy released times the square's supply.
 function chemoFounder() {
-  if (P.chemoFounder === false || !P.seqOn || !P.domOn || !P.rxDom || P.env !== 'vent') return 0;
+  if (P.chemoFounder === false || P.founderModern === false || !P.seqOn || !P.domOn || !P.rxDom || P.env !== 'vent') return 0;
   if (slen.length !== N) seqAlloc();
   const fs = []; for (let i = 0; i < N; i++) if (alive[i]) fs.push(i); if (!fs.length) return 0;
   const i0 = fs[0]; if (!slen[i0]) seqFromGen(i0, gen[i0]); const c16 = cmap[i0] << 4;

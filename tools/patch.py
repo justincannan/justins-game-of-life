@@ -1043,7 +1043,7 @@ rep('''for (let y = 0; y < H; y++) {
     const ym = ((y - 1 + H) % H) * W, y0 = y * W, yp = ((y + 1) % H) * W;
     {
       const xm = (x - 1 + W) % W, xp = (x + 1) % W, zi = zmap[i];''')
-rep("dishLysis:.002,", "dishLysis:.002, seed:0, domCost:.001, randOrder:true, springZone:true, springFlow:.3, springSrc:4, springRain:.0001, pondInflow:4, pigment:true, pigSat:.05, pigBase:0, virOn:true, virUp:.05, virCopy:.5, virE:.01, virBurst:12, detOn:true, detBreak:.05, detLeach:.001, detRot:.002, geneDup:.005, geneDel:.005, geneHGT:.1, virInteg:.02,")
+rep("dishLysis:.002,", "dishLysis:.002, founderModern:true, seed:0, domCost:.001, randOrder:true, springZone:true, springFlow:.3, springSrc:4, springRain:.0001, pondInflow:4, pigment:true, pigSat:.05, pigBase:0, virOn:true, virUp:.05, virCopy:.5, virE:.01, virBurst:12, detOn:true, detBreak:.05, detLeach:.001, detRot:.002, geneDup:.005, geneDel:.005, geneHGT:.1, virInteg:.02,")
 
 # light use depends on a fold (Justin's queue, 15 November): with P.pigment, a cell absorbs light only as far as it holds a
 # pigment, one of the four costliest molecules (kinds 12-15, the top of the ladder) kept in its coat, which it makes with its own domains.
@@ -1064,6 +1064,8 @@ rep("if ((tick & 7) === 0) { fragStep(); virStep(); }", "if ((tick & 7) === 0) {
 # identical monomers; each gene folds on its own (infold in env.js; the old one becomes infoldGene); up to 4 reactions
 # per gene and 8 per cell (rx and rx2); the line may be 256 long
 
+rep('<input type="checkbox" id="fragOn" checked> Fragments in the ground</label>', '<input type="checkbox" id="fragOn" checked> Fragments in the ground</label><label title="On: the first organism starts with the genes common to modern life that are built so far (a pigment gene in sunlit worlds, a chemotroph gene at the vents; more as they arrive). Off: the simple founder, for tests of evolving from scratch"><input type="checkbox" id="founderModern" checked> Modern founder</label>')   # Justin, 16 November: two founders as a setting
+rep("'lifeRule', 'fragOn']", "'lifeRule', 'fragOn', 'founderModern']")   # the checkbox list (the reset list is in chemui.js)
 # the chemistry code goes in before the wiring
 GPU = (open(sys.argv[7], encoding='utf-8').read() + '\n') if len(sys.argv) > 7 else ''   # gpu3d.js, optional: before env.js, which reads G3
 VIEW = ('\n' + open(sys.argv[8], encoding='utf-8').read()) if len(sys.argv) > 8 else ''   # view3d.js, optional: after the UI wiring
